@@ -71,28 +71,29 @@
 ### Cấu trúc thư mục dự án
 
 #### Backend (ExpressJS)
-
-backend/
+```
+back-end/
 ├── controllers/
 ├── routes/
 ├── models/
 ├── config/
 ├── middlewares/
 └── server.js
+```
 
 
 ### Cài đặt & chạy local
 
 #### Frontend (React)
-
-frontend/
+```
+front-end/
 ├── src/
 │ ├── components/
 │ ├── pages/
 │ ├── services/
 │ └── App.js
 └── public/
-
+```
 
 ### Cài đặt & chạy local
 
@@ -104,7 +105,7 @@ npm install
 npm run dev
 ```
 
-####Frontend:
+#### Frontend:
 ```
 cd frontend
 npm install
