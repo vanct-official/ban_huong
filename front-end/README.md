@@ -1,70 +1,80 @@
-# Getting Started with Create React App
+# Bắt đầu với Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Dự án này được khởi tạo bằng [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Các lệnh có sẵn
 
-In the project directory, you can run:
+Trong thư mục dự án, bạn có thể chạy:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Chạy ứng dụng ở chế độ phát triển.
+Mở [http://localhost:3000](http://localhost:3000) để xem trong trình duyệt của bạn.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Trang sẽ tự động tải lại khi bạn thay đổi mã.
+Bạn cũng có thể thấy các lỗi lint trong console.
+
+---
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Khởi chạy trình chạy test ở chế độ theo dõi tương tác.
+Xem thêm tại [Chạy test](https://facebook.github.io/create-react-app/docs/running-tests).
+
+---
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Build ứng dụng cho môi trường production vào thư mục `build`.
+Lệnh này sẽ:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* Tối ưu mã React ở chế độ production.
+* Nén mã và thêm hash vào tên file để tăng hiệu suất tải.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Ứng dụng sau khi build đã sẵn sàng để triển khai.
+Xem thêm tại [Triển khai](https://facebook.github.io/create-react-app/docs/deployment).
+
+---
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Lưu ý:** Đây là thao tác **một chiều**. Một khi đã eject thì không thể quay lại!
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Lệnh này sẽ:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+* Sao chép tất cả file cấu hình và dependencies liên quan (webpack, Babel, ESLint, v.v.) vào dự án của bạn.
+* Cho phép bạn toàn quyền chỉnh sửa cấu hình.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Hầu hết các dự án nhỏ và vừa không cần `eject`.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Tìm hiểu thêm
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* [Tài liệu Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
+* [Tài liệu React](https://reactjs.org/)
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📦 Giới thiệu các dependency
 
-### Analyzing the Bundle Size
+| Tên gói                               | Phiên bản | Mô tả                                                     |
+| ------------------------------------- | --------- | --------------------------------------------------------- |
+| **@ckeditor/ckeditor5-build-classic** | ^41.4.2   | Phiên bản build sẵn của CKEditor 5 với giao diện Classic. |
+| **@ckeditor/ckeditor5-react**         | ^11.0.0   | Wrapper giúp tích hợp CKEditor 5 vào React.               |
+| **@craco/craco**                      | ^7.1.0    | Tùy chỉnh cấu hình CRA mà không cần eject.                |
+| **@testing-library/dom**              | ^10.4.0   | Thư viện kiểm thử thao tác DOM.                           |
+| **@testing-library/jest-dom**         | ^6.6.3    | Matcher bổ sung cho Jest (như `.toBeInTheDocument()`).    |
+| **@testing-library/react**            | ^16.3.0   | Công cụ test component React.                             |
+| **@testing-library/user-event**       | ^13.5.0   | Mô phỏng hành vi người dùng trong test.                   |
+| **antd**                              | ^5.26.6   | Thư viện UI Ant Design.                                   |
+| **axios**                             | ^1.11.0   | HTTP client để gọi API.                                   |
+| **lucide-react**                      | ^0.525.0  | Bộ icon SVG cho React.                                    |
+| **react**                             | ^19.1.0   | Thư viện chính để xây dựng UI.                            |
+| **react-dom**                         | ^19.1.0   | Render UI React vào DOM.                                  |
+| **react-router-dom**                  | ^7.7.0    | Thư viện định tuyến cho React.                            |
+| **react-scripts**                     | 5.0.1     | Bộ script mặc định của CRA.                               |
+| **web-vitals**                        | ^2.1.4    | Đo lường hiệu suất web.                                   |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
