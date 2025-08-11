@@ -2,6 +2,7 @@ import MainHeader from "../../components/MainHeader"
 import Footer from "../../components/Footer"
 import { Typography, Card } from "antd"
 import '../../global.css'; // Import global styles
+import '../../App.css'; // Import App styles
 
 const { Title, Paragraph } = Typography
 
