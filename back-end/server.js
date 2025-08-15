@@ -1,60 +1,41 @@
-// const express = require('express');
-// const cors = require('cors');
-// const dotenv = require('dotenv');
-// const { connectDB } = require('./config/db');
+import express from 'express';
+import passport from 'passport';
+import session from 'express-session';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import './config/passportConfig.js';
+import { connectDB } from './config/db.js';
 
-// // Load .env
-// dotenv.config();
+import { getProvinces } from './controllers/province.controller.js';
+import { getAllUsers } from './controllers/user.controller.js';
 
-// // Tạo Express app
-// const app = express();
-
-// // Middleware
-// app.use(express.json());
-// app.use(cors({
-//   origin: process.env.CORS_ORIGIN || '*',
-// }));
-
-// // Kết nối DB
-// connectDB();
-
-// // Route đơn giản test
-// app.get('/', (req, res) => {
-//   res.send('API is running...');
-// });
-
-// // Port
-// const PORT = process.env.PORT || 3000;
-
-// // Khởi chạy server
-// app.listen(PORT, () => {
-//   console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-// });
-
-const express = require('express');
-const cors = require('cors');
-const { connectDB } = require('./config/db');
-const Province = require('./models/province.model');
-
+// Routes
+import authRoutes from './routes/auth.route.js';
+dotenv.config();
 const app = express();
-app.use(cors());
 
-// Kết nối Sequelize
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secret',
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Kết nối DB
 connectDB();
 
-// API: Lấy danh sách tỉnh
-app.get('/api/provinces', async (req, res) => {
-  try {
-    const provinces = await Province.findAll();
-    res.json(provinces);
-  } catch (err) {
-    console.error('❌ Error fetching provinces:', err);
-    res.status(500).send('Server error');
-  }
-});
+// Routes
+app.get('/api/provinces', getProvinces);
+app.get('/api/users', getAllUsers);
+app.use('/api/auth', authRoutes);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-

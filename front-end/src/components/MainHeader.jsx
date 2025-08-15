@@ -1,44 +1,256 @@
 import { Link } from "react-router-dom";
-import { Input, Button, Dropdown, Menu, Row, Col, Badge } from "antd";
-import { DownOutlined, SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { Input, Button, Dropdown, Menu, Row, Col, Badge, Avatar, notification, Divider } from "antd";
+import { 
+  DownOutlined, 
+  SearchOutlined, 
+  ShoppingCartOutlined, 
+  LogoutOutlined, 
+  UserOutlined,
+  SettingOutlined,
+  ShoppingOutlined,
+  HeartOutlined,
+  BellOutlined,
+  GiftOutlined
+} from "@ant-design/icons";
 import { Bell, HelpCircle, Globe, Facebook, Instagram } from "lucide-react";
 import { useState, useEffect } from "react";
+// Import authService nếu có
+// import authService from '../services/authService';
 
 export default function MainHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+
+  // Xử lý token Google trên URL (chỉ chạy 1 lần khi load)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      fetch("http://localhost:5000/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.user) {
+            localStorage.removeItem("user_data");
+            setUser(null);
+            return;
+          }
+          const userData = {
+            ...data.user,
+            avatar:
+              data.user.avatarImg ||
+              data.user.avatar ||
+              data.user.picture ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                data.user.name || data.user.username || "User"
+              )}&background=166534&color=fff`,
+            displayName:
+              data.user.name ||
+              data.user.username ||
+              (data.user.email ? data.user.email.split("@")[0] : "User"),
+          };
+          localStorage.setItem("user_data", JSON.stringify(userData));
+          setUser(userData);
+        })
+        .catch(() => {
+          localStorage.removeItem("user_data");
+          setUser(null);
+        });
+    }
+  }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const languageMenu = (
-    <Menu
-      style={{
-        borderRadius: 12,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-        border: 'none',
-        padding: '4px 0'
-      }}
-    >
-      <Menu.Item 
-        key="vn" 
-        style={{ borderRadius: 8, margin: '4px 8px', fontWeight: 500 }}
-      >
-        🇻🇳 Tiếng Việt
-      </Menu.Item>
-      <Menu.Item 
-        key="en" 
-        style={{ borderRadius: 8, margin: '4px 8px', fontWeight: 500 }}
-      >
-        🇺🇸 English
-      </Menu.Item>
-    </Menu>
-  );
+
+  // Kiểm tra authentication status
+  useEffect(() => {
+    checkAuthStatus();
+    // Listen for storage changes (when user logs in from another tab)
+    const handleStorageChange = () => checkAuthStatus();
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const checkAuthStatus = () => {
+    try {
+      // Check multiple token sources
+      const googleToken = localStorage.getItem("google_token");
+      const userData = localStorage.getItem("user_data");
+      
+      if (googleToken && userData) {
+        const user = JSON.parse(userData);
+        setUser({
+          ...user,
+          // Ensure avatar URL is available
+          avatar: user.picture || user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.username || 'User')}&background=166534&color=fff`,
+          displayName: user.name || user.username || user.email?.split('@')[0] || 'User'
+        });
+        
+        // Load cart count if user is authenticated
+        loadCartCount();
+      } else {
+        setUser(null);
+        setCartCount(0);
+      }
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+      setUser(null);
+    }
+  };
+
+  const loadCartCount = () => {
+    // TODO: Load cart count from API or localStorage
+    const savedCartCount = localStorage.getItem("cart_count") || "0";
+    setCartCount(parseInt(savedCartCount));
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Call logout API if available
+      // await authService.logout();
+      
+      // Clear all auth data
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("google_token");
+      localStorage.removeItem("user_data");
+      localStorage.removeItem("cart_count");
+      
+      setUser(null);
+      setCartCount(0);
+      
+      notification.success({
+        message: 'Đăng xuất thành công',
+        description: 'Hẹn gặp lại bạn!',
+        placement: 'topRight',
+        duration: 3,
+      });
+      
+      // Redirect to home if on protected page
+      if (window.location.pathname.includes('/profile') || 
+          window.location.pathname.includes('/orders') ||
+          window.location.pathname.includes('/dashboard')) {
+        window.location.href = '/';
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force logout even if API call fails
+      localStorage.clear();
+      setUser(null);
+      setCartCount(0);
+      window.location.reload();
+    }
+  };
+
+  const languageMenuItems = [
+    { 
+      key: "vn", 
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
+          <span style={{ fontSize: 16 }}>🇻🇳</span>
+          <span>Tiếng Việt</span>
+        </div>
+      )
+    },
+    { 
+      key: "en", 
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
+          <span style={{ fontSize: 16 }}>🇺🇸</span>
+          <span>English</span>
+        </div>
+      )
+    },
+  ];
+
+  const userMenuItems = user ? [
+    {
+      key: 'user-info',
+      label: (
+        <div style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0', marginBottom: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Avatar 
+              src={user.avatar} 
+              size={40} 
+              icon={<UserOutlined />}
+              style={{ border: '2px solid #f0f0f0' }}
+            />
+            <div>
+              <div style={{ fontWeight: 600, color: '#262626', marginBottom: 2 }}>
+                {user.displayName}
+              </div>
+              <div style={{ fontSize: 12, color: '#8c8c8c' }}>
+                {user.email}
+              </div>
+              {user.email_verified && (
+                <div style={{ fontSize: 11, color: '#52c41a', marginTop: 2 }}>
+                  ✓ Đã xác minh
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ),
+      disabled: true
+    },
+    {
+      key: 'profile',
+      label: 'Hồ sơ cá nhân',
+      icon: <UserOutlined />,
+      onClick: () => window.location.href = '/profile'
+    },
+    {
+      key: 'orders',
+      label: 'Đơn hàng của tôi',
+      icon: <ShoppingOutlined />,
+      onClick: () => window.location.href = '/orders'
+    },
+    {
+      key: 'wishlist',
+      label: 'Danh sách yêu thích',
+      icon: <HeartOutlined />,
+      onClick: () => window.location.href = '/wishlist'
+    },
+    {
+      key: 'notifications',
+      label: 'Thông báo',
+      icon: <BellOutlined />,
+      onClick: () => window.location.href = '/notifications'
+    },
+    {
+      type: 'divider'
+    },
+    {
+      key: 'rewards',
+      label: 'Điểm thưởng',
+      icon: <GiftOutlined />,
+      onClick: () => window.location.href = '/rewards'
+    },
+    {
+      key: 'settings',
+      label: 'Cài đặt',
+      icon: <SettingOutlined />,
+      onClick: () => window.location.href = '/settings'
+    },
+    {
+      type: 'divider'
+    },
+    {
+      key: 'logout',
+      label: 'Đăng xuất',
+      icon: <LogoutOutlined />,
+      onClick: handleLogout,
+      style: { color: '#ff4d4f' }
+    },
+  ] : [];
 
   return (
     <header 
@@ -46,91 +258,77 @@ export default function MainHeader() {
         background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(230,244,234,0.95) 100%)",
         backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(22,101,52,0.1)",
-        boxShadow: "0 2px 20px rgba(22,101,52,0.08)",
+        boxShadow: isScrolled 
+          ? "0 2px 20px rgba(22,101,52,0.12)" 
+          : "0 2px 20px rgba(22,101,52,0.08)",
         position: "sticky",
         top: 0,
-        zIndex: 100
+        zIndex: 100,
+        transition: "all 0.3s ease"
       }}
     >
-      <div className={`container mx-auto px-4 transition-all duration-300 ease-out ${
-        isScrolled ? 'py-2' : 'py-8'
-      }`}>
+      <div className={`container mx-auto px-4 transition-all duration-300 ease-out ${isScrolled ? "py-2" : "py-8"}`}>
         <Row justify="space-between" align="middle">
-          {/* Logo Section */}
+          {/* Logo */}
           <Col>
-            <Link 
-              to="/" 
-              style={{ 
-                display: "flex", 
-                alignItems: "center", 
-                gap: isScrolled ? 8 : 20,
-                textDecoration: "none",
-                transition: "all 0.3s ease"
-              }}
-              className="hover-scale"
-            >
+            <Link to="/" style={{ display: "flex", alignItems: "center", gap: isScrolled ? 8 : 20, textDecoration: "none" }}>
+              <img 
+                src="/image/BanHuong.png" 
+                alt="Logo" 
+                width={isScrolled ? 24 : 40} 
+                height={isScrolled ? 24 : 40} 
+                style={{ 
+                  borderRadius: 6,
+                  transition: "all 0.3s ease",
+                  filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
+                }} 
+              />
               <div>
-                <img 
-                  src="/image/BanHuong.png" 
-                  alt="Logo" 
-                  width={isScrolled ? 24 : 40} 
-                  height={isScrolled ? 24 : 40}
-                  style={{ borderRadius: 6, transition: "all 0.3s" }}
-                />
-              </div>
-              <div>
-              <span 
-  style={{ 
-    fontWeight: 800, 
-    fontSize: isScrolled ? 22 : 32, 
-    background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
-    letterSpacing: "-0.025em",
-    transition: "all 0.3s",
-    textShadow: "0 1px 2px rgba(0,0,0,0.2)" // <-- để tách chữ khỏi nền
-  }}
->
-  Bản Hương
-</span>
-
-                <div 
-                  style={{ 
-                    fontSize: isScrolled ? 10 : 14, 
-                    color: "#9ca3af", 
-                    fontWeight: 500,
-                    marginTop: -2,
-                    transition: "all 0.3s"
-                  }}
-                >
+                <span style={{
+                  fontWeight: 800,
+                  fontSize: isScrolled ? 22 : 32,
+                  background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "-0.025em",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                  transition: "font-size 0.3s ease"
+                }}>Bản Hương</span>
+                <div style={{ 
+                  fontSize: isScrolled ? 10 : 14, 
+                  color: "#9ca3af", 
+                  fontWeight: 500, 
+                  marginTop: -2,
+                  transition: "font-size 0.3s ease"
+                }}>
                   Essential Oils
                 </div>
               </div>
             </Link>
           </Col>
 
-          {/* Search Section */}
+          {/* Search */}
           <Col flex="auto">
-            <div className="search-container">
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <Input
                 size="large"
                 placeholder="Tìm kiếm tinh dầu, hương liệu..."
-                style={{ 
-                  borderRadius: isScrolled ? 12 : 24, 
-                  maxWidth: 520, 
+                className="search-input"
+                style={{
+                  borderRadius: isScrolled ? 12 : 24,
+                  maxWidth: 520,
                   margin: isScrolled ? "0 20px" : "0 32px",
                   border: "2px solid transparent",
-                  background: "rgba(255,255,255,0.8)",
+                  background: "rgba(255,255,255,0.9)",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
                   fontSize: isScrolled ? 15 : 18,
                   height: isScrolled ? 40 : 56,
-                  transition: "all 0.3s"
+                  transition: "all 0.3s ease"
                 }}
                 suffix={
-                  <Button
-                    type="primary"
-                    icon={<SearchOutlined />}
+                  <Button 
+                    type="primary" 
+                    icon={<SearchOutlined />} 
                     style={{
                       border: "none",
                       background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
@@ -138,215 +336,251 @@ export default function MainHeader() {
                       height: isScrolled ? 28 : 40,
                       width: isScrolled ? 28 : 40,
                       boxShadow: "0 2px 8px rgba(22,101,52,0.3)",
-                      transition: "all 0.3s"
-                    }}
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }} 
                   />
                 }
-                className="search-input"
               />
             </div>
           </Col>
 
-          {/* Actions Section */}
+          {/* Actions */}
           <Col>
             <Row align="middle" gutter={isScrolled ? 4 : 8}>
-              {/* Language Dropdown */}
+              {/* Language */}
               <Col>
-                <Dropdown overlay={languageMenu} trigger={['click']} placement="bottomRight">
+                <Dropdown menu={{ items: languageMenuItems }} trigger={['click']} placement="bottomRight">
                   <Button 
                     type="text" 
                     icon={<Globe size={isScrolled ? 16 : 18} />} 
                     style={{ 
-                      color: "#166534",
-                      borderRadius: 12,
-                      height: isScrolled ? 32 : 40,
+                      color: "#166534", 
+                      borderRadius: 12, 
+                      height: isScrolled ? 32 : 40, 
                       fontWeight: 500,
-                      transition: "all 0.3s",
-                      fontSize: isScrolled ? 12 : 14
+                      transition: "all 0.2s ease"
                     }}
-                    className="header-button"
+                    className="hover-scale"
                   >
-                    {isScrolled ? "" : "VI"} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
+                    {!isScrolled && "VI"} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
                   </Button>
                 </Dropdown>
               </Col>
 
-              {/* Shopping Cart */}
+              {/* Cart */}
               <Col>
-                <Badge 
-                  count={2} 
-                  size="small"
-                  style={{
-                    backgroundColor: "#166534",
-                    boxShadow: "0 2px 8px rgba(22,101,52,0.4)"
-                  }}
-                >
-                  <Button 
-                    type="text" 
-                    icon={<ShoppingCartOutlined style={{ fontSize: isScrolled ? 16 : 20 }} />}
-                    style={{
-                      color: "#166534",
-                      borderRadius: 12,
-                      height: isScrolled ? 32 : 40,
-                      width: isScrolled ? 32 : 40,
-                      transition: "all 0.3s"
+                <Link to="/cart">
+                  <Badge 
+                    count={cartCount} 
+                    size="small" 
+                    style={{ 
+                      backgroundColor: "#166534", 
+                      boxShadow: "0 2px 8px rgba(22,101,52,0.4)" 
                     }}
-                    className="header-button"
-                  />
-                </Badge>
+                  >
+                    <Button 
+                      type="text" 
+                      icon={<ShoppingCartOutlined style={{ fontSize: isScrolled ? 16 : 20 }} />} 
+                      style={{ 
+                        color: "#166534", 
+                        borderRadius: 12, 
+                        height: isScrolled ? 32 : 40, 
+                        width: isScrolled ? 32 : 40,
+                        transition: "all 0.2s ease"
+                      }}
+                      className="hover-scale"
+                    />
+                  </Badge>
+                </Link>
               </Col>
 
-              {/* Notifications */}
+              {/* Notifications / Help / Social - Only show when not scrolled */}
               {!isScrolled && (
-                <Col>
-                  <Button 
-                    type="text" 
-                    icon={<Bell size={18} />}
-                    style={{
-                      color: "#6b7280",
-                      borderRadius: 12,
-                      height: 40,
-                      width: 40,
-                      transition: "all 0.3s ease"
-                    }}
-                    className="header-button"
-                  />
-                </Col>
+                <>
+                  {user && (
+                    <Col>
+                      <Badge dot={false} size="small">
+                        <Button 
+                          type="text" 
+                          icon={<Bell size={18} />} 
+                          style={{ 
+                            color: "#6b7280", 
+                            borderRadius: 12, 
+                            height: 40, 
+                            width: 40 
+                          }}
+                          className="hover-scale"
+                          onClick={() => window.location.href = '/notifications'}
+                        />
+                      </Badge>
+                    </Col>
+                  )}
+                  
+                  <Col>
+                    <Button 
+                      type="text" 
+                      icon={<HelpCircle size={18} />} 
+                      style={{ 
+                        color: "#6b7280", 
+                        borderRadius: 12, 
+                        height: 40, 
+                        width: 40 
+                      }}
+                      className="hover-scale"
+                      onClick={() => window.location.href = '/help'}
+                    />
+                  </Col>
+                  
+                  <Col>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <Link 
+                        to="#" 
+                        style={{ 
+                          color: "#4267B2", 
+                          padding: 8, 
+                          borderRadius: 10, 
+                          display: "flex",
+                          transition: "transform 0.2s ease"
+                        }}
+                        className="hover-scale"
+                      >
+                        <Facebook size={18} />
+                      </Link>
+                      <Link 
+                        to="#" 
+                        style={{ 
+                          color: "#E1306C", 
+                          padding: 8, 
+                          borderRadius: 10, 
+                          display: "flex",
+                          transition: "transform 0.2s ease"
+                        }}
+                        className="hover-scale"
+                      >
+                        <Instagram size={18} />
+                      </Link>
+                    </div>
+                  </Col>
+                </>
               )}
 
-              {/* Help */}
-              {!isScrolled && (
-                <Col>
-                  <Button 
-                    type="text" 
-                    icon={<HelpCircle size={18} />}
-                    style={{
-                      color: "#6b7280",
-                      borderRadius: 12,
-                      height: 40,
-                      width: 40,
-                      transition: "all 0.3s ease"
-                    }}
-                    className="header-button"
-                  />
-                </Col>
-              )}
-
-              {/* Social Links */}
-              {!isScrolled && (
-                <Col>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <Link 
-                      to="#" 
+              {/* Auth / User */}
+              <Col>
+                {user ? (
+                  <Dropdown 
+                    menu={{ items: userMenuItems }} 
+                    placement="bottomRight" 
+                    trigger={['click']}
+                    overlayStyle={{ marginTop: 8 }}
+                  >
+                    <Button 
+                      type="text" 
                       style={{ 
-                        color: "#4267B2",
-                        padding: 8,
-                        borderRadius: 10,
-                        transition: "all 0.3s ease",
-                        display: "flex"
+                        display: "flex", 
+                        alignItems: "center", 
+                        gap: isScrolled ? 6 : 8,
+                        height: isScrolled ? 32 : 40,
+                        padding: isScrolled ? "0 8px" : "0 12px",
+                        borderRadius: 12,
+                        background: "rgba(22,101,52,0.05)",
+                        border: "1px solid rgba(22,101,52,0.1)",
+                        transition: "all 0.2s ease"
                       }}
-                      className="social-link"
+                      className="hover-scale"
                     >
-                      <Facebook size={18} />
-                    </Link>
+                      <Avatar 
+                        src={user.avatar} 
+                        size={isScrolled ? 24 : 32} 
+                        icon={<UserOutlined />}
+                        style={{ 
+                          border: "2px solid #fff",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+                        }}
+                      />
+                      {!isScrolled && (
+                        <span style={{ 
+                          fontWeight: 500,
+                          color: "#166534",
+                          maxWidth: 100,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap"
+                        }}>
+                          {user.displayName}
+                        </span>
+                      )}
+                      <DownOutlined style={{ 
+                        fontSize: isScrolled ? 10 : 12,
+                        color: "#166534"
+                      }} />
+                    </Button>
+                  </Dropdown>
+                ) : (
+                  <div style={{ display: "flex", gap: isScrolled ? 8 : 12, alignItems: "center" }}>
                     <Link 
-                      to="#" 
-                      style={{ 
-                        color: "#E1306C",
-                        padding: 8,
-                        borderRadius: 10,
-                        transition: "all 0.3s ease",
-                        display: "flex"
+                      to="/login" 
+                      style={{
+                        color: "#fff",
+                        fontWeight: 600,
+                        textDecoration: "none",
+                        padding: isScrolled ? "6px 12px" : "8px 18px",
+                        borderRadius: 12,
+                        background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                        boxShadow: "0 2px 12px rgba(22,101,52,0.3)",
+                        transition: "all 0.2s ease"
                       }}
-                      className="social-link"
+                      className="hover-scale"
                     >
-                      <Instagram size={18} />
+                      Đăng Nhập
                     </Link>
                   </div>
-                </Col>
-              )}
-
-              {/* Auth Links */}
-              <Col>
-                <div style={{ display: "flex", gap: isScrolled ? 8 : 12, alignItems: "center" }}>
-                  {!isScrolled && (
-                    <Link 
-                      to="#" 
-                      style={{ 
-                        color: "#6b7280",
-                        fontWeight: 500,
-                        textDecoration: "none",
-                        padding: "8px 16px",
-                        borderRadius: 10,
-                        transition: "all 0.3s ease",
-                        fontSize: 14
-                      }}
-                      className="auth-link"
-                    >
-                      Đăng Ký
-                    </Link>
-                  )}
-                  <Link 
-                    to="#" 
-                    style={{ 
-                      color: "#fff",
-                      fontWeight: 600,
-                      textDecoration: "none",
-                      padding: isScrolled ? "6px 12px" : "8px 18px",
-                      borderRadius: 12,
-                      background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                      boxShadow: "0 3px 12px rgba(22,101,52,0.3)",
-                      transition: "all 0.3s",
-                      fontSize: isScrolled ? 12 : 14
-                    }}
-                    className="login-button"
-                  >
-                    {isScrolled ? "Login" : "Đăng Nhập"}
-                  </Link>
-                </div>
+                )}
               </Col>
+
             </Row>
           </Col>
         </Row>
       </div>
 
-      {/* Custom CSS */}
-      <style jsx>{`
-        .hover-scale:hover {
-          transform: scale(1.02);
-        }
-        
-        .search-input:hover, .search-input:focus {
-          border-color: #166534 !important;
-          box-shadow: 0 4px 24px rgba(22,101,52,0.15) !important;
-        }
-        
-        .header-button:hover {
-          background: rgba(22,101,52,0.1) !important;
-          transform: translateY(-1px);
-          color: #166534 !important;
-        }
-        
-        .social-link:hover {
-          background: rgba(0,0,0,0.05);
-          transform: translateY(-1px);
-        }
-        
-        .auth-link:hover {
-          background: rgba(22,101,52,0.1);
-          color: #166534 !important;
-        }
-        
-        .login-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(22,101,52,0.4) !important;
-        }
-        
-        .search-container {
-          display: flex;
-          justify-content: center;
-        }
-      `}</style>
+      {/* Enhanced CSS */}
+      <style>
+        {`
+          .hover-scale {
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+          }
+          .hover-scale:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 4px 16px rgba(22,101,52,0.2) !important;
+          }
+          .search-input:hover, 
+          .search-input:focus, 
+          .search-input.ant-input-focused {
+            border-color: #166534 !important; 
+            box-shadow: 0 4px 24px rgba(22,101,52,0.15) !important; 
+          }
+          .ant-dropdown-menu {
+            border-radius: 12px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+            border: 1px solid rgba(22,101,52,0.1) !important;
+          }
+          .ant-dropdown-menu-item {
+            border-radius: 8px !important;
+            margin: 2px 4px !important;
+            transition: all 0.2s ease !important;
+          }
+          .ant-dropdown-menu-item:hover {
+            background: rgba(22,101,52,0.05) !important;
+          }
+          .ant-badge-count {
+            font-size: 10px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            line-height: 18px !important;
+          }
+        `}
+      </style>
     </header>
   );
 }
