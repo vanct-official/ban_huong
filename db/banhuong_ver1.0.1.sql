@@ -328,8 +328,7 @@ CREATE TABLE `users` (
   `middlename` varchar(100) DEFAULT NULL,
   `lastname` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `passwordHash` varchar(255) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
   `role` enum('customer','admin') DEFAULT 'customer',
   `avatarImg` varchar(255) DEFAULT NULL,
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -337,7 +336,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -346,7 +345,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','$2y$10$7aQPgBZYv.0P/qIu6pV5seTqW86iUWLwNXQHTtsRNi2yQVRnfW8Gm','admin',NULL,'2025-08-07 09:01:59','2025-08-07 09:01:59'),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','$2y$10$7aQPgBZYv.0P/qIu6pV5seTqW86iUWLwNXQHTtsRNi2yQVRnfW8Gm','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49'),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','$2y$10$NpIUzmU1tSZGvFGi2DFBCeYKpaJEIwD/dsr6N/4FN125kU0pDbOv2','customer',NULL,'2025-08-07 09:04:39','2025-08-07 09:04:39');
+INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-08-14 15:13:13'),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49'),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocIgMDwweyO5mf8RpLLA5uHAdgy4MKA2UpPPgeriizqAbRPRaMZahQ=s96-c','2025-08-07 09:04:39','2025-08-14 15:05:02'),(4,'vancthe170807','Chu','','Thế Văn (K17HL)','vancthe170807@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-08-14 15:09:44'),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13'),(6,'vanct20030625','Chu','','Thế Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-08-15 01:37:35','2025-08-15 01:37:35');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -422,4 +421,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-07  9:29:55
+-- Dump completed on 2025-08-15 10:07:40
