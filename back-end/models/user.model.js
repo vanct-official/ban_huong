@@ -11,7 +11,6 @@ const User = sequelize.define(
     lastname: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
     phone: { type: DataTypes.STRING, allowNull: true, unique: true },
-    passwordHash: { type: DataTypes.STRING, allowNull: true },
     role: { type: DataTypes.STRING, allowNull: false, defaultValue: "customer" },
     avatarImg: { type: DataTypes.STRING, allowNull: true },
     // Không cần khai báo createdAt, updatedAt nếu dùng timestamps: true
