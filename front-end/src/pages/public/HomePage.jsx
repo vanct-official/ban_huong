@@ -3,10 +3,12 @@ import Footer from "../../components/Footer";
 import { Typography, Card } from "antd";
 import '../../global.css';
 import '../../App.css';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Paragraph } = Typography;
 
 export default function HomePage() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-rose-50 to-amber-50 relative overflow-hidden">
       {/* Decorative Background Circles */}
@@ -57,7 +59,7 @@ export default function HomePage() {
                 fontWeight: 800
               }}
             >
-              Chào mừng đến với Bản Hương!
+              {t("welcomeToBanHuong")}
             </Title>
 
             {/* Description */}
@@ -72,33 +74,52 @@ export default function HomePage() {
                 margin: "0 auto"
               }}
             >
-              Website chuyên cung cấp <span className="font-semibold text-orange-600">tinh dầu hoa hồi thiên nhiên</span> – thư giãn, sống xanh, an toàn.
+              {t("websiteIntro")}
             </Paragraph>
           </Card>
 
           {/* Features */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 px-4">
-            <div className="flex flex-col items-center animate-float">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg mb-3">
-                <span className="text-white text-lg">🌿</span>
-              </div>
-              <span className="text-sm text-gray-600 font-medium">Thiên nhiên</span>
-            </div>
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-10 px-6">
+  {/* Feature 1 */}
+  <div className="flex flex-col items-center text-center animate-float">
+    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-xl mb-4">
+      <span className="text-white text-2xl">🌿</span>
+    </div>
+    <span className="text-base text-gray-700 font-semibold tracking-wide">
+      Thiên nhiên
+    </span>
+    <p className="mt-2 text-sm text-gray-500 max-w-[220px]">
+      Sản phẩm từ thiên nhiên, an toàn và gần gũi với môi trường.
+    </p>
+  </div>
 
-            <div className="flex flex-col items-center animate-float delay-200">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg mb-3">
-                <span className="text-white text-lg">💧</span>
-              </div>
-              <span className="text-sm text-gray-600 font-medium">Tinh khiết</span>
-            </div>
+  {/* Feature 2 */}
+  <div className="flex flex-col items-center text-center animate-float delay-200">
+    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl mb-4">
+      <span className="text-white text-2xl">💧</span>
+    </div>
+    <span className="text-base text-gray-700 font-semibold tracking-wide">
+      Tinh khiết
+    </span>
+    <p className="mt-2 text-sm text-gray-500 max-w-[220px]">
+      Giữ trọn vẹn hương vị tinh khiết của hoa hồi thiên nhiên.
+    </p>
+  </div>
 
-            <div className="flex flex-col items-center animate-float delay-400">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg mb-3">
-                <span className="text-white text-lg">✨</span>
-              </div>
-              <span className="text-sm text-gray-600 font-medium">Thư giãn</span>
-            </div>
-          </div>
+  {/* Feature 3 */}
+  <div className="flex flex-col items-center text-center animate-float delay-400">
+    <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl mb-4">
+      <span className="text-white text-2xl">✨</span>
+    </div>
+    <span className="text-base text-gray-700 font-semibold tracking-wide">
+      Thư giãn
+    </span>
+    <p className="mt-2 text-sm text-gray-500 max-w-[220px]">
+      Mang lại cảm giác thư giãn và cân bằng tinh thần.
+    </p>
+  </div>
+</div>
+
         </div>
       </main>
 

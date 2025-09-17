@@ -1,6 +1,6 @@
-const Provinces = require('../models/province.model');
+import Provinces from '../models/province.model.js';
 
-exports.getProvinces = async (req, res) => {
+export const getProvinces = async (req, res) => {
   try {
     const provinces = await Provinces.findAll();
     res.json(provinces);

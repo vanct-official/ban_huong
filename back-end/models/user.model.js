@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/db");
+// models/user.model.js
+import { DataTypes } from "sequelize";
+import {sequelize} from "../config/db.js";
 
 const User = sequelize.define(
   "User",
@@ -11,14 +12,18 @@ const User = sequelize.define(
     lastname: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
     phone: { type: DataTypes.STRING, allowNull: true, unique: true },
-    role: { type: DataTypes.STRING, allowNull: false, defaultValue: "customer" },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "customer",
+    },
     avatarImg: { type: DataTypes.STRING, allowNull: true },
-    // Không cần khai báo createdAt, updatedAt nếu dùng timestamps: true
+    // createdAt & updatedAt sẽ tự được Sequelize quản lý khi timestamps: true
   },
   {
     tableName: "users",
-    timestamps: true, // Sequelize tự động quản lý
+    timestamps: true,
   }
 );
 
-module.exports = User;
+export default User;

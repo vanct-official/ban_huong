@@ -5,6 +5,7 @@ import TextArea from './pages/TextArea';
 import UsersList from './pages/UserList';
 import LoginPage from './pages/authentication/LoginPage';
 import AdminPage from './pages/private/admin/AdminPage';
+import UserProfile from './pages/private/admin/UserProfile';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       {/* Thêm route cho trang đăng nhập */}
       <Route path="/login" element={<LoginPage />} />
       {/* Thêm các route khác nếu cần */}
+      <Route path="/profile" element={<UserProfile />} />
 
       <Route path="/admin" element={<AdminPage />} />
     </Routes>

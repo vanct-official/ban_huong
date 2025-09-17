@@ -3,6 +3,7 @@ import express from "express";
 import passport from "../config/passportConfig.js";
 import jwt from "jsonwebtoken";
 import {
+  getUserProfile,
   loginWithGoogle
 } from "../controllers/user.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js"; // Thêm dòng này
@@ -43,17 +44,7 @@ router.get(
 );
 
 
-router.get("/me", verifyToken, async (req, res) => {
-  try {
-    const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ["passwordHash"] }
-    });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ user });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.get("/me", verifyToken, getUserProfile);
 
 
 export default router;

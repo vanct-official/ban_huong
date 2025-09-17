@@ -14,13 +14,15 @@ import {
 } from "@ant-design/icons";
 import { Bell, HelpCircle, Globe, Facebook, Instagram } from "lucide-react";
 import { useState, useEffect } from "react";
-// Import authService nếu có
-// import authService from '../services/authService';
+import "../i18n";
+import { useTranslation } from "react-i18next";
 
 export default function MainHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+
+  const { t, i18n } = useTranslation();
 
   // Xử lý token Google trên URL (chỉ chạy 1 lần khi load)
   useEffect(() => {
@@ -150,9 +152,14 @@ export default function MainHeader() {
     }
   };
 
+  const handleLanguageChange = ({ key }) => {
+    i18n.changeLanguage(key);
+    localStorage.setItem("lang", key); // Lưu lại lựa chọn
+  };
+
   const languageMenuItems = [
     { 
-      key: "vn", 
+      key: "vi", 
       label: (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
           <span style={{ fontSize: 16 }}>🇻🇳</span>
@@ -203,25 +210,25 @@ export default function MainHeader() {
     },
     {
       key: 'profile',
-      label: 'Hồ sơ cá nhân',
+      label: t("profile"),
       icon: <UserOutlined />,
       onClick: () => window.location.href = '/profile'
     },
     {
       key: 'orders',
-      label: 'Đơn hàng của tôi',
+      label: t("myOrders"),
       icon: <ShoppingOutlined />,
       onClick: () => window.location.href = '/orders'
     },
     {
       key: 'wishlist',
-      label: 'Danh sách yêu thích',
+      label: t("wishlist"),
       icon: <HeartOutlined />,
       onClick: () => window.location.href = '/wishlist'
     },
     {
       key: 'notifications',
-      label: 'Thông báo',
+      label: t("notifications"),
       icon: <BellOutlined />,
       onClick: () => window.location.href = '/notifications'
     },
@@ -230,13 +237,13 @@ export default function MainHeader() {
     },
     {
       key: 'rewards',
-      label: 'Điểm thưởng',
+      label: t("bonusPoints"),
       icon: <GiftOutlined />,
       onClick: () => window.location.href = '/rewards'
     },
     {
       key: 'settings',
-      label: 'Cài đặt',
+      label: t("settings"),
       icon: <SettingOutlined />,
       onClick: () => window.location.href = '/settings'
     },
@@ -245,12 +252,19 @@ export default function MainHeader() {
     },
     {
       key: 'logout',
-      label: 'Đăng xuất',
+      label: t("logout"),
       icon: <LogoutOutlined />,
       onClick: handleLogout,
       style: { color: '#ff4d4f' }
     },
   ] : [];
+
+  useEffect(() => {
+    const lang = localStorage.getItem("lang");
+    if (lang && i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }, []);
 
   return (
     <header 
@@ -351,7 +365,14 @@ export default function MainHeader() {
             <Row align="middle" gutter={isScrolled ? 4 : 8}>
               {/* Language */}
               <Col>
-                <Dropdown menu={{ items: languageMenuItems }} trigger={['click']} placement="bottomRight">
+                <Dropdown 
+                  menu={{ 
+                    items: languageMenuItems, 
+                    onClick: handleLanguageChange 
+                  }} 
+                  trigger={['click']} 
+                  placement="bottomRight"
+                >
                   <Button 
                     type="text" 
                     icon={<Globe size={isScrolled ? 16 : 18} />} 
@@ -364,7 +385,7 @@ export default function MainHeader() {
                     }}
                     className="hover-scale"
                   >
-                    {!isScrolled && "VI"} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
+                    {!isScrolled && (i18n.language === "en" ? "EN" : "VI")} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
                   </Button>
                 </Dropdown>
               </Col>
@@ -533,7 +554,7 @@ export default function MainHeader() {
                       }}
                       className="hover-scale"
                     >
-                      Đăng Nhập
+                      {t("login")}
                     </Link>
                   </div>
                 )}

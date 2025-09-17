@@ -1,23 +1,19 @@
-const User = require("../models/user.model");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
-const dotenv = require("dotenv");
-const { OAuth2Client } = require("google-auth-library");
+// controllers/user.controller.js
+import User from "../models/user.model.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { Op } from "sequelize";
+import dotenv from "dotenv";
+import { OAuth2Client } from "google-auth-library";
+
 dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
- * All functions to Authentication
  * 1. Login with Google
- * @param {*} req
- * @param {*} res
- * @returns
  */
-
-// 1. Login with Google
-exports.loginWithGoogle = async (req, res) => {
+export const loginWithGoogle = async (req, res) => {
   try {
     const { idToken } = req.body;
     const ticket = await client.verifyIdToken({
@@ -29,7 +25,7 @@ exports.loginWithGoogle = async (req, res) => {
     const name = payload.name;
     const picture = payload.picture;
 
-    // Tách họ tên, đảm bảo không lỗi nếu chỉ có 1 từ
+    // Tách họ tên
     let firstName = "", lastName = "";
     if (name) {
       const nameParts = name.trim().split(" ");
@@ -41,7 +37,7 @@ exports.loginWithGoogle = async (req, res) => {
     let user = await User.findOne({ where: { email } });
 
     if (!user) {
-      // Nếu chưa có user → tạo mới (đăng ký)
+      // Nếu chưa có user → tạo mới
       user = await User.create({
         username: email.split("@")[0],
         firstname: firstName,
@@ -49,11 +45,11 @@ exports.loginWithGoogle = async (req, res) => {
         lastname: lastName,
         email,
         phone: null,
-        passwordHash: "", // vì bỏ email/password
+        passwordHash: "", // không dùng mật khẩu
         avatarImg: picture || null,
       });
     } else {
-      // Nếu đã có user, cập nhật avatar mới nếu khác avatar hiện tại
+      // Nếu đã có user, cập nhật avatar nếu cần
       if (picture && user.avatarImg !== picture) {
         user.avatarImg = picture;
         await user.save();
@@ -84,45 +80,35 @@ exports.loginWithGoogle = async (req, res) => {
   }
 };
 
-
 /**
- * All functions to manage user (profile, list users, etc.)
- * 1. Get user profile
- * 2. Get all users (using for admin)
- * 3. Update user profile
- * 4. Deactivate user account
-
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * 2. Get user profile
  */
-
-// 1. Get user profile
-exports.getUserProfile = async (req, res) => {
-  const userId = req.user.id; // Lấy userId từ token đã xác thực
+export const getUserProfile = async (req, res) => {
+  const userId = req.user.id; // lấy từ token đã xác thực
 
   try {
-    // Tìm người dùng theo ID
     const user = await User.findByPk(userId, {
-      attributes: { exclude: ["passwordHash"] }, // Không trả về mật khẩu
+      attributes: { exclude: ["passwordHash"] },
     });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({user});
   } catch (error) {
     console.error("❌ Error fetching user profile:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// 2. Get all users (using for admin)
-exports.getAllUsers = async (req, res) => {
+/**
+ * 3. Get all users (for admin)
+ */
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: { exclude: ["passwordHash"] }, // Không trả về mật khẩu
+      attributes: { exclude: ["passwordHash"] },
     });
 
     res.status(200).json(users);

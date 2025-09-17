@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../config/db");
+// models/province.model.js
+import { DataTypes } from "sequelize";
+import {sequelize} from "../config/db.js";
 
 const Province = sequelize.define(
   "Province",
@@ -17,8 +18,8 @@ const Province = sequelize.define(
   },
   {
     tableName: "provinces",
-    timestamps: false,
+    timestamps: false, // không có createdAt, updatedAt
   }
 );
 
-module.exports = Province;
+export default Province;

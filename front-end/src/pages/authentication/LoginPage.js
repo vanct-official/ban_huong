@@ -69,8 +69,13 @@ export default function LoginPage() {
             };
             setUser(userInfo);
           } else {
-            // Token không hợp lệ, clear localStorage
-            clearAuthData();
+            console.warn("API /me không phản hồi, dùng cached user");
+            const cachedUser = JSON.parse(userData);
+            if (cachedUser) {
+              setUser(cachedUser);
+            } else {
+              clearAuthData();
+            }
           }
         } catch (error) {
           // Nếu không có API, sử dụng dữ liệu từ localStorage
@@ -243,6 +248,10 @@ export default function LoginPage() {
   };
 
   const handleHome = () => {
+    if(!user) {
+      notification.warning({message: "Vui lòng đăng nhập"});
+      return navigate("/login");
+    }
     navigate(user.role === "admin" ? "/admin" : "/");
   };
 
@@ -792,9 +801,10 @@ export default function LoginPage() {
         >
           <div>
             <Paragraph style={{ fontSize: "16px", lineHeight: "1.6" }}>
-              Chào mừng bạn đến với <strong>Bản Hương</strong> - nền tảng thương mại điện tử 
-              chuyên về tinh dầu và các sản phẩm thiên nhiên. Bằng cách sử dụng dịch vụ của chúng tôi, 
-              bạn đồng ý tuân thủ các điều khoản dưới đây.
+              Chào mừng bạn đến với <strong>Bản Hương</strong> - nền tảng thương
+              mại điện tử chuyên về tinh dầu và các sản phẩm thiên nhiên. Bằng
+              cách sử dụng dịch vụ của chúng tôi, bạn đồng ý tuân thủ các điều
+              khoản dưới đây.
             </Paragraph>
 
             <Divider />
@@ -803,52 +813,72 @@ export default function LoginPage() {
               1. Điều khoản sử dụng
             </Title>
             <Paragraph>
-              • Bạn phải từ 18 tuổi trở lên để sử dụng dịch vụ<br />
-              • Thông tin đăng ký phải chính xác và đầy đủ<br />
-              • Bạn chịu trách nhiệm về tất cả hoạt động trong tài khoản<br />
-              • Không được sử dụng dịch vụ cho mục đích bất hợp pháp
+              • Bạn phải từ 18 tuổi trở lên để sử dụng dịch vụ
+              <br />
+              • Thông tin đăng ký phải chính xác và đầy đủ
+              <br />
+              • Bạn chịu trách nhiệm về tất cả hoạt động trong tài khoản
+              <br />• Không được sử dụng dịch vụ cho mục đích bất hợp pháp
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               2. Sản phẩm và dịch vụ
             </Title>
             <Paragraph>
-              • Tất cả sản phẩm được bán đều là tinh dầu thiên nhiên chất lượng cao<br />
-              • Giá cả và thông tin sản phẩm có thể thay đổi mà không cần báo trước<br />
-              • Chúng tôi bảo lưu quyền từ chối hoặc hủy đơn hàng trong trường hợp cần thiết
+              • Tất cả sản phẩm được bán đều là tinh dầu thiên nhiên chất lượng
+              cao
+              <br />
+              • Giá cả và thông tin sản phẩm có thể thay đổi mà không cần báo
+              trước
+              <br />• Chúng tôi bảo lưu quyền từ chối hoặc hủy đơn hàng trong
+              trường hợp cần thiết
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               3. Thanh toán và giao hàng
             </Title>
             <Paragraph>
-              • Chấp nhận các phương thức thanh toán: thẻ tín dụng, chuyển khoản, COD<br />
-              • Giao hàng trong vòng 2-5 ngày làm việc<br />
-              • Phí giao hàng được tính theo khu vực và trọng lượng đơn hàng
+              • Chấp nhận các phương thức thanh toán: thẻ tín dụng, chuyển
+              khoản, COD
+              <br />
+              • Giao hàng trong vòng 2-5 ngày làm việc
+              <br />• Phí giao hàng được tính theo khu vực và trọng lượng đơn
+              hàng
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               4. Chính sách đổi trả
             </Title>
             <Paragraph>
-              • Đổi trả trong vòng 7 ngày kể từ ngày nhận hàng<br />
-              • Sản phẩm phải còn nguyên vẹn, chưa sử dụng<br />
-              • Chi phí vận chuyển đổi trả do khách hàng chi trả (trừ trường hợp lỗi từ shop)
+              • Đổi trả trong vòng 7 ngày kể từ ngày nhận hàng
+              <br />
+              • Sản phẩm phải còn nguyên vẹn, chưa sử dụng
+              <br />• Chi phí vận chuyển đổi trả do khách hàng chi trả (trừ
+              trường hợp lỗi từ shop)
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               5. Trách nhiệm và giới hạn
             </Title>
             <Paragraph>
-              • Bản Hương không chịu trách nhiệm về các phản ứng dị ứng cá nhân<br />
-              • Khách hàng cần đọc kỹ thành phần và hướng dẫn sử dụng<br />
-              • Tham khảo ý kiến bác sĩ trước khi sử dụng nếu có vấn đề sức khỏe
+              • Bản Hương không chịu trách nhiệm về các phản ứng dị ứng cá nhân
+              <br />
+              • Khách hàng cần đọc kỹ thành phần và hướng dẫn sử dụng
+              <br />• Tham khảo ý kiến bác sĩ trước khi sử dụng nếu có vấn đề
+              sức khỏe
             </Paragraph>
 
             <Divider />
 
-            <Paragraph style={{ textAlign: "center", fontStyle: "italic", color: "#666" }}>
-              Điều khoản có hiệu lực từ ngày 01/01/2024 và có thể được cập nhật bất cứ lúc nào.
+            <Paragraph
+              style={{
+                textAlign: "center",
+                fontStyle: "italic",
+                color: "#666",
+              }}
+            >
+              Điều khoản có hiệu lực từ ngày 01/01/2024 và có thể được cập nhật
+              bất cứ lúc nào.
               <br />
               Để biết thêm chi tiết, vui lòng liên hệ: support@banhuong.com
             </Paragraph>
@@ -867,7 +897,11 @@ export default function LoginPage() {
           open={privacyModalVisible}
           onCancel={handlePrivacyModalClose}
           footer={[
-            <Button key="close" type="primary" onClick={handlePrivacyModalClose}>
+            <Button
+              key="close"
+              type="primary"
+              onClick={handlePrivacyModalClose}
+            >
               Đã hiểu
             </Button>,
           ]}
@@ -877,8 +911,9 @@ export default function LoginPage() {
         >
           <div>
             <Paragraph style={{ fontSize: "16px", lineHeight: "1.6" }}>
-              Tại <strong>Bản Hương</strong>, chúng tôi cam kết bảo vệ thông tin cá nhân của bạn. 
-              Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ dữ liệu của bạn.
+              Tại <strong>Bản Hương</strong>, chúng tôi cam kết bảo vệ thông tin
+              cá nhân của bạn. Chính sách này giải thích cách chúng tôi thu
+              thập, sử dụng và bảo vệ dữ liệu của bạn.
             </Paragraph>
 
             <Divider />
@@ -887,100 +922,145 @@ export default function LoginPage() {
               1. Thông tin chúng tôi thu thập
             </Title>
             <Paragraph>
-              <strong>Thông tin cá nhân:</strong><br />
-              • Họ tên, email, số điện thoại<br />
-              • Địa chỉ giao hàng và thanh toán<br />
-              • Thông tin đăng nhập Google (nếu sử dụng)<br />
-              • Lịch sử mua hàng và sở thích sản phẩm<br /><br />
-
-              <strong>Thông tin kỹ thuật:</strong><br />
-              • Địa chỉ IP, loại thiết bị, trình duyệt<br />
-              • Cookie và dữ liệu phiên làm việc<br />
-              • Thông tin tương tác với website
+              <strong>Thông tin cá nhân:</strong>
+              <br />
+              • Họ tên, email, số điện thoại
+              <br />
+              • Địa chỉ giao hàng và thanh toán
+              <br />
+              • Thông tin đăng nhập Google (nếu sử dụng)
+              <br />
+              • Lịch sử mua hàng và sở thích sản phẩm
+              <br />
+              <br />
+              <strong>Thông tin kỹ thuật:</strong>
+              <br />
+              • Địa chỉ IP, loại thiết bị, trình duyệt
+              <br />
+              • Cookie và dữ liệu phiên làm việc
+              <br />• Thông tin tương tác với website
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               2. Mục đích sử dụng thông tin
             </Title>
             <Paragraph>
-              • <strong>Xử lý đơn hàng:</strong> Xác nhận, đóng gói và giao hàng<br />
-              • <strong>Chăm sóc khách hàng:</strong> Hỗ trợ, giải đáp thắc mắc<br />
-              • <strong>Marketing:</strong> Gửi thông tin khuyến mãi, sản phẩm mới (với sự đồng ý)<br />
-              • <strong>Cải thiện dịch vụ:</strong> Phân tích hành vi để nâng cao trải nghiệm<br />
-              • <strong>Bảo mật:</strong> Phòng chống gian lận, bảo vệ tài khoản
+              • <strong>Xử lý đơn hàng:</strong> Xác nhận, đóng gói và giao hàng
+              <br />• <strong>Chăm sóc khách hàng:</strong> Hỗ trợ, giải đáp
+              thắc mắc
+              <br />• <strong>Marketing:</strong> Gửi thông tin khuyến mãi, sản
+              phẩm mới (với sự đồng ý)
+              <br />• <strong>Cải thiện dịch vụ:</strong> Phân tích hành vi để
+              nâng cao trải nghiệm
+              <br />• <strong>Bảo mật:</strong> Phòng chống gian lận, bảo vệ tài
+              khoản
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               3. Chia sẻ thông tin
             </Title>
             <Paragraph>
-              <strong>Chúng tôi KHÔNG bán thông tin cá nhân của bạn.</strong><br /><br />
-              
-              <strong>Chia sẻ có giới hạn với:</strong><br />
-              • <strong>Đối tác vận chuyển:</strong> Để giao hàng (chỉ thông tin cần thiết)<br />
-              • <strong>Cổng thanh toán:</strong> Xử lý giao dịch an toàn<br />
-              • <strong>Nhà cung cấp dịch vụ:</strong> Email marketing, phân tích dữ liệu<br />
-              • <strong>Cơ quan pháp luật:</strong> Khi có yêu cầu hợp pháp
+              <strong>Chúng tôi KHÔNG bán thông tin cá nhân của bạn.</strong>
+              <br />
+              <br />
+              <strong>Chia sẻ có giới hạn với:</strong>
+              <br />• <strong>Đối tác vận chuyển:</strong> Để giao hàng (chỉ
+              thông tin cần thiết)
+              <br />• <strong>Cổng thanh toán:</strong> Xử lý giao dịch an toàn
+              <br />• <strong>Nhà cung cấp dịch vụ:</strong> Email marketing,
+              phân tích dữ liệu
+              <br />• <strong>Cơ quan pháp luật:</strong> Khi có yêu cầu hợp
+              pháp
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               4. Bảo mật dữ liệu
             </Title>
             <Paragraph>
-              • <strong>Mã hóa SSL:</strong> Bảo vệ dữ liệu truyền tải<br />
-              • <strong>Firewall:</strong> Ngăn chặn truy cập trái phép<br />
-              • <strong>Backup định kỳ:</strong> Phòng ngừa mất dữ liệu<br />
-              • <strong>Kiểm soát truy cập:</strong> Chỉ nhân viên được ủy quyền mới có thể truy cập<br />
-              • <strong>Đào tạo bảo mật:</strong> Nhân viên được đào tạo về bảo mật thông tin
+              • <strong>Mã hóa SSL:</strong> Bảo vệ dữ liệu truyền tải
+              <br />• <strong>Firewall:</strong> Ngăn chặn truy cập trái phép
+              <br />• <strong>Backup định kỳ:</strong> Phòng ngừa mất dữ liệu
+              <br />• <strong>Kiểm soát truy cập:</strong> Chỉ nhân viên được ủy
+              quyền mới có thể truy cập
+              <br />• <strong>Đào tạo bảo mật:</strong> Nhân viên được đào tạo
+              về bảo mật thông tin
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               5. Quyền của bạn
             </Title>
             <Paragraph>
-              • <strong>Truy cập:</strong> Xem thông tin cá nhân chúng tôi lưu trữ<br />
-              • <strong>Chỉnh sửa:</strong> Cập nhật thông tin cá nhân<br />
-              • <strong>Xóa:</strong> Yêu cầu xóa tài khoản và dữ liệu<br />
-              • <strong>Từ chối marketing:</strong> Hủy đăng ký nhận email quảng cáo<br />
-              • <strong>Di chuyển dữ liệu:</strong> Xuất dữ liệu cá nhân dạng file
+              • <strong>Truy cập:</strong> Xem thông tin cá nhân chúng tôi lưu
+              trữ
+              <br />• <strong>Chỉnh sửa:</strong> Cập nhật thông tin cá nhân
+              <br />• <strong>Xóa:</strong> Yêu cầu xóa tài khoản và dữ liệu
+              <br />• <strong>Từ chối marketing:</strong> Hủy đăng ký nhận email
+              quảng cáo
+              <br />• <strong>Di chuyển dữ liệu:</strong> Xuất dữ liệu cá nhân
+              dạng file
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               6. Cookie và công nghệ theo dõi
             </Title>
             <Paragraph>
-              • <strong>Cookie cần thiết:</strong> Đảm bảo website hoạt động<br />
-              • <strong>Cookie phân tích:</strong> Hiểu cách sử dụng website<br />
-              • <strong>Cookie marketing:</strong> Hiển thị quảng cáo phù hợp<br />
-              • <strong>Quản lý cookie:</strong> Bạn có thể tắt cookie trong trình duyệt
+              • <strong>Cookie cần thiết:</strong> Đảm bảo website hoạt động
+              <br />• <strong>Cookie phân tích:</strong> Hiểu cách sử dụng
+              website
+              <br />• <strong>Cookie marketing:</strong> Hiển thị quảng cáo phù
+              hợp
+              <br />• <strong>Quản lý cookie:</strong> Bạn có thể tắt cookie
+              trong trình duyệt
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               7. Thời gian lưu trữ
             </Title>
             <Paragraph>
-              • <strong>Tài khoản hoạt động:</strong> Lưu trữ cho đến khi bạn xóa tài khoản<br />
-              • <strong>Lịch sử đơn hàng:</strong> 5 năm (theo quy định pháp luật)<br />
-              • <strong>Dữ liệu marketing:</strong> 2 năm hoặc đến khi bạn hủy đăng ký<br />
-              • <strong>Log hệ thống:</strong> 12 tháng
+              • <strong>Tài khoản hoạt động:</strong> Lưu trữ cho đến khi bạn
+              xóa tài khoản
+              <br />• <strong>Lịch sử đơn hàng:</strong> 5 năm (theo quy định
+              pháp luật)
+              <br />• <strong>Dữ liệu marketing:</strong> 2 năm hoặc đến khi bạn
+              hủy đăng ký
+              <br />• <strong>Log hệ thống:</strong> 12 tháng
             </Paragraph>
 
             <Title level={4} style={{ color: "#166534" }}>
               8. Liên hệ về bảo mật
             </Title>
-            <Paragraph style={{ background: "#f8f9fa", padding: "16px", borderRadius: "8px" }}>
-              Nếu có thắc mắc về chính sách bảo mật hoặc muốn thực hiện quyền của mình:<br /><br />
-              📧 <strong>Email:</strong> privacy@banhuong.com<br />
-              📞 <strong>Hotline:</strong> 1900 888 999<br />
-              📍 <strong>Địa chỉ:</strong> Số 123 Đường ABC, Quận 1, TP.HCM<br />
+            <Paragraph
+              style={{
+                background: "#f8f9fa",
+                padding: "16px",
+                borderRadius: "8px",
+              }}
+            >
+              Nếu có thắc mắc về chính sách bảo mật hoặc muốn thực hiện quyền
+              của mình:
+              <br />
+              <br />
+              📧 <strong>Email:</strong> privacy@banhuong.com
+              <br />
+              📞 <strong>Hotline:</strong> 1900 888 999
+              <br />
+              📍 <strong>Địa chỉ:</strong> Số 123 Đường ABC, Quận 1, TP.HCM
+              <br />
               🕒 <strong>Giờ hỗ trợ:</strong> 8:00 - 22:00 (Thứ 2 - CN)
             </Paragraph>
 
             <Divider />
 
-            <Paragraph style={{ textAlign: "center", fontStyle: "italic", color: "#666" }}>
-              Chính sách có hiệu lực từ ngày 01/01/2024. 
-              Chúng tôi có thể cập nhật chính sách này và sẽ thông báo cho bạn về các thay đổi quan trọng.
+            <Paragraph
+              style={{
+                textAlign: "center",
+                fontStyle: "italic",
+                color: "#666",
+              }}
+            >
+              Chính sách có hiệu lực từ ngày 01/01/2024. Chúng tôi có thể cập
+              nhật chính sách này và sẽ thông báo cho bạn về các thay đổi quan
+              trọng.
               <br />
               <strong>Lần cập nhật cuối:</strong> 15/08/2024
             </Paragraph>
