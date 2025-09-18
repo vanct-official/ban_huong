@@ -4,7 +4,9 @@ import passport from "../config/passportConfig.js";
 import jwt from "jsonwebtoken";
 import {
   getUserProfile,
-  loginWithGoogle
+  loginWithGoogle,
+  updateMyProfile,
+  updateUserProfile,
 } from "../controllers/user.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js"; // Thêm dòng này
 import User from "../models/user.model.js"; // Thêm dòng này
@@ -43,8 +45,17 @@ router.get(
   }
 );
 
-
+// 3. Lấy thông tin user hiện tại
 router.get("/me", verifyToken, getUserProfile);
+
+// 5. Cập nhật thông tin user hiện tại
+router.put("/me", verifyToken, updateMyProfile);
+
+// 4. Cập nhật thông tin user
+router.put("/:id", updateUserProfile);
+
+
+
 
 
 export default router;

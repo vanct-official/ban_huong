@@ -2,23 +2,41 @@
   "profile": "Thông tin cá nhân",
   "login": "Đăng nhập",
   "logout": "Đăng xuất",
+  "loginSuccessfully": "Đăng nhập thành công!",
+  "returnHome": "Về Trang chủ",
+
   "id": "Mã số",
   "email": "Email",
   "phone": "Số điện thoại",
   "notUpdated": "Chưa cập nhật",
+
   "language": "Ngôn ngữ",
   "changeLanguage": "Thay đổi ngôn ngữ",
+
   "welcome": "Xin chào, {{name}}!",
   "personalInfo": "Thông tin cá nhân",
   "loading": "Đang tải...",
   "error": "Lỗi",
   "noData": "Không có dữ liệu",
+
+  "editProfile": "Chỉnh sửa thông tin cá nhân",
+  "firstname": "Họ",
+  "middlename": "Tên đệm",
+  "lastname": "Tên",
+  "phone": "Số điện thoại",
+  "avatar": "Ảnh đại diện",
+  "save": "Lưu",
+  "cancel": "Hủy",
+  "updateFailed": "Cập nhật thất bại",
+
   "myOrders": "Đơn hàng của tôi",
   "wishlist": "Danh sách yêu thích",
   "bonusPoints": "Điểm thưởng",
   "settings": "Cài đặt",
   "support": "Hỗ trợ",
   "notifications": "Thông báo",
+
+  "banHuong": "Bản Hương",
   "welcomeToBanHuong": "Chào mừng đến với Bản Hương!",
   "websiteIntro": "Website chuyên cung cấp tinh dầu hoa hồi thiên nhiên – thư giãn, sống xanh, an toàn.",
   "updateProfile": "Cập nhật thông tin cá nhân"

@@ -23,6 +23,7 @@ import {
   GiftOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -31,6 +32,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [termsModalVisible, setTermsModalVisible] = useState(false);
   const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   // Kiểm tra user đã đăng nhập khi component mount
@@ -374,7 +376,7 @@ export default function LoginPage() {
                       fontWeight: 800,
                     }}
                   >
-                    Bản Hương
+                    {t("banHuong")}
                   </Title>
 
                   <Text
@@ -394,7 +396,7 @@ export default function LoginPage() {
                     level={2}
                     style={{ marginBottom: "8px", color: "#374151" }}
                   >
-                    Chào mừng bạn đến với Bản Hương!
+                    {t("welcomeToBanHuong")}
                   </Title>
                   <Text style={{ color: "#6b7280", fontSize: "16px" }}>
                     Đăng nhập để khám phá thế giới tinh dầu thiên nhiên
@@ -575,7 +577,7 @@ export default function LoginPage() {
                     <span style={{ color: "white", fontSize: "24px" }}>✓</span>
                   </div>
                   <Title level={3} style={{ color: "#166534", margin: 0 }}>
-                    Đăng nhập thành công!
+                    {t("loginSuccessfully")}
                   </Title>
                   <Text style={{ color: "#6b7280", fontSize: "14px" }}>
                     Chào mừng bạn trở lại Bản Hương
@@ -738,7 +740,7 @@ export default function LoginPage() {
                       boxShadow: "0 4px 20px rgba(22,101,52,0.3)",
                     }}
                   >
-                    Về trang chủ
+                    {t("returnHome")}
                   </Button>
 
                   <Button

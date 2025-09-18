@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Input, Button, Dropdown, Menu, Row, Col, Badge, Avatar, notification, Divider } from "antd";
+import { Input, Button, Dropdown, Row, Col, Badge, Avatar, notification, Drawer, Divider } from "antd";
 import { 
   DownOutlined, 
   SearchOutlined, 
@@ -10,7 +10,8 @@ import {
   ShoppingOutlined,
   HeartOutlined,
   BellOutlined,
-  GiftOutlined
+  GiftOutlined,
+  MenuOutlined
 } from "@ant-design/icons";
 import { Bell, HelpCircle, Globe, Facebook, Instagram } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -21,6 +22,7 @@ export default function MainHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { t, i18n } = useTranslation();
 
@@ -266,6 +268,109 @@ export default function MainHeader() {
     }
   }, []);
 
+  // Responsive: detect mobile
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Drawer content for mobile
+  const drawerMenu = (
+    <div style={{ padding: 16 }}>
+      <div style={{ marginBottom: 24, textAlign: "center" }}>
+        <Link to="/" onClick={() => setDrawerOpen(false)}>
+          <img src="/image/BanHuong.png" alt="Logo" width={40} style={{ borderRadius: 8 }} />
+          <div style={{ fontWeight: 800, fontSize: 24, marginTop: 8, color: "#166534" }}>Bản Hương</div>
+        </Link>
+      </div>
+      <Divider />
+      <div style={{ marginBottom: 16 }}>
+        <Input
+          size="large"
+          placeholder="Tìm kiếm tinh dầu, hương liệu..."
+          className="search-input"
+          style={{
+            borderRadius: 12,
+            background: "rgba(255,255,255,0.9)",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+            fontSize: 16,
+            marginBottom: 8
+          }}
+          suffix={
+            <Button 
+              type="primary" 
+              icon={<SearchOutlined />} 
+              style={{
+                border: "none",
+                background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                borderRadius: 10,
+                height: 32,
+                width: 32,
+                boxShadow: "0 2px 8px rgba(22,101,52,0.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }} 
+            />
+          }
+        />
+      </div>
+      <Divider />
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Dropdown menu={{ items: languageMenuItems, onClick: handleLanguageChange }} trigger={['click']} placement="bottomLeft">
+          <Button icon={<Globe size={18} />} block>
+            {i18n.language === "en" ? "EN" : "VI"} <DownOutlined />
+          </Button>
+        </Dropdown>
+        <Link to="/cart" onClick={() => setDrawerOpen(false)}>
+          <Button icon={<ShoppingCartOutlined />} block>
+            {t("cart")} <Badge count={cartCount} style={{ backgroundColor: "#166534", marginLeft: 8 }} />
+          </Button>
+        </Link>
+        {user && (
+          <>
+            <Button icon={<UserOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/profile'; }}>
+              {t("profile")}
+            </Button>
+            <Button icon={<ShoppingOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/orders'; }}>
+              {t("myOrders")}
+            </Button>
+            <Button icon={<HeartOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/wishlist'; }}>
+              {t("wishlist")}
+            </Button>
+            <Button icon={<BellOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/notifications'; }}>
+              {t("notifications")}
+            </Button>
+            <Button icon={<GiftOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/rewards'; }}>
+              {t("bonusPoints")}
+            </Button>
+            <Button icon={<SettingOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/settings'; }}>
+              {t("settings")}
+            </Button>
+            <Button icon={<LogoutOutlined />} block danger onClick={() => { setDrawerOpen(false); handleLogout(); }}>
+              {t("logout")}
+            </Button>
+          </>
+        )}
+        {!user && (
+          <Link to="/login" onClick={() => setDrawerOpen(false)}>
+            <Button type="primary" block>
+              {t("login")}
+            </Button>
+          </Link>
+        )}
+      </div>
+      <Divider />
+      <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+        <a href="#" style={{ color: "#4267B2" }}><Facebook size={20} /></a>
+        <a href="#" style={{ color: "#E1306C" }}><Instagram size={20} /></a>
+        <Button type="text" icon={<HelpCircle size={20} />} onClick={() => { setDrawerOpen(false); window.location.href = '/help'; }} />
+      </div>
+    </div>
+  );
+
   return (
     <header 
       style={{ 
@@ -321,247 +426,273 @@ export default function MainHeader() {
             </Link>
           </Col>
 
-          {/* Search */}
-          <Col flex="auto">
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Input
-                size="large"
-                placeholder="Tìm kiếm tinh dầu, hương liệu..."
-                className="search-input"
+          {/* Hamburger for mobile */}
+          {isMobile ? (
+            <Col>
+              <Button
+                type="text"
+                icon={<MenuOutlined style={{ fontSize: 28, color: "#166534" }} />}
+                onClick={() => setDrawerOpen(true)}
                 style={{
-                  borderRadius: isScrolled ? 12 : 24,
-                  maxWidth: 520,
-                  margin: isScrolled ? "0 20px" : "0 32px",
-                  border: "2px solid transparent",
-                  background: "rgba(255,255,255,0.9)",
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                  fontSize: isScrolled ? 15 : 18,
-                  height: isScrolled ? 40 : 56,
-                  transition: "all 0.3s ease"
+                  borderRadius: 12,
+                  height: 44,
+                  width: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
                 }}
-                suffix={
-                  <Button 
-                    type="primary" 
-                    icon={<SearchOutlined />} 
-                    style={{
-                      border: "none",
-                      background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                      borderRadius: 10,
-                      height: isScrolled ? 28 : 40,
-                      width: isScrolled ? 28 : 40,
-                      boxShadow: "0 2px 8px rgba(22,101,52,0.3)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }} 
-                  />
-                }
               />
-            </div>
-          </Col>
+              <Drawer
+                title={null}
+                placement="right"
+                onClose={() => setDrawerOpen(false)}
+                open={drawerOpen}
+                width={300}
+                bodyStyle={{ padding: 0, background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)" }}
+                closeIcon={null}
+              >
+                {drawerMenu}
+              </Drawer>
+            </Col>
+          ) : (
+            // Desktop full menu
+            <Col flex="auto">
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Input
+                  size="large"
+                  placeholder="Tìm kiếm tinh dầu, hương liệu..."
+                  className="search-input"
+                  style={{
+                    borderRadius: isScrolled ? 12 : 24,
+                    maxWidth: 520,
+                    margin: isScrolled ? "0 20px" : "0 32px",
+                    border: "2px solid transparent",
+                    background: "rgba(255,255,255,0.9)",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                    fontSize: isScrolled ? 15 : 18,
+                    height: isScrolled ? 40 : 56,
+                    transition: "all 0.3s ease"
+                  }}
+                  suffix={
+                    <Button 
+                      type="primary" 
+                      icon={<SearchOutlined />} 
+                      style={{
+                        border: "none",
+                        background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                        borderRadius: 10,
+                        height: isScrolled ? 28 : 40,
+                        width: isScrolled ? 28 : 40,
+                        boxShadow: "0 2px 8px rgba(22,101,52,0.3)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }} 
+                    />
+                  }
+                />
+              </div>
+            </Col>
+          )}
 
           {/* Actions */}
-          <Col>
-            <Row align="middle" gutter={isScrolled ? 4 : 8}>
-              {/* Language */}
-              <Col>
-                <Dropdown 
-                  menu={{ 
-                    items: languageMenuItems, 
-                    onClick: handleLanguageChange 
-                  }} 
-                  trigger={['click']} 
-                  placement="bottomRight"
-                >
-                  <Button 
-                    type="text" 
-                    icon={<Globe size={isScrolled ? 16 : 18} />} 
-                    style={{ 
-                      color: "#166534", 
-                      borderRadius: 12, 
-                      height: isScrolled ? 32 : 40, 
-                      fontWeight: 500,
-                      transition: "all 0.2s ease"
-                    }}
-                    className="hover-scale"
-                  >
-                    {!isScrolled && (i18n.language === "en" ? "EN" : "VI")} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
-                  </Button>
-                </Dropdown>
-              </Col>
-
-              {/* Cart */}
-              <Col>
-                <Link to="/cart">
-                  <Badge 
-                    count={cartCount} 
-                    size="small" 
-                    style={{ 
-                      backgroundColor: "#166534", 
-                      boxShadow: "0 2px 8px rgba(22,101,52,0.4)" 
-                    }}
+          {!isMobile && (
+            <Col>
+              <Row align="middle" gutter={isScrolled ? 4 : 8}>
+                {/* Language */}
+                <Col>
+                  <Dropdown 
+                    menu={{ 
+                      items: languageMenuItems, 
+                      onClick: handleLanguageChange 
+                    }} 
+                    trigger={['click']} 
+                    placement="bottomRight"
                   >
                     <Button 
                       type="text" 
-                      icon={<ShoppingCartOutlined style={{ fontSize: isScrolled ? 16 : 20 }} />} 
+                      icon={<Globe size={isScrolled ? 16 : 18} />} 
                       style={{ 
                         color: "#166534", 
                         borderRadius: 12, 
                         height: isScrolled ? 32 : 40, 
-                        width: isScrolled ? 32 : 40,
-                        transition: "all 0.2s ease"
-                      }}
-                      className="hover-scale"
-                    />
-                  </Badge>
-                </Link>
-              </Col>
-
-              {/* Notifications / Help / Social - Only show when not scrolled */}
-              {!isScrolled && (
-                <>
-                  {user && (
-                    <Col>
-                      <Badge dot={false} size="small">
-                        <Button 
-                          type="text" 
-                          icon={<Bell size={18} />} 
-                          style={{ 
-                            color: "#6b7280", 
-                            borderRadius: 12, 
-                            height: 40, 
-                            width: 40 
-                          }}
-                          className="hover-scale"
-                          onClick={() => window.location.href = '/notifications'}
-                        />
-                      </Badge>
-                    </Col>
-                  )}
-                  
-                  <Col>
-                    <Button 
-                      type="text" 
-                      icon={<HelpCircle size={18} />} 
-                      style={{ 
-                        color: "#6b7280", 
-                        borderRadius: 12, 
-                        height: 40, 
-                        width: 40 
-                      }}
-                      className="hover-scale"
-                      onClick={() => window.location.href = '/help'}
-                    />
-                  </Col>
-                  
-                  <Col>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <Link 
-                        to="#" 
-                        style={{ 
-                          color: "#4267B2", 
-                          padding: 8, 
-                          borderRadius: 10, 
-                          display: "flex",
-                          transition: "transform 0.2s ease"
-                        }}
-                        className="hover-scale"
-                      >
-                        <Facebook size={18} />
-                      </Link>
-                      <Link 
-                        to="#" 
-                        style={{ 
-                          color: "#E1306C", 
-                          padding: 8, 
-                          borderRadius: 10, 
-                          display: "flex",
-                          transition: "transform 0.2s ease"
-                        }}
-                        className="hover-scale"
-                      >
-                        <Instagram size={18} />
-                      </Link>
-                    </div>
-                  </Col>
-                </>
-              )}
-
-              {/* Auth / User */}
-              <Col>
-                {user ? (
-                  <Dropdown 
-                    menu={{ items: userMenuItems }} 
-                    placement="bottomRight" 
-                    trigger={['click']}
-                    overlayStyle={{ marginTop: 8 }}
-                  >
-                    <Button 
-                      type="text" 
-                      style={{ 
-                        display: "flex", 
-                        alignItems: "center", 
-                        gap: isScrolled ? 6 : 8,
-                        height: isScrolled ? 32 : 40,
-                        padding: isScrolled ? "0 8px" : "0 12px",
-                        borderRadius: 12,
-                        background: "rgba(22,101,52,0.05)",
-                        border: "1px solid rgba(22,101,52,0.1)",
+                        fontWeight: 500,
                         transition: "all 0.2s ease"
                       }}
                       className="hover-scale"
                     >
-                      <Avatar 
-                        src={user.avatar} 
-                        size={isScrolled ? 24 : 32} 
-                        icon={<UserOutlined />}
-                        style={{ 
-                          border: "2px solid #fff",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
-                        }}
-                      />
-                      {!isScrolled && (
-                        <span style={{ 
-                          fontWeight: 500,
-                          color: "#166534",
-                          maxWidth: 100,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap"
-                        }}>
-                          {user.displayName}
-                        </span>
-                      )}
-                      <DownOutlined style={{ 
-                        fontSize: isScrolled ? 10 : 12,
-                        color: "#166534"
-                      }} />
+                      {!isScrolled && (i18n.language === "en" ? "EN" : "VI")} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
                     </Button>
                   </Dropdown>
-                ) : (
-                  <div style={{ display: "flex", gap: isScrolled ? 8 : 12, alignItems: "center" }}>
-                    <Link 
-                      to="/login" 
-                      style={{
-                        color: "#fff",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        padding: isScrolled ? "6px 12px" : "8px 18px",
-                        borderRadius: 12,
-                        background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                        boxShadow: "0 2px 12px rgba(22,101,52,0.3)",
-                        transition: "all 0.2s ease"
+                </Col>
+                {/* Cart */}
+                <Col>
+                  <Link to="/cart">
+                    <Badge 
+                      count={cartCount} 
+                      size="small" 
+                      style={{ 
+                        backgroundColor: "#166534", 
+                        boxShadow: "0 2px 8px rgba(22,101,52,0.4)" 
                       }}
-                      className="hover-scale"
                     >
-                      {t("login")}
-                    </Link>
-                  </div>
+                      <Button 
+                        type="text" 
+                        icon={<ShoppingCartOutlined style={{ fontSize: isScrolled ? 16 : 20 }} />} 
+                        style={{ 
+                          color: "#166534", 
+                          borderRadius: 12, 
+                          height: isScrolled ? 32 : 40, 
+                          width: isScrolled ? 32 : 40,
+                          transition: "all 0.2s ease"
+                        }}
+                        className="hover-scale"
+                      />
+                    </Badge>
+                  </Link>
+                </Col>
+                {/* Notifications / Help / Social - Only show when not scrolled */}
+                {!isScrolled && (
+                  <>
+                    {user && (
+                      <Col>
+                        <Badge dot={false} size="small">
+                          <Button 
+                            type="text" 
+                            icon={<Bell size={18} />} 
+                            style={{ 
+                              color: "#6b7280", 
+                              borderRadius: 12, 
+                              height: 40, 
+                              width: 40 
+                            }}
+                            className="hover-scale"
+                            onClick={() => window.location.href = '/notifications'}
+                          />
+                        </Badge>
+                      </Col>
+                    )}
+                    <Col>
+                      <Button 
+                        type="text" 
+                        icon={<HelpCircle size={18} />} 
+                        style={{ 
+                          color: "#6b7280", 
+                          borderRadius: 12, 
+                          height: 40, 
+                          width: 40 
+                        }}
+                        className="hover-scale"
+                        onClick={() => window.location.href = '/help'}
+                      />
+                    </Col>
+                    <Col>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <Link 
+                          to="#" 
+                          style={{ 
+                            color: "#4267B2", 
+                            padding: 8, 
+                            borderRadius: 10, 
+                            display: "flex",
+                            transition: "transform 0.2s ease"
+                          }}
+                          className="hover-scale"
+                        >
+                          <Facebook size={18} />
+                        </Link>
+                        <Link 
+                          to="#" 
+                          style={{ 
+                            color: "#E1306C", 
+                            padding: 8, 
+                            borderRadius: 10, 
+                            display: "flex",
+                            transition: "transform 0.2s ease"
+                          }}
+                          className="hover-scale"
+                        >
+                          <Instagram size={18} />
+                        </Link>
+                      </div>
+                    </Col>
+                  </>
                 )}
-              </Col>
-
-            </Row>
-          </Col>
+                {/* Auth / User */}
+                <Col>
+                  {user ? (
+                    <Dropdown 
+                      menu={{ items: userMenuItems }} 
+                      placement="bottomRight" 
+                      trigger={['click']}
+                      overlayStyle={{ marginTop: 8 }}
+                    >
+                      <Button 
+                        type="text" 
+                        style={{ 
+                          display: "flex", 
+                          alignItems: "center", 
+                          gap: isScrolled ? 6 : 8,
+                          height: isScrolled ? 32 : 40,
+                          padding: isScrolled ? "0 8px" : "0 12px",
+                          borderRadius: 12,
+                          background: "rgba(22,101,52,0.05)",
+                          border: "1px solid rgba(22,101,52,0.1)",
+                          transition: "all 0.2s ease"
+                        }}
+                        className="hover-scale"
+                      >
+                        <Avatar 
+                          src={user.avatar} 
+                          size={isScrolled ? 24 : 32} 
+                          icon={<UserOutlined />}
+                          style={{ 
+                            border: "2px solid #fff",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+                          }}
+                        />
+                        {!isScrolled && (
+                          <span style={{ 
+                            fontWeight: 500,
+                            color: "#166534",
+                            maxWidth: 100,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                          }}>
+                            {user.displayName}
+                          </span>
+                        )}
+                        <DownOutlined style={{ 
+                          fontSize: isScrolled ? 10 : 12,
+                          color: "#166534"
+                        }} />
+                      </Button>
+                    </Dropdown>
+                  ) : (
+                    <div style={{ display: "flex", gap: isScrolled ? 8 : 12, alignItems: "center" }}>
+                      <Link 
+                        to="/login" 
+                        style={{
+                          color: "#fff",
+                          fontWeight: 600,
+                          textDecoration: "none",
+                          padding: isScrolled ? "6px 12px" : "8px 18px",
+                          borderRadius: 12,
+                          background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                          boxShadow: "0 2px 12px rgba(22,101,52,0.3)",
+                          transition: "all 0.2s ease"
+                        }}
+                        className="hover-scale"
+                      >
+                        {t("login")}
+                      </Link>
+                    </div>
+                  )}
+                </Col>
+              </Row>
+            </Col>
+          )}
         </Row>
       </div>
 
