@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Layout, 
-  Menu, 
-  Avatar, 
-  Typography, 
-  Badge, 
-  Button,
+import {
+  Layout,
+  Menu,
+  Avatar,
+  Typography,
   Space,
-  Tooltip,
   Dropdown,
-  Modal,
-  Form,
-  Input,
-  Switch,
-  Select,
-  message,
-  notification
+  Button,
+  Tooltip,
+  Drawer,
 } from 'antd';
 import {
   DashboardOutlined,
@@ -25,128 +18,56 @@ import {
   TeamOutlined,
   BarChartOutlined,
   SettingOutlined,
-  BellOutlined,
   GiftOutlined,
-  PieChartOutlined,
-  LineChartOutlined,
-  HomeOutlined,
-  QuestionCircleOutlined,
   LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   EditOutlined,
   KeyOutlined,
-  SunOutlined,
-  MoonOutlined,
-  TranslationOutlined,
-  CheckCircleOutlined,
-  DownOutlined,
-  HeartOutlined
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
-const AdminSidebar = ({ collapsed, onCollapse, selectedKey = 'dashboard', onMenuSelect }) => {
-  const [openKeys, setOpenKeys] = useState(['products', 'users', 'orders', 'analytics']);
-  const [profileModalVisible, setProfileModalVisible] = useState(false);
-  const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+const menuItems = [
+  { key: 'dashboard', icon: <DashboardOutlined />, label: 'Tổng quan' },
+  { key: 'orders', icon: <ShoppingOutlined />, label: 'Đơn hàng' },
+  { key: 'products', icon: <AppstoreOutlined />, label: 'Sản phẩm' },
+  { key: 'users', icon: <TeamOutlined />, label: 'Người dùng' },
+  { key: 'analytics', icon: <BarChartOutlined />, label: 'Thống kê' },
+  { key: 'marketing', icon: <GiftOutlined />, label: 'Khuyến mãi' },
+  { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt' },
+];
+
+export default function AdminSidebar({
+  collapsed,
+  onCollapse,
+  selectedKey = 'dashboard',
+  onMenuSelect,
+}) {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    checkAuthStatus();
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    if (token) {
-      window.history.replaceState({}, document.title, window.location.pathname);
-      fetchUserFromToken(token);
-    }
-    const handleStorageChange = () => checkAuthStatus();
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    // Responsive: auto hide sidebar on mobile
+    const handleResize = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const fetchUserFromToken = async (token) => {
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (!data.user) {
-        localStorage.removeItem("user_data");
-        setUser(null);
-        return;
-      }
-      const userData = {
-        ...data.user,
-        avatar: data.user.avatarImg || data.user.avatar || data.user.picture ||
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  data.user.name || data.user.username || "User"
-                )}&background=166534&color=fff`,
-        displayName: data.user.name || data.user.username || 
-                     (data.user.email ? data.user.email.split("@")[0] : "User"),
-      };
-      localStorage.setItem("user_data", JSON.stringify(userData));
-      localStorage.setItem("google_token", token);
-      setUser(userData);
-    } catch (error) {
-      console.error('Error fetching user from token:', error);
-      localStorage.removeItem("user_data");
-      setUser(null);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    // Lấy user từ localStorage
+    const userData = localStorage.getItem("user_data");
+    if (userData) {
+      setUser(JSON.parse(userData));
     }
-  };
-
-  const checkAuthStatus = () => {
-    setIsLoading(true);
-    try {
-      const googleToken = localStorage.getItem("google_token");
-      const userData = localStorage.getItem("user_data");
-      if (googleToken && userData) {
-        const user = JSON.parse(userData);
-        setUser({
-          ...user,
-          avatar: user.picture || user.avatar || user.avatarImg ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    user.name || user.username || 'User'
-                  )}&background=166534&color=fff`,
-          displayName: user.name || user.username || user.email?.split('@')[0] || 'User',
-          role: user.role || 'User',
-          status: 'online',
-          lastLogin: new Date().toLocaleString('vi-VN'),
-          email_verified: user.email_verified || false
-        });
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error('Error checking auth status:', error);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
-    notification.success({
-      message: 'Đăng xuất thành công',
-      description: 'Hẹn gặp lại bạn!',
-      placement: 'topRight',
-      duration: 3,
-    });
-    if (window.location.pathname.includes('/profile') || 
-        window.location.pathname.includes('/admin') ||
-        window.location.pathname.includes('/dashboard')) {
-      window.location.href = '/';
-    }
+    window.location.href = "/";
   };
 
   const profileMenuItems = [
@@ -154,13 +75,13 @@ const AdminSidebar = ({ collapsed, onCollapse, selectedKey = 'dashboard', onMenu
       key: 'edit-profile',
       icon: <EditOutlined />,
       label: 'Chỉnh sửa thông tin',
-      onClick: () => setProfileModalVisible(true),
+      onClick: () => window.location.href = "/profile/edit",
     },
     {
       key: 'change-password',
       icon: <KeyOutlined />,
       label: 'Đổi mật khẩu',
-      onClick: () => setChangePasswordModalVisible(true),
+      onClick: () => window.location.href = "/profile/change-password",
     },
     {
       key: 'logout',
@@ -171,25 +92,132 @@ const AdminSidebar = ({ collapsed, onCollapse, selectedKey = 'dashboard', onMenu
     },
   ];
 
-  const menuItems = [
-    { key: 'dashboard', icon: <DashboardOutlined />, label: 'Tổng quan' },
-    { key: 'orders', icon: <ShoppingOutlined />, label: 'Quản lý đơn hàng' },
-    { key: 'products', icon: <AppstoreOutlined />, label: 'Quản lý sản phẩm' },
-    { key: 'users', icon: <TeamOutlined />, label: 'Quản lý người dùng' },
-    { key: 'analytics', icon: <BarChartOutlined />, label: 'Báo cáo & Thống kê' },
-    { key: 'marketing', icon: <GiftOutlined />, label: 'Marketing & Khuyến mãi' },
-    { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt hệ thống' },
-  ];
+  const sidebarContent = (
+    <>
+      <div style={{
+        padding: 20,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 14,
+        background: 'rgba(255,255,255,0.07)',
+        borderBottom: '1px solid #14532d22'
+      }}>
+        <img src="/image/BanHuong.png" alt="Bản Hương" style={{ width: 38, height: 38, borderRadius: 10 }} />
+        {!collapsed && (
+          <Title level={4} style={{
+            margin: 0,
+            color: '#fff',
+            fontWeight: 800,
+            letterSpacing: 1,
+            fontSize: 22,
+            background: "linear-gradient(135deg, #fff 0%, #a7f3d0 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text"
+          }}>
+            Bản Hương
+          </Title>
+        )}
+      </div>
+      {user && (
+        <div style={{
+          padding: collapsed ? "16px 0" : "16px",
+          textAlign: collapsed ? "center" : "left",
+          background: 'rgba(255,255,255,0.03)',
+          borderBottom: '1px solid #14532d22'
+        }}>
+          <Dropdown menu={{ items: profileMenuItems }} trigger={['click']} arrow>
+            <Space align="center" style={{ cursor: 'pointer', width: "100%", justifyContent: collapsed ? "center" : "flex-start" }}>
+              <Avatar size={48} src={user.avatar} icon={<UserOutlined />} />
+              {!collapsed && (
+                <div>
+                  <Text style={{ color: '#fff', fontWeight: 600, fontSize: 16 }}>{user.displayName}</Text>
+                  <div style={{ color: "#a7f3d0", fontSize: 13 }}>{user.role || "User"}</div>
+                </div>
+              )}
+            </Space>
+          </Dropdown>
+        </div>
+      )}
+      <Menu
+        mode="inline"
+        selectedKeys={[selectedKey]}
+        onClick={({ key }) => onMenuSelect?.(key)}
+        items={menuItems}
+        style={{
+          background: 'transparent',
+          border: 'none',
+          marginTop: 8,
+          fontWeight: 600,
+        }}
+        theme="dark"
+        inlineIndent={20}
+      />
+      <div style={{
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
+        padding: collapsed ? 8 : 16,
+        background: "rgba(255,255,255,0.04)",
+        borderTop: "1px solid #14532d22",
+        textAlign: collapsed ? "center" : "right"
+      }}>
+        <Tooltip title={collapsed ? "Mở rộng" : "Thu gọn"}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => onCollapse?.(!collapsed)}
+            style={{
+              color: "#fff",
+              fontSize: 20,
+              borderRadius: 8,
+              background: "rgba(22,101,52,0.15)"
+            }}
+          />
+        </Tooltip>
+      </div>
+    </>
+  );
 
-  const handleMenuClick = (item) => onMenuSelect?.(item.key);
-  const handleSubMenuOpenChange = (openKeys) => setOpenKeys(openKeys);
+  // Drawer for mobile
+  if (isMobile) {
+    return (
+      <>
+        <Button
+          type="primary"
+          icon={<MenuUnfoldOutlined />}
+          style={{
+            position: "fixed",
+            top: 18,
+            left: 18,
+            zIndex: 1100,
+            borderRadius: 8,
+            background: "#166534",
+            border: "none"
+          }}
+          onClick={() => setDrawerOpen(true)}
+        />
+        <Drawer
+          placement="left"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          width={240}
+          bodyStyle={{ padding: 0, background: "linear-gradient(180deg, #166534 0%, #15803d 100%)" }}
+          closable={false}
+        >
+          {sidebarContent}
+        </Drawer>
+      </>
+    );
+  }
 
+  // Sider for desktop
   return (
     <Sider
       trigger={null}
       collapsible
       collapsed={collapsed}
-      width={280}
+      width={240}
       style={{
         height: '100vh',
         position: 'fixed',
@@ -198,46 +226,12 @@ const AdminSidebar = ({ collapsed, onCollapse, selectedKey = 'dashboard', onMenu
         bottom: 0,
         zIndex: 1000,
         background: 'linear-gradient(180deg, #166534 0%, #15803d 100%)',
-        boxShadow: '4px 0 20px rgba(22,101,52,0.15)',
+        boxShadow: '4px 0 20px rgba(22,101,52,0.10)',
         overflowY: 'auto',
         overflowX: 'hidden'
       }}
     >
-      <div style={{ padding: '16px', background: 'rgba(255,255,255,0.1)' }}>
-        {!collapsed ? (
-          <Space align="center">
-            <img src="/image/BanHuong.png" alt="Bản Hương" style={{ width: 32, height: 32 }} />
-            <Title level={3} style={{ margin: 0, color: 'white' }}>Bản Hương</Title>
-          </Space>
-        ) : (
-          <img src="/image/BanHuong.png" alt="Bản Hương" style={{ width: 28, height: 28 }} />
-        )}
-      </div>
-
-      {user && (
-        <div style={{ padding: '16px', background: 'rgba(255,255,255,0.05)' }}>
-          <Dropdown menu={{ items: profileMenuItems }} trigger={['click']} arrow>
-            <Space align="center" style={{ cursor: 'pointer' }}>
-              <Avatar size={40} src={user.avatar} icon={<UserOutlined />} />
-              {!collapsed && <Text style={{ color: 'white' }}>{user.displayName}</Text>}
-            </Space>
-          </Dropdown>
-        </div>
-      )}
-
-      <Menu
-        mode="inline"
-        selectedKeys={[selectedKey]}
-        openKeys={openKeys}
-        onOpenChange={handleSubMenuOpenChange}
-        onClick={handleMenuClick}
-        items={menuItems}
-        style={{ background: 'transparent', border: 'none' }}
-        theme="dark"
-        inlineIndent={20}
-      />
+      {sidebarContent}
     </Sider>
   );
-};
-
-export default AdminSidebar;
+}
