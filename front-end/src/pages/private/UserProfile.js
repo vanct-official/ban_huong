@@ -11,8 +11,7 @@ import {
   Col,
   Divider,
 } from "antd";
-import MainHeader from "../../components/MainHeader";
-import Footer from "../../components/Footer";
+
 import {
   UserOutlined,
   MailOutlined,
@@ -92,7 +91,6 @@ const UserProfile = () => {
           background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
         }}
       >
-        <MainHeader />
         <div style={{ maxWidth: 500, margin: "40px auto" }}>
           <Alert
             type="error"
@@ -104,7 +102,6 @@ const UserProfile = () => {
             }}
           />
         </div>
-        <Footer />
       </div>
     );
 
@@ -116,7 +113,6 @@ const UserProfile = () => {
           background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
         }}
       >
-        <MainHeader />
         <div style={{ maxWidth: 500, margin: "40px auto" }}>
           <Alert
             type="warning"
@@ -127,7 +123,6 @@ const UserProfile = () => {
             }}
           />
         </div>
-        <Footer />
       </div>
     );
 
@@ -138,7 +133,6 @@ const UserProfile = () => {
         background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
       }}
     >
-      <MainHeader />
       <div style={{ padding: "40px 16px", maxWidth: 900, margin: "0 auto" }}>
         <Card
           style={{
@@ -259,7 +253,6 @@ const UserProfile = () => {
           </Row>
         </Card>
       </div>
-      <Footer />
     </div>
   );
 };

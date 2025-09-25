@@ -13,8 +13,6 @@ import {
   Tooltip,
 } from "antd";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
-import MainHeader from "../../components/MainHeader";
-import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -107,7 +105,6 @@ const EditUserProfile = () => {
           background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
         }}
       >
-        <MainHeader />
         <div style={{ maxWidth: 500, margin: "40px auto" }}>
           <Alert
             type="error"
@@ -119,14 +116,12 @@ const EditUserProfile = () => {
             }}
           />
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <>
-      <MainHeader />
       <div
         style={{
           minHeight: "100vh",
@@ -239,7 +234,6 @@ const EditUserProfile = () => {
           </Form>
         </Card>
       </div>
-      <Footer />
     </>
   );
 };
