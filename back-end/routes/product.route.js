@@ -2,7 +2,8 @@ import express from "express";
 import {
   getProducts,
   createProduct,
-  , searchProducts
+  searchProducts,
+  getProductsAdvanced,
 } from "../controllers/product.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
