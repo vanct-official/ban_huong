@@ -91,8 +91,7 @@ const EditUserProfile = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background:
-            "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
         }}
       >
         <Spin tip={t("loading")} size="large" />
@@ -105,8 +104,7 @@ const EditUserProfile = () => {
       <div
         style={{
           minHeight: "100vh",
-          background:
-            "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
         }}
       >
         <MainHeader />
@@ -132,8 +130,7 @@ const EditUserProfile = () => {
       <div
         style={{
           minHeight: "100vh",
-          background:
-            "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
           padding: "40px 0",
         }}
       >

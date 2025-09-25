@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Card, Avatar, Spin, Alert, Button, Typography, Space, Row, Col, Divider } from "antd";
+import {
+  Card,
+  Avatar,
+  Spin,
+  Alert,
+  Button,
+  Typography,
+  Space,
+  Row,
+  Col,
+  Divider,
+} from "antd";
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 import {
@@ -11,7 +22,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const { Title, Text } = Typography;
 
@@ -60,30 +71,37 @@ const UserProfile = () => {
 
   if (loading)
     return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)'
-      }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+        }}
+      >
         <Spin size="large" />
       </div>
     );
 
   if (error)
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)'
-      }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+        }}
+      >
         <MainHeader />
-        <div style={{ maxWidth: 500, margin: '40px auto' }}>
+        <div style={{ maxWidth: 500, margin: "40px auto" }}>
           <Alert
             type="error"
             message="⚠️ Error"
             description={error}
-            style={{ borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+            style={{
+              borderRadius: 12,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            }}
           />
         </div>
         <Footer />
@@ -92,16 +110,21 @@ const UserProfile = () => {
 
   if (!user)
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)'
-      }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+        }}
+      >
         <MainHeader />
-        <div style={{ maxWidth: 500, margin: '40px auto' }}>
+        <div style={{ maxWidth: 500, margin: "40px auto" }}>
           <Alert
             type="warning"
             message={t("userNotFound")}
-            style={{ borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+            style={{
+              borderRadius: 12,
+              boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            }}
           />
         </div>
         <Footer />
@@ -109,79 +132,101 @@ const UserProfile = () => {
     );
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)'
-    }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+      }}
+    >
       <MainHeader />
-      <div style={{ padding: '40px 16px', maxWidth: 900, margin: '0 auto' }}>
+      <div style={{ padding: "40px 16px", maxWidth: 900, margin: "0 auto" }}>
         <Card
           style={{
             borderRadius: 20,
-            boxShadow: '0 8px 32px rgba(60,60,120,0.10)',
-            border: 'none',
-            background: 'rgba(255,255,255,0.98)',
+            boxShadow: "0 8px 32px rgba(60,60,120,0.10)",
+            border: "none",
+            background: "rgba(255,255,255,0.98)",
             minHeight: 320,
           }}
           bodyStyle={{ padding: 0 }}
         >
           <Row gutter={[0, 0]} wrap align="middle">
             {/* Left: Avatar & Basic Info */}
-            <Col xs={24} md={8} style={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)',
-              borderRadius: '20px 0 0 20px',
-              minHeight: 320,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 32
-            }}>
+            <Col
+              xs={24}
+              md={8}
+              style={{
+                background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+                borderRadius: "20px 0 0 20px",
+                minHeight: 320,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 32,
+              }}
+            >
               <Avatar
                 size={100}
                 src={user.avatarImg}
                 icon={<UserOutlined />}
                 style={{
-                  border: '4px solid #fff',
+                  border: "4px solid #fff",
                   marginBottom: 18,
-                  boxShadow: '0 2px 8px rgba(60,60,120,0.10)'
+                  boxShadow: "0 2px 8px rgba(60,60,120,0.10)",
                 }}
               />
-              <Title level={3} style={{ color: '#fff', marginBottom: 0 }}>
+              <Title level={3} style={{ color: "#fff", marginBottom: 0 }}>
                 {user.firstname} {user.middlename} {user.lastname}
               </Title>
-              <Text style={{ color: '#e0e7ff', fontSize: 15 }}>
+              <Text style={{ color: "#e0e7ff", fontSize: 15 }}>
                 {user.email}
               </Text>
             </Col>
 
             {/* Right: Details & Actions */}
             <Col xs={24} md={16} style={{ padding: 32 }}>
-              <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                <Title level={4} style={{ marginBottom: 0 }}>{t("profile")}</Title>
-                <Divider style={{ margin: '8px 0 16px 0' }} />
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ width: "100%" }}
+              >
+                <Title level={4} style={{ marginBottom: 0 }}>
+                  {t("profile")}
+                </Title>
+                <Divider style={{ margin: "8px 0 16px 0" }} />
 
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                <Space
+                  direction="vertical"
+                  size="middle"
+                  style={{ width: "100%" }}
+                >
                   <Space>
-                    <IdcardOutlined style={{ color: '#6366f1', fontSize: 18 }} />
+                    <IdcardOutlined
+                      style={{ color: "#6366f1", fontSize: 18 }}
+                    />
                     <Text strong>ID:</Text>
                     <Text>#{user.id}</Text>
                   </Space>
                   <Space>
-                    <MailOutlined style={{ color: '#6366f1', fontSize: 18 }} />
+                    <MailOutlined style={{ color: "#6366f1", fontSize: 18 }} />
                     <Text strong>{t("email")}:</Text>
                     <Text>{user.email}</Text>
                   </Space>
                   <Space>
-                    <PhoneOutlined style={{ color: '#6366f1', fontSize: 18 }} />
+                    <PhoneOutlined style={{ color: "#6366f1", fontSize: 18 }} />
                     <Text strong>{t("phone")}:</Text>
                     <Text>
-                      {user.phone || <Text type="secondary" italic>{t("notUpdated")}</Text>}
+                      {user.phone || (
+                        <Text type="secondary" italic>
+                          {t("notUpdated")}
+                        </Text>
+                      )}
                     </Text>
                   </Space>
                 </Space>
 
-                <Divider style={{ margin: '16px 0' }} />
+                <Divider style={{ margin: "16px 0" }} />
 
                 <Space size="middle">
                   <Button
@@ -191,7 +236,7 @@ const UserProfile = () => {
                     style={{
                       borderRadius: 8,
                       fontWeight: 600,
-                      minWidth: 120
+                      minWidth: 120,
                     }}
                   >
                     {t("updateProfile")}
@@ -203,7 +248,7 @@ const UserProfile = () => {
                     style={{
                       borderRadius: 8,
                       fontWeight: 600,
-                      minWidth: 120
+                      minWidth: 120,
                     }}
                   >
                     {t("logout")}
