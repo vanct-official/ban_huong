@@ -10,13 +10,14 @@ import LoginPage from "./pages/authentication/LoginPage";
 import AdminPage from "./pages/private/admin/AdminPage";
 import UserProfile from "./pages/private/UserProfile";
 import EditUserProfile from "./pages/private/EditUserProfile";
-import ProductList from "./pages/ProductList";
+import ProductList from "./pages/public/ProductList";
+import ProductDetail from "./pages/public/ProductDetail";
+
+import AdminProductList from "./pages/private/admin/AdminProductList";
 
 function App() {
   return (
     <>
-      {/* Header luôn hiển thị */}
-      <MainHeader />
 
       {/* Nội dung thay đổi theo route */}
       <main style={{ minHeight: "80vh" }}>
@@ -30,11 +31,10 @@ function App() {
           <Route path="/profile/edit" element={<EditUserProfile />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/products" element={<ProductList />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/admin/products" element={<AdminProductList />} />
         </Routes>
       </main>
-
-      {/* Footer luôn hiển thị */}
-      <Footer />
     </>
   );
 }

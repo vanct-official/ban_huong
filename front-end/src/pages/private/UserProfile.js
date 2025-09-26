@@ -22,6 +22,8 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Footer from "../../components/Footer";
+import MainHeader from "../../components/MainHeader";
 
 const { Title, Text } = Typography;
 
@@ -33,6 +35,8 @@ const UserProfile = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    document.title = t("profile") + " - Bản Hương";
+
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("google_token");
@@ -127,6 +131,8 @@ const UserProfile = () => {
     );
 
   return (
+    <>
+    <MainHeader />
     <div
       style={{
         minHeight: "100vh",
@@ -254,6 +260,8 @@ const UserProfile = () => {
         </Card>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

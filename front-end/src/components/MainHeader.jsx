@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Button, Dropdown, Row, Col, Badge, Avatar, notification, Drawer, Divider } from "antd";
 import { 
   DownOutlined, 
@@ -23,6 +23,8 @@ export default function MainHeader() {
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
 
   const { t, i18n } = useTranslation();
 
@@ -159,6 +161,13 @@ export default function MainHeader() {
     localStorage.setItem("lang", key); // Lưu lại lựa chọn
   };
 
+  const handleHeaderSearch = (value) => {
+    if (value && value.trim() !== "") {
+      navigate(`/products?q=${encodeURIComponent(value.trim())}`);
+      setDrawerOpen(false); // đóng drawer nếu đang ở mobile
+    }
+  };
+
   const languageMenuItems = [
     { 
       key: "vi", 
@@ -286,37 +295,7 @@ export default function MainHeader() {
         </Link>
       </div>
       <Divider />
-      <div style={{ marginBottom: 16 }}>
-        <Input
-          size="large"
-          placeholder="Tìm kiếm tinh dầu, hương liệu..."
-          className="search-input"
-          style={{
-            borderRadius: 12,
-            background: "rgba(255,255,255,0.9)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-            fontSize: 16,
-            marginBottom: 8
-          }}
-          suffix={
-            <Button 
-              type="primary" 
-              icon={<SearchOutlined />} 
-              style={{
-                border: "none",
-                background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                borderRadius: 10,
-                height: 32,
-                width: 32,
-                boxShadow: "0 2px 8px rgba(22,101,52,0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }} 
-            />
-          }
-        />
-      </div>
+      {/* XÓA phần Input tìm kiếm ở đây */}
       <Divider />
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Dropdown menu={{ items: languageMenuItems, onClick: handleLanguageChange }} trigger={['click']} placement="bottomLeft">
@@ -457,41 +436,7 @@ export default function MainHeader() {
           ) : (
             // Desktop full menu
             <Col flex="auto">
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Input
-                  size="large"
-                  placeholder="Tìm kiếm tinh dầu, hương liệu..."
-                  className="search-input"
-                  style={{
-                    borderRadius: isScrolled ? 12 : 24,
-                    maxWidth: 520,
-                    margin: isScrolled ? "0 20px" : "0 32px",
-                    border: "2px solid transparent",
-                    background: "rgba(255,255,255,0.9)",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                    fontSize: isScrolled ? 15 : 18,
-                    height: isScrolled ? 40 : 56,
-                    transition: "all 0.3s ease"
-                  }}
-                  suffix={
-                    <Button 
-                      type="primary" 
-                      icon={<SearchOutlined />} 
-                      style={{
-                        border: "none",
-                        background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                        borderRadius: 10,
-                        height: isScrolled ? 28 : 40,
-                        width: isScrolled ? 28 : 40,
-                        boxShadow: "0 2px 8px rgba(22,101,52,0.3)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }} 
-                    />
-                  }
-                />
-              </div>
+              {/* XÓA toàn bộ phần Input tìm kiếm ở đây */}
             </Col>
           )}
 
@@ -549,6 +494,22 @@ export default function MainHeader() {
                         className="hover-scale"
                       />
                     </Badge>
+                  </Link>
+                </Col>
+                {/* Thêm nút Wishlist vào đây */}
+                <Col>
+                  <Link to="/wishlist">
+                    <Button
+                      type="text"
+                      icon={<HeartOutlined style={{ fontSize: isScrolled ? 16 : 20, color: "#dc2626" }} />}
+                      style={{
+                        borderRadius: 12,
+                        height: isScrolled ? 32 : 40,
+                        width: isScrolled ? 32 : 40,
+                        transition: "all 0.2s ease"
+                      }}
+                      className="hover-scale"
+                    />
                   </Link>
                 </Col>
                 {/* Notifications / Help / Social - Only show when not scrolled */}

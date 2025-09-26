@@ -15,6 +15,8 @@ import {
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import MainHeader from "../../components/MainHeader";
+import Footer from "../../components/Footer";
 
 const EditUserProfile = () => {
   const [form] = Form.useForm();
@@ -26,6 +28,8 @@ const EditUserProfile = () => {
 
   // 📌 Load profile từ API
   useEffect(() => {
+
+    document.title = t("editProfile") + " - Bản Hương";
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("google_token");
@@ -122,6 +126,7 @@ const EditUserProfile = () => {
 
   return (
     <>
+    <MainHeader />
       <div
         style={{
           minHeight: "100vh",
@@ -234,6 +239,7 @@ const EditUserProfile = () => {
           </Form>
         </Card>
       </div>
+      <Footer />
     </>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom"; // Thêm dòng này
 import {
   Layout,
   Menu,
@@ -30,13 +31,13 @@ const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 const menuItems = [
-  { key: 'dashboard', icon: <DashboardOutlined />, label: 'Tổng quan' },
-  { key: 'orders', icon: <ShoppingOutlined />, label: 'Đơn hàng' },
-  { key: 'products', icon: <AppstoreOutlined />, label: 'Sản phẩm' },
-  { key: 'users', icon: <TeamOutlined />, label: 'Người dùng' },
-  { key: 'analytics', icon: <BarChartOutlined />, label: 'Thống kê' },
-  { key: 'marketing', icon: <GiftOutlined />, label: 'Khuyến mãi' },
-  { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt' },
+  { key: 'dashboard', icon: <DashboardOutlined />, label: 'Tổng quan', path: '/admin' },
+  { key: 'orders', icon: <ShoppingOutlined />, label: 'Đơn hàng', path: '/admin/orders' },
+  { key: 'products', icon: <AppstoreOutlined />, label: 'Sản phẩm', path: '/admin/products' },
+  { key: 'users', icon: <TeamOutlined />, label: 'Người dùng', path: '/admin/users' },
+  { key: 'analytics', icon: <BarChartOutlined />, label: 'Thống kê', path: '/admin/analytics' },
+  { key: 'marketing', icon: <GiftOutlined />, label: 'Khuyến mãi', path: '/admin/marketing' },
+  { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt', path: '/admin/settings' },
 ];
 
 export default function AdminSidebar({
@@ -48,6 +49,7 @@ export default function AdminSidebar({
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate(); // Thêm dòng này
 
   useEffect(() => {
     // Responsive: auto hide sidebar on mobile
@@ -142,7 +144,13 @@ export default function AdminSidebar({
       <Menu
         mode="inline"
         selectedKeys={[selectedKey]}
-        onClick={({ key }) => onMenuSelect?.(key)}
+        onClick={({ key }) => {
+          const item = menuItems.find(i => i.key === key);
+          if (item && item.path) {
+            navigate(item.path);
+          }
+          onMenuSelect?.(key);
+        }}
         items={menuItems}
         style={{
           background: 'transparent',

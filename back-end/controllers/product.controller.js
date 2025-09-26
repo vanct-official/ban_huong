@@ -1,11 +1,36 @@
-import Product from "../models/product.model.js";
+// import Product from "../models/product.model.js";
+// import ProductImage from "../models/productimage.model.js"; // Nếu có
+import { Product, ProductImage } from "../models/index.js";
 import { Op } from "sequelize";
 
 // Lấy tất cả sản phẩm
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.findAll();
-    res.status(200).json(products);
+    const products = await Product.findAll({
+      include: [
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          separate: true,
+          limit: 1,
+        },
+      ],
+    });
+
+    // Build full URL cho ảnh đại diện
+    const host = `${req.protocol}://${req.get("host")}`;
+    const result = products.map((p) => {
+      const data = p.toJSON();
+      data.productImg =
+        data.images && data.images.length > 0
+          ? `${host}/${data.images[0].productImg}`
+          : null;
+      delete data.images;
+      return data;
+    });
+
+    res.status(200).json(result);
   } catch (err) {
     console.error("❌ Lỗi khi lấy sản phẩm:", err.message);
     res.status(500).json({ error: "Lỗi server khi lấy sản phẩm" });
@@ -87,6 +112,45 @@ export const getProductsAdvanced = async (req, res) => {
         totalPages: Math.ceil(count / limit),
       },
     });
+  } catch (err) {
+    console.error("❌ Lỗi khi lấy sản phẩm:", err);
+    res.status(500).json({ error: "Lỗi server" });
+  }
+};
+
+// Lấy chi tiết sản phẩm theo ID (có kèm ảnh nếu có)
+export const getProductById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findByPk(id, {
+      include: [
+        {
+          model: ProductImage,
+          as: "images", // tên alias phải đúng với association
+          attributes: ["id", "productImg"],
+        },
+      ],
+    });
+
+    if (product) {
+      // Convert sang JSON để xử lý
+      const productData = product.toJSON();
+
+      // Lấy host để build full URL
+      const host = `${req.protocol}://${req.get("host")}`;
+
+      // Map ra mảng ảnh có URL đầy đủ
+      productData.productImgs = productData.images?.map(
+        (img) => `${host}/${img.productImg}`
+      );
+
+      // Xóa field images gốc
+      delete productData.images;
+
+      res.status(200).json(productData);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
   } catch (err) {
     console.error("❌ Lỗi khi lấy sản phẩm:", err);
     res.status(500).json({ error: "Lỗi server" });

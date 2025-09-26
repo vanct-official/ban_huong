@@ -18,6 +18,11 @@ import {
 } from "antd";
 import { ShoppingCartOutlined, FireOutlined } from "@ant-design/icons";
 import debounce from "lodash.debounce";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom"; // Thêm dòng này
+import "./ProductList.css"; // Nếu muốn tách CSS riêng, tạo file này cùng thư mục
+import MainHeader from "../../components/MainHeader";
+import Footer from "../../components/Footer";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -30,7 +35,10 @@ function ProductList() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("latest");
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [priceRange, setPriceRange] = useState([0, 100000]);
+
+  const { t } = useTranslation();
+  const navigate = useNavigate(); // Thêm dòng này
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
@@ -75,6 +83,7 @@ function ProductList() {
 
   // --- Lần đầu load toàn bộ sản phẩm ---
   useEffect(() => {
+    document.title = t("productList") + " - Bản Hương";
     fetchProducts();
   }, []);
 
@@ -107,7 +116,14 @@ function ProductList() {
   const endIndex = startIndex + pageSize;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
+  // Hàm xử lý khi click vào card sản phẩm
+  const handleProductClick = (id) => {
+    navigate(`/products/${id}`);
+  };
+
   return (
+    <>
+    <MainHeader />
     <div
       style={{
         minHeight: "100vh",
@@ -115,6 +131,7 @@ function ProductList() {
         padding: "32px 0",
       }}
     >
+      
       <div
         style={{
           maxWidth: 1200,
@@ -139,13 +156,24 @@ function ProductList() {
         >
           {/* Ô tìm kiếm */}
           <Search
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder={t("searchPlaceholder")}
             allowClear
-            enterButton="Tìm kiếm"
+            enterButton={t("searchButton")}
             value={searchTerm}
             onChange={handleChangeSearch}
             onSearch={handleSearch}
-            style={{ maxWidth: 340, flex: 1 }}
+            style={{
+              maxWidth: 340,
+              flex: 1,
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.97)",
+              boxShadow: "0 2px 12px rgba(22,101,52,0.10)",
+              padding: "2px 8px",
+              border: "1.5px solid #a7f3d0",
+              fontSize: 17,
+              fontWeight: 500,
+            }}
+            className="custom-search"
             size="large"
           />
 
@@ -176,11 +204,11 @@ function ProductList() {
             style={{ width: 200 }}
             size="large"
           >
-            <Option value="latest">Mới nhất</Option>
-            <Option value="priceAsc">Giá: Thấp → Cao</Option>
-            <Option value="priceDesc">Giá: Cao → Thấp</Option>
-            <Option value="nameAsc">Tên: A → Z</Option>
-            <Option value="nameDesc">Tên: Z → A</Option>
+            <Option value="latest">{t("sortLatest")}</Option>
+            <Option value="priceAsc">{t("sortPriceAsc")}</Option>
+            <Option value="priceDesc">{t("sortPriceDesc")}</Option>
+            <Option value="nameAsc">{t("sortNameAsc")}</Option>
+            <Option value="nameDesc">{t("sortNameDesc")}</Option>
           </Select>
         </div>
 
@@ -203,12 +231,18 @@ function ProductList() {
                       overflow: "hidden",
                       background: "#fff",
                       transition: "box-shadow 0.2s",
+                      cursor: "pointer",
                     }}
                     cover={
                       <div style={{ position: "relative" }}>
                         <img
                           alt={p.productName}
-                          src={p.productImg || "/default-product.png"}
+                          // Lấy ảnh đầu tiên trong mảng productImgs nếu có, nếu không thì dùng productImg hoặc ảnh mặc định
+                          src={
+                            Array.isArray(p.productImgs) && p.productImgs.length > 0
+                              ? p.productImgs[0]
+                              : p.productImg || "/default-product.png"
+                          }
                           style={{
                             height: 210,
                             objectFit: "cover",
@@ -262,6 +296,7 @@ function ProductList() {
                         )}
                       </div>
                     }
+                    onClick={() => handleProductClick(p.id)}
                   >
                     <Title
                       level={5}
@@ -320,6 +355,7 @@ function ProductList() {
                         gap: 8,
                         marginTop: 10,
                       }}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <InputNumber
                         min={1}
@@ -373,6 +409,7 @@ function ProductList() {
           </>
         )}
       </div>
+      
       {/* Hiệu ứng hover cho ảnh sản phẩm */}
       <style>{`
         .product-card:hover .product-img {
@@ -380,6 +417,8 @@ function ProductList() {
         }
       `}</style>
     </div>
+    <Footer />
+    </>
   );
 }
 
