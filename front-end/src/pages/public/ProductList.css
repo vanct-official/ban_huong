@@ -1,0 +1,20 @@
+.custom-search .ant-input,
+.custom-search .ant-input-affix-wrapper {
+  border-radius: 16px !important;
+  background: rgba(255,255,255,0.97) !important;
+  font-size: 17px;
+  font-weight: 500;
+  border: none !important;
+  box-shadow: none !important;
+}
+.custom-search .ant-input-search-button {
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%) !important;
+  color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(22,101,52,0.13);
+  transition: background 0.2s;
+}
+.custom-search .ant-input-search-button:hover {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%) !important;
+}

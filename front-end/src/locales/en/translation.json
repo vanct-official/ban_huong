@@ -33,5 +33,30 @@
   "avatar": "Avatar",
   "save": "Save",
   "cancel": "Cancel",
-  "updateFailed": "Update failed"
+  "updateFailed": "Update failed",
+  "productList": "Product List",
+  "allProducts": "All Products",
+  "productDetail": "Product Detail",
+  "cart": "Cart",
+  "checkout": "Checkout",
+  "orderHistory": "Order History",
+
+  "searchPlaceholder": "Search products...",
+  "searchButton": "Search",
+  "sortLatest": "Latest",
+  "sortPriceAsc": "Price: Low → High",
+  "sortPriceDesc": "Price: High → Low",
+  "sortNameAsc": "Name: A → Z",
+  "sortNameDesc": "Name: Z → A",
+
+  "productDetail": "Product Detail",
+  "productNotFoundOrError": "Product not found or server error.",
+  "addedToCart": "Added to cart!",
+  "loading": "Loading...",
+  "hot": "HOT",
+  "noDescription": "No product description.",
+  "quantity": "Quantity",
+  "inStock": "In stock",
+  "outOfStock": "Out of stock",
+  "addToCart": "Add to cart"
 }

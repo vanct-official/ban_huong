@@ -3,10 +3,17 @@ import "../../App.css";
 import "../../global.css";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import MainHeader from "../../components/MainHeader";
+import Footer from "../../components/Footer";
+import { useEffect } from "react";
 
 const { Title, Paragraph } = Typography;
 
 export default function HomePage() {
+  useEffect(() => {
+    document.title = "Trang chủ - Bản Hương";
+  }, []);
+
   const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-rose-50 to-amber-50 relative overflow-hidden">
@@ -17,7 +24,7 @@ export default function HomePage() {
         <div className="absolute bottom-36 left-16 w-40 h-40 bg-gradient-to-br from-rose-200 to-pink-200 rounded-full blur-xl animate-pulse delay-700"></div>
         <div className="absolute bottom-20 right-12 w-28 h-28 bg-gradient-to-br from-orange-300 to-amber-300 rounded-full blur-lg animate-pulse delay-1000"></div>
       </div>
-
+<MainHeader />
       {/* Main Content */}
       <main className="container flex flex-col justify-center items-center min-h-[70vh] px-4 md:px-6 relative z-10">
         {/* Logo & Slogan */}
@@ -116,6 +123,7 @@ export default function HomePage() {
         {/* Features */}
         {/* Giữ nguyên phần Features của bạn ở đây */}
       </main>
+      <Footer />
     </div>
   );
 }

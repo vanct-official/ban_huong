@@ -39,5 +39,30 @@
   "banHuong": "Bản Hương",
   "welcomeToBanHuong": "Chào mừng đến với Bản Hương!",
   "websiteIntro": "Website chuyên cung cấp tinh dầu hoa hồi thiên nhiên – thư giãn, sống xanh, an toàn.",
-  "updateProfile": "Cập nhật thông tin cá nhân"
+  "updateProfile": "Cập nhật thông tin cá nhân",
+  "productList": "Danh sách sản phẩm",
+  "allProducts": "Tất cả sản phẩm",
+  "productDetail": "Chi tiết sản phẩm",
+  "cart": "Gio hàng",
+  "checkout": "Thanh toán",
+  "orderHistory": "Lịch sử đơn hàng",
+
+  "searchPlaceholder": "Tìm kiếm sản phẩm...",
+  "searchButton": "Tìm kiếm",
+  "sortLatest": "Mới nhất",
+  "sortPriceAsc": "Giá: Thấp → Cao",
+  "sortPriceDesc": "Giá: Cao → Thấp",
+  "sortNameAsc": "Tên: A → Z",
+  "sortNameDesc": "Tên: Z → A",
+
+  "productDetail": "Chi tiết sản phẩm",
+  "productNotFoundOrError": "Không tìm thấy sản phẩm hoặc lỗi server.",
+  "addedToCart": "Đã thêm vào giỏ hàng!",
+  "loading": "Đang tải...",
+  "hot": "HOT",
+  "noDescription": "Chưa có mô tả sản phẩm.",
+  "quantity": "Số lượng",
+  "inStock": "Còn lại",
+  "outOfStock": "Hết hàng",
+  "addToCart": "Thêm vào giỏ hàng"
 }
