@@ -1,23 +1,45 @@
-import sequelize from "../config/db.js";
-import { QueryTypes } from "sequelize";
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/db.js";
 
-// Lấy tất cả sản phẩm
-export const getAll = async (callback) => {
-  const sql = `
-    SELECT p.id, p.productName, p.quantity, p.unitPrice, p.description, pi.productImg
-    FROM product p
-    LEFT JOIN productimage pi ON p.id = pi.productId
-  `;
-  try {
-    const results = await sequelize.query(sql, { type: QueryTypes.SELECT });
-    callback(null, results);
-  } catch (err) {
-    callback(err, null);
+const Product = sequelize.define(
+  "Product",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    productName: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    unitPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+  },
+  {
+    tableName: "product", // tên bảng trong DB (chữ hoa/thường phải đúng)
+    timestamps: true, // Sequelize sẽ tự map createdAt, updatedAt
   }
-};
+);
 
-// 🔍 Tìm sản phẩm theo tên
-export const searchByName = (keyword, callback) => {
-  const sql = "SELECT * FROM product WHERE productName LIKE ?";
-  db.query(sql, [`%${keyword}%`], callback);
-};
+export default Product;
