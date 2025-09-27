@@ -61,8 +61,35 @@ export default function ProductDetail() {
     // eslint-disable-next-line
   }, [id, t]);
 
-  const handleAddToCart = () => {
-    message.success(t("addedToCart"));
+  const handleAddToCart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("⚠️ Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng");
+        return;
+      }
+
+      const res = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // 👈 JWT token
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: qty, // 👈 số lượng đã chọn từ InputNumber
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("❌ Không thể thêm sản phẩm vào giỏ hàng");
+      }
+
+      alert("🎉 Sản phẩm đã được thêm vào giỏ hàng!");
+    } catch (err) {
+      console.error("Lỗi:", err);
+      alert("❌ " + (err.message || "Có lỗi xảy ra"));
+    }
   };
 
   if (loading)
@@ -183,10 +210,10 @@ export default function ProductDetail() {
                     marginBottom: 24,
                   }}
                 >
-                  {/* <span style={{ fontWeight: 500, color: "#166534" }}>
+                  <span style={{ fontWeight: 500, color: "#166534" }}>
                     {t("quantity")}:
-                  </span> */}
-                  {/* <InputNumber
+                  </span>
+                  <InputNumber
                     min={1}
                     max={product.quantity || 99}
                     value={qty}
@@ -195,7 +222,7 @@ export default function ProductDetail() {
                   />
                   <span style={{ color: "#888" }}>
                     ({t("inStock")}: {product.quantity})
-                  </span> */}
+                  </span>
                 </div>
                 <Button
                   type="primary"
