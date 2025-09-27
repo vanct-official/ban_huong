@@ -83,6 +83,12 @@ Feedback.belongsTo(User, { foreignKey: "userId" });
 Product.hasMany(Feedback, { foreignKey: "productId" });
 Feedback.belongsTo(Product, { foreignKey: "productId" });
 
+Product.hasMany(Feedback, { foreignKey: "productId" });
+Feedback.belongsTo(Product, { foreignKey: "productId" });
+
+User.hasMany(Feedback, { foreignKey: "userId" });
+Feedback.belongsTo(User, { foreignKey: "userId" });
+
 export {
   Product,
   ProductImage,
