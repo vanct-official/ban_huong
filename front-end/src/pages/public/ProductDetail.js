@@ -24,6 +24,7 @@ import ProductCarousel from "../../components/ProductCarousel";
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
+import ProductFeedback from "../../components/ProductFeedback";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -282,11 +283,7 @@ export default function ProductDetail() {
                 {
                   key: "reviews",
                   label: t("reviews") || "Nhận xét",
-                  children: (
-                    <div style={{ minHeight: 60, color: "#888" }}>
-                      {t("noReviews") || "Chưa có nhận xét nào."}
-                    </div>
-                  ),
+                  children: <ProductFeedback productId={product.id} />,
                 },
               ]}
             />

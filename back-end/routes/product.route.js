@@ -21,5 +21,4 @@ router.get("/:id", getProductById);
 router.put("/:id", upload.array("images", 5), updateProduct); // ✅ update
 router.delete("/:id", deleteProduct); // ✅ route xoá
 
-
 export default router;

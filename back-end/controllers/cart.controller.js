@@ -24,38 +24,6 @@ export const addToCart = async (req, res) => {
   }
 };
 
-// export const getCart = async (req, res) => {
-//   try {
-//     const userId = req.user?.id;
-//     if (!userId) return res.status(401).json({ message: "Bạn cần đăng nhập" });
-
-//     const items = await Cart.findAll({
-//       where: { userId },
-//       include: [
-//         {
-//           model: Product,
-//           as: "product", // nhớ alias trùng với model
-//           attributes: ["id", "productName", "unitPrice"],
-//           include: [
-//             {
-//               model: ProductImage,
-//               as: "images",
-//               attributes: ["productImg"],
-//               separate: true,
-//               limit: 1, // chỉ lấy 1 ảnh đầu tiên
-//             },
-//           ],
-//         },
-//       ],
-//     });
-
-//     res.json(items);
-//   } catch (err) {
-//     console.error("❌ Lỗi getCart:", err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
 export const getCart = async (req, res) => {
   try {
     const userId = req.user.id;
