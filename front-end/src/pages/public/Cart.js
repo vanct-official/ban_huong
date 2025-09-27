@@ -135,6 +135,37 @@ const Cart = () => {
           }}
         >
           Tổng tiền: {Number(total).toLocaleString("vi-VN")} đ
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 12,
+            }}
+          >
+            <Button
+              onClick={() => (window.location.href = "/products")}
+              style={{
+                borderRadius: 8,
+                fontWeight: 600,
+                marginTop: 10,
+              }}
+            >
+              Tiếp tục mua hàng
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => (window.location.href = "/checkout")}
+              style={{
+                borderRadius: 8,
+                fontWeight: 600,
+                background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                border: "none",
+                marginTop: 10,
+              }}
+            >
+              Đặt hàng ngay
+            </Button>
+          </div>
         </div>
       </div>
       <Footer />
