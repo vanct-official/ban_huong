@@ -14,7 +14,6 @@ import {
   Spin,
   Tag,
   Tooltip,
-  Badge,
 } from "antd";
 import {
   ShoppingCartOutlined,
@@ -24,8 +23,8 @@ import {
 } from "@ant-design/icons";
 import debounce from "lodash.debounce";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom"; // Thêm dòng này
-import "./ProductList.css"; // Nếu muốn tách CSS riêng, tạo file này cùng thư mục
+import { useNavigate } from "react-router-dom";
+import "./ProductList.css";
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 import {
@@ -40,7 +39,7 @@ const { Option } = Select;
 const { Search } = Input;
 
 function ProductList() {
-  const [favorites, setFavorites] = useState([]);
+  const [wishlist, setWishlist] = useState([]); // ✅ chỉ dùng wishlist
 
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -51,12 +50,12 @@ function ProductList() {
   const [priceRange, setPriceRange] = useState([0, 1000000]);
 
   const { t } = useTranslation();
-  const navigate = useNavigate(); // Thêm dòng này
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
 
-  // --- Lấy dữ liệu từ API ---
+  // --- Lấy dữ liệu sản phẩm ---
   const fetchProducts = (q = "") => {
     setLoading(true);
     const url = q
@@ -75,36 +74,70 @@ function ProductList() {
       });
   };
 
-  // --- Debounce để tránh gọi API quá nhiều ---
+  // --- Debounce search ---
   const debouncedSearch = useCallback(
     debounce((q) => fetchProducts(q), 500),
     []
   );
 
-  // --- Khi gõ trong ô search ---
+  // --- Toggle Wishlist ---
+  const handleToggleWishlist = async (id) => {
+    // Đổi màu ngay lập tức, không rollback nếu lỗi
+    if (wishlist.includes(id)) {
+      setWishlist((prev) => prev.filter((pid) => pid !== id));
+      try {
+        await removeFromWishlist(id);
+        message.success("Đã xóa khỏi yêu thích");
+      } catch (err) {
+        message.error("Vui lòng đăng nhập Google để sử dụng tính năng này");
+      }
+    } else {
+      setWishlist((prev) => [...prev, id]);
+      try {
+        await addToWishlist(id);
+        message.success("Đã thêm vào yêu thích");
+      } catch (err) {
+        message.error("Vui lòng đăng nhập Google để sử dụng tính năng này");
+      }
+    }
+  };
+
+  // --- Khi gõ search ---
   const handleChangeSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
     debouncedSearch(value);
   };
 
-  // --- Khi nhấn Enter hoặc bấm nút Tìm kiếm ---
+  // --- Khi Enter search ---
   const handleSearch = (value) => {
     setSearchTerm(value);
     fetchProducts(value);
   };
 
-  // --- Lần đầu load toàn bộ sản phẩm ---
+  // --- Lấy sản phẩm & wishlist ban đầu ---
   useEffect(() => {
     document.title = t("productList") + " - Bản Hương";
     fetchProducts();
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      getWishlist()
+        .then((res) => {
+          const favIds = res.data.map((item) => item.productId);
+          setWishlist(favIds);
+        })
+        .catch(() => {
+          console.warn("Không thể tải wishlist (chưa login Google?)");
+        });
+    }
   }, []);
 
-  // --- Lọc + sắp xếp dữ liệu ---
+  // --- Lọc + sắp xếp ---
   useEffect(() => {
     let data = [...products];
 
-    // lọc theo khoảng giá
+    // lọc theo giá
     data = data.filter(
       (p) => p.unitPrice >= priceRange[0] && p.unitPrice <= priceRange[1]
     );
@@ -129,17 +162,8 @@ function ProductList() {
   const endIndex = startIndex + pageSize;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-  // Hàm xử lý khi click vào card sản phẩm
   const handleProductClick = (id) => {
     navigate(`/products/${id}`);
-  };
-
-  const toggleFavorite = (id) => {
-    if (favorites.includes(id)) {
-      setFavorites(favorites.filter((fid) => fid !== id));
-    } else {
-      setFavorites([...favorites, id]);
-    }
   };
 
   return (
@@ -174,7 +198,7 @@ function ProductList() {
               padding: 20,
             }}
           >
-            {/* Ô tìm kiếm */}
+            {/* Search */}
             <Search
               placeholder={t("searchPlaceholder")}
               allowClear
@@ -182,17 +206,7 @@ function ProductList() {
               value={searchTerm}
               onChange={handleChangeSearch}
               onSearch={handleSearch}
-              style={{
-                maxWidth: 340,
-                flex: 1,
-                borderRadius: 16,
-                background: "rgba(255,255,255,0.97)",
-                boxShadow: "0 2px 12px rgba(22,101,52,0.10)",
-                padding: "2px 8px",
-                border: "1.5px solid #a7f3d0",
-                fontSize: 17,
-                fontWeight: 500,
-              }}
+              style={{ maxWidth: 340, flex: 1 }}
               className="custom-search"
               size="large"
             />
@@ -252,14 +266,11 @@ function ProductList() {
                         boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
                         overflow: "hidden",
                         background: "#fff",
-                        transition: "box-shadow 0.2s",
-                        cursor: "pointer",
                       }}
                       cover={
                         <div style={{ position: "relative" }}>
                           <img
                             alt={p.productName}
-                            // Lấy ảnh đầu tiên trong mảng productImgs nếu có, nếu không thì dùng productImg hoặc ảnh mặc định
                             src={
                               Array.isArray(p.productImgs) &&
                               p.productImgs.length > 0
@@ -270,9 +281,6 @@ function ProductList() {
                               height: 210,
                               objectFit: "cover",
                               width: "100%",
-                              borderTopLeftRadius: 18,
-                              borderTopRightRadius: 18,
-                              transition: "transform 0.3s",
                             }}
                             className="product-img"
                           />
@@ -283,14 +291,6 @@ function ProductList() {
                                 position: "absolute",
                                 top: 12,
                                 left: 12,
-                                fontWeight: 700,
-                                fontSize: 13,
-                                borderRadius: 8,
-                                padding: "2px 10px",
-                                background: "#dc2626",
-                                color: "#fff",
-                                border: "none",
-                                boxShadow: "0 2px 8px rgba(220,38,38,0.12)",
                               }}
                               icon={<FireOutlined />}
                             >
@@ -304,14 +304,6 @@ function ProductList() {
                                 position: "absolute",
                                 top: 12,
                                 right: 12,
-                                fontWeight: 700,
-                                fontSize: 13,
-                                borderRadius: 8,
-                                padding: "2px 10px",
-                                background: "#f59e42",
-                                color: "#fff",
-                                border: "none",
-                                boxShadow: "0 2px 8px rgba(245,158,66,0.12)",
                               }}
                             >
                               Giảm giá
@@ -321,23 +313,17 @@ function ProductList() {
                       }
                       onClick={() => handleProductClick(p.id)}
                     >
-                      <Title
-                        level={5}
-                        style={{
-                          marginBottom: 6,
-                          fontWeight: 700,
-                          color: "#166534",
-                        }}
-                      >
+                      <Title level={5} style={{ marginBottom: 6 }}>
                         <Tooltip title={p.productName}>{p.productName}</Tooltip>
                       </Title>
+
+                      {/* Giá */}
                       {p.oldPrice && p.unitPrice < p.oldPrice && (
                         <div style={{ marginBottom: 2 }}>
                           <span
                             style={{
                               textDecoration: "line-through",
                               color: "#b91c1c",
-                              fontSize: 14,
                             }}
                           >
                             {p.oldPrice.toLocaleString()} đ
@@ -359,16 +345,11 @@ function ProductList() {
                           </span>
                         </div>
                       )}
-                      <div
-                        style={{
-                          color: "#ea580c",
-                          fontWeight: 700,
-                          fontSize: 18,
-                          marginBottom: 8,
-                        }}
-                      >
+                      <div style={{ color: "#ea580c", fontWeight: 700 }}>
                         {p.unitPrice.toLocaleString()} đ
                       </div>
+
+                      {/* Nút chức năng */}
                       <div
                         style={{
                           display: "flex",
@@ -383,13 +364,12 @@ function ProductList() {
                           max={99}
                           defaultValue={1}
                           size="small"
-                          style={{ borderRadius: 8 }}
                         />
                         {/* Nút yêu thích */}
                         <Button
                           type="text"
                           icon={
-                            favorites.includes(p.id) ? (
+                            wishlist.includes(p.id) ? (
                               <HeartFilled
                                 style={{ color: "red", fontSize: 20 }}
                               />
@@ -401,20 +381,14 @@ function ProductList() {
                           }
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleFavorite(p.id);
+                            handleToggleWishlist(p.id);
                           }}
                         />
+                        {/* Nút giỏ hàng */}
                         <Button
                           type="primary"
                           icon={<ShoppingCartOutlined />}
-                          style={{
-                            borderRadius: 8,
-                            fontWeight: 600,
-                            background:
-                              "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                            border: "none",
-                            boxShadow: "0 2px 8px rgba(22,101,52,0.10)",
-                          }}
+                          style={{ borderRadius: 8 }}
                         >
                           Thêm
                         </Button>
@@ -438,24 +412,18 @@ function ProductList() {
                   total={filteredProducts.length}
                   onChange={(page) => setCurrentPage(page)}
                   showSizeChanger={false}
-                  style={{
-                    borderRadius: 12,
-                    background: "#fff",
-                    boxShadow: "0 2px 12px rgba(22,101,52,0.07)",
-                    padding: "8px 24px",
-                  }}
                 />
               </div>
             </>
           )}
         </div>
 
-        {/* Hiệu ứng hover cho ảnh sản phẩm */}
         <style>{`
-        .product-card:hover .product-img {
-          transform: scale(1.06);
-        }
-      `}</style>
+          .product-card:hover .product-img {
+            transform: scale(1.06);
+            transition: transform 0.3s;
+          }
+        `}</style>
       </div>
       <Footer />
     </>
