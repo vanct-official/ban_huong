@@ -13,6 +13,7 @@ import {
   Tooltip,
   Divider,
   List,
+  Switch,
   Select,
   Modal,
 } from "antd";
@@ -144,6 +145,84 @@ const EditUserProfile = () => {
     }
   };
 
+  // Xử lý thêm địa chỉ
+  const handleAddAddress = async (values) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/addresses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(values),
+      });
+      if (!res.ok) throw new Error("Thêm địa chỉ thất bại");
+      message.success("Đã thêm địa chỉ!");
+      setIsModalOpen(false);
+      addressForm.resetFields();
+      // Reload addresses
+      setAddrLoading(true);
+      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addrData = await addrRes.json();
+      setAddresses(addrData);
+      setAddrLoading(false);
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
+  // Xử lý xóa địa chỉ
+  const handleDeleteAddress = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:5000/api/addresses/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Xóa địa chỉ thất bại");
+      message.success("Đã xóa địa chỉ!");
+      // Reload addresses
+      setAddrLoading(true);
+      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addrData = await addrRes.json();
+      setAddresses(addrData);
+      setAddrLoading(false);
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
+  // Xử lý đặt địa chỉ mặc định
+  const handleSetDefault = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:5000/api/addresses/${id}/default`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!res.ok) throw new Error("Đặt mặc định thất bại");
+      message.success("Đã đặt địa chỉ mặc định!");
+      // Reload addresses
+      setAddrLoading(true);
+      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addrData = await addrRes.json();
+      setAddresses(addrData);
+      setAddrLoading(false);
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
   if (loading) {
     return (
       <div
@@ -205,7 +284,7 @@ const EditUserProfile = () => {
           }}
           bodyStyle={{ padding: "32px 24px 24px 24px" }}
         >
-          {/* Avatar */}
+          {/* Avatar with edit icon */}
           <div
             style={{
               textAlign: "center",
@@ -223,6 +302,23 @@ const EditUserProfile = () => {
                 boxShadow: "0 2px 8px rgba(60,60,120,0.10)",
               }}
             />
+            <Tooltip title={t("changeAvatar")}>
+              <Button
+                shape="circle"
+                icon={<EditOutlined />}
+                size="small"
+                style={{
+                  position: "absolute",
+                  right: "calc(50% - 50px)",
+                  bottom: 18,
+                  background: "#6366f1",
+                  color: "#fff",
+                  border: "none",
+                  boxShadow: "0 2px 8px rgba(60,60,120,0.10)",
+                }}
+                disabled
+              />
+            </Tooltip>
           </div>
 
           {/* Form */}
@@ -250,7 +346,9 @@ const EditUserProfile = () => {
             <Form.Item name="phone" label={t("phone")}>
               <Input />
             </Form.Item>
-
+            <Form.Item name="avatarImg" label={t("avatar")}>
+              <Input placeholder={t("avatarUrl")} />
+            </Form.Item>
             <Form.Item>
               <Button
                 type="primary"
@@ -276,6 +374,143 @@ const EditUserProfile = () => {
               </Button>
             </Form.Item>
           </Form>
+
+          <Divider style={{ margin: "24px 0" }}>{t("addresses")}</Divider>
+
+          {addresses.length === 0 ? (
+            <Alert
+              type="info"
+              message={t("noAddress") || "Bạn chưa có địa chỉ nào."}
+              style={{ marginBottom: 16, borderRadius: 8 }}
+            />
+          ) : (
+            <List
+              loading={addrLoading}
+              bordered
+              dataSource={addresses}
+              renderItem={(item) => (
+                <List.Item
+                  style={{
+                    background: item.isDefault ? "#e0f7fa" : "#fff",
+                    borderRadius: 8,
+                    marginBottom: 8,
+                    border: item.isDefault ? "1.5px solid #22d3ee" : undefined,
+                  }}
+                  actions={[
+                    !item.isDefault && (
+                      <Button
+                        type="link"
+                        onClick={() => handleSetDefault(item.id)}
+                        style={{ color: "#0ea5e9", fontWeight: 600 }}
+                      >
+                        {t("setDefault") || "Đặt mặc định"}
+                      </Button>
+                    ),
+                    addresses.length > 1 && (
+                      <Button
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDeleteAddress(item.id)}
+                      >
+                        {t("delete")}
+                      </Button>
+                    ),
+                  ].filter(Boolean)}
+                >
+                  <List.Item.Meta
+                    title={
+                      <span>
+                        {item.street}, {item.ward}, {item.province}
+                        {item.isDefault && (
+                          <span
+                            style={{
+                              color: "#0ea5e9",
+                              fontWeight: 700,
+                              marginLeft: 8,
+                            }}
+                          >
+                            ({t("default") || "Mặc định"})
+                          </span>
+                        )}
+                      </span>
+                    }
+                    description={item.note}
+                  />
+                </List.Item>
+              )}
+            />
+          )}
+
+          <Button
+            type="dashed"
+            icon={<PlusOutlined />}
+            style={{ marginTop: 16, width: "100%" }}
+            onClick={() => setIsModalOpen(true)}
+          >
+            {t("addNewAddress")}
+          </Button>
+
+          <Modal
+            title={t("addNewAddress")}
+            open={isModalOpen}
+            onCancel={() => setIsModalOpen(false)}
+            onOk={() => addressForm.submit()}
+          >
+            <Form
+              form={addressForm}
+              layout="vertical"
+              onFinish={handleAddAddress}
+            >
+              <Form.Item
+                name="province_code"
+                label="Tỉnh/Thành"
+                rules={[{ required: true, message: "Chọn tỉnh/thành" }]}
+              >
+                <Select
+                  placeholder="Chọn tỉnh/thành"
+                  onChange={(value) => {
+                    setSelectedProvince(value);
+                    fetchWards(value); // load các xã/phường tương ứng
+                    addressForm.setFieldsValue({ ward_code: undefined }); // reset ward
+                  }}
+                >
+                  {provinces.map((p) => (
+                    <Option key={p.code} value={p.code}>
+                      {p.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="ward_code"
+                label="Xã/Phường"
+                rules={[{ required: true, message: "Chọn xã/phường" }]}
+              >
+                <Select
+                  placeholder="Chọn xã/phường"
+                  disabled={!selectedProvince}
+                >
+                  {wards.map((w) => (
+                    <Option key={w.code} value={w.code}>
+                      {w.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="street"
+                label={t("street")}
+                rules={[{ required: true }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name="note" label={t("note")}>
+                <Input />
+              </Form.Item>
+            </Form>
+          </Modal>
         </Card>
       </div>
       <Footer />
