@@ -194,13 +194,13 @@ function ProductList() {
                         }}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <InputNumber
+                        {/* <InputNumber
                           min={1}
                           max={99}
                           defaultValue={1}
                           size="small"
                           onChange={(val) => (p._qty = val)}
-                        />
+                        /> */}
 
                         <WishlistButton productId={p.id} />
 

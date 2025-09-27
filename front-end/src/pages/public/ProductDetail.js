@@ -14,7 +14,11 @@ import {
   message,
   Tabs,
 } from "antd";
-import { ShoppingCartOutlined, FireOutlined, GlobalOutlined } from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  FireOutlined,
+  GlobalOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
 import ProductCarousel from "../../components/ProductCarousel";
 import MainHeader from "../../components/MainHeader";
@@ -115,7 +119,8 @@ export default function ProductDetail() {
                 xs={24}
                 md={10}
                 style={{
-                  background: "linear-gradient(135deg, #fef9c3 0%, #f0fdf4 100%)",
+                  background:
+                    "linear-gradient(135deg, #fef9c3 0%, #f0fdf4 100%)",
                   borderRadius: "20px 0 0 20px",
                   minHeight: 320,
                   display: "flex",
@@ -178,10 +183,10 @@ export default function ProductDetail() {
                     marginBottom: 24,
                   }}
                 >
-                  <span style={{ fontWeight: 500, color: "#166534" }}>
+                  {/* <span style={{ fontWeight: 500, color: "#166534" }}>
                     {t("quantity")}:
-                  </span>
-                  <InputNumber
+                  </span> */}
+                  {/* <InputNumber
                     min={1}
                     max={product.quantity || 99}
                     value={qty}
@@ -190,7 +195,7 @@ export default function ProductDetail() {
                   />
                   <span style={{ color: "#888" }}>
                     ({t("inStock")}: {product.quantity})
-                  </span>
+                  </span> */}
                 </div>
                 <Button
                   type="primary"
@@ -214,7 +219,15 @@ export default function ProductDetail() {
             </Row>
           </Card>
           {/* Tabs cho mô tả và nhận xét đặt bên dưới Card */}
-          <div style={{ marginTop: 32, background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px rgba(22,101,52,0.07)", padding: 24 }}>
+          <div
+            style={{
+              marginTop: 32,
+              background: "#fff",
+              borderRadius: 16,
+              boxShadow: "0 2px 12px rgba(22,101,52,0.07)",
+              padding: 24,
+            }}
+          >
             <Tabs
               defaultActiveKey="description"
               items={[
