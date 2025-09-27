@@ -21,6 +21,7 @@ import productRoutes from "./routes/product.route.js";
 import wardRoutes from "./routes/ward.route.js";
 import addressRoutes from "./routes/address.route.js";
 import wishlistRoutes from "./routes/wishlist.route.js";
+import cartRoutes from "./routes/cart.route.js";
 
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -59,6 +60,8 @@ app.use("/api/wishlists", wishlistRoutes);
 
 // Phục vụ ảnh tĩnh từ thư mục uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/api/cart", cartRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

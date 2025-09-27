@@ -15,11 +15,11 @@ import ProductDetail from "./pages/public/ProductDetail";
 import WishlistPage from "./pages/public/WishlistPage";
 
 import AdminProductList from "./pages/private/admin/AdminProductList";
+import Cart from "./pages/public/Cart";
 
 function App() {
   return (
     <>
-
       {/* Nội dung thay đổi theo route */}
       <main style={{ minHeight: "80vh" }}>
         <Routes>
@@ -35,6 +35,7 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="/admin/products" element={<AdminProductList />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </main>
     </>
