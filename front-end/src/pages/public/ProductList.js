@@ -43,9 +43,6 @@ function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
 
-  const formatPrice = (price) =>
-    new Intl.NumberFormat("vi-VN").format(Number(price));
-
   const fetchProducts = (q = "") => {
     setLoading(true);
     const url = q
@@ -85,6 +82,7 @@ function ProductList() {
     fetchProducts();
   }, []);
 
+  // Lọc và sắp xếp
   useEffect(() => {
     let data = [...products];
     data = data.filter(
@@ -147,6 +145,67 @@ function ProductList() {
       <MainHeader />
       <div style={{ minHeight: "100vh", padding: "32px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          {/* Thanh công cụ: Tìm kiếm, lọc giá, sắp xếp */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 24,
+              marginBottom: 32,
+              padding: 20,
+              background: "#fafafa",
+              borderRadius: 12,
+            }}
+          >
+            {/* Ô tìm kiếm */}
+            <Search
+              placeholder="Tìm kiếm sản phẩm..."
+              allowClear
+              enterButton="Tìm kiếm"
+              value={searchTerm}
+              onChange={handleChangeSearch}
+              onSearch={handleSearch}
+              style={{ maxWidth: 340, flex: 1 }}
+              size="large"
+            />
+
+            {/* Bộ lọc giá */}
+            <div style={{ width: 260, minWidth: 200 }}>
+              <div style={{ fontWeight: 500, marginBottom: 4 }}>
+                Khoảng giá:{" "}
+                <span style={{ color: "#ea580c" }}>
+                  {priceRange[0].toLocaleString()} đ -{" "}
+                  {priceRange[1].toLocaleString()} đ
+                </span>
+              </div>
+              <Slider
+                range
+                min={0}
+                max={100000}
+                step={5000}
+                value={priceRange}
+                onChange={(value) => setPriceRange(value)}
+              />
+            </div>
+
+            {/* Sắp xếp */}
+            <Select
+              value={sortOption}
+              onChange={(value) => setSortOption(value)}
+              style={{ width: 200 }}
+              size="large"
+            >
+              <Option value="latest">Mới nhất</Option>
+              <Option value="priceAsc">Giá tăng dần</Option>
+              <Option value="priceDesc">Giá giảm dần</Option>
+              <Option value="nameAsc">Tên A-Z</Option>
+              <Option value="nameDesc">Tên Z-A</Option>
+            </Select>
+          </div>
+
+          {/* Danh sách sản phẩm */}
           {loading ? (
             <div style={{ textAlign: "center", marginTop: 80 }}>
               <Spin tip="Đang tải sản phẩm..." size="large" />
@@ -194,13 +253,13 @@ function ProductList() {
                         }}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {/* <InputNumber
+                        <InputNumber
                           min={1}
                           max={99}
                           defaultValue={1}
                           size="small"
                           onChange={(val) => (p._qty = val)}
-                        /> */}
+                        />
 
                         <WishlistButton productId={p.id} />
 
@@ -216,6 +275,23 @@ function ProductList() {
                   </Col>
                 ))}
               </Row>
+
+              {/* Phân trang */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 40,
+                }}
+              >
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={filteredProducts.length}
+                  onChange={(page) => setCurrentPage(page)}
+                  showSizeChanger={false}
+                />
+              </div>
             </>
           )}
         </div>
