@@ -18,6 +18,9 @@ import { getAllUsers } from "./controllers/user.controller.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import productRoutes from "./routes/product.route.js";
+import wardRoutes from "./routes/ward.route.js";
+import addressRoutes from "./routes/address.route.js";
+import wishlistRoutes from "./routes/wishlist.route.js";
 
 import wishlistRoutes from "./routes/wishlist.route.js";
 
@@ -52,6 +55,9 @@ app.get("/api/users", getAllUsers);
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/wards", wardRoutes);
+app.use("/api/addresses", addressRoutes);
+app.use("/api/wishlists", wishlistRoutes);
 
 // Phục vụ ảnh tĩnh từ thư mục uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

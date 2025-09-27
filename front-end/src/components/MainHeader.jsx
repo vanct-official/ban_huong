@@ -89,10 +89,10 @@ export default function MainHeader() {
   const checkAuthStatus = () => {
     try {
       // Check multiple token sources
-      const googleToken = localStorage.getItem("google_token");
+      const token = localStorage.getItem("token");
       const userData = localStorage.getItem("user_data");
       
-      if (googleToken && userData) {
+      if (token && userData) {
         const user = JSON.parse(userData);
         setUser({
           ...user,
@@ -125,8 +125,7 @@ export default function MainHeader() {
       // await authService.logout();
       
       // Clear all auth data
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("google_token");
+      localStorage.removeItem("token");
       localStorage.removeItem("user_data");
       localStorage.removeItem("cart_count");
       

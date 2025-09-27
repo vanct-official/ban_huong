@@ -13,60 +13,57 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 /**
  * 1. Login with Google
  */
+// 1. Login with Google
 export const loginWithGoogle = async (req, res) => {
   try {
     const { idToken } = req.body;
+
     const ticket = await client.verifyIdToken({
       idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
+
     const payload = ticket.getPayload();
     const email = payload.email;
     const name = payload.name;
     const picture = payload.picture;
 
-    // Tách họ tên
+    // Tách tên
     let firstName = "",
       lastName = "";
     if (name) {
-      const nameParts = name.trim().split(" ");
-      firstName = nameParts[0];
-      lastName = nameParts.slice(1).join(" ");
+      const parts = name.trim().split(" ");
+      firstName = parts[0];
+      lastName = parts.slice(1).join(" ");
     }
 
-    // Tìm user
+    // Tìm hoặc tạo user
     let user = await User.findOne({ where: { email } });
-
     if (!user) {
-      // Nếu chưa có user → tạo mới
       user = await User.create({
         username: email.split("@")[0],
         firstname: firstName,
-        middlename: "",
         lastname: lastName,
         email,
-        phone: null,
-        passwordHash: "", // không dùng mật khẩu
         avatarImg: picture || null,
       });
     } else {
-      // Nếu đã có user, cập nhật avatar nếu cần
       if (picture && user.avatarImg !== picture) {
         user.avatarImg = picture;
         await user.save();
       }
     }
 
-    // Tạo JWT
-    const google_token = jwt.sign(
-      { id: user.id, email: user.email },
+    // Tạo JWT backend cấp
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
     res.status(200).json({
       message: "Google login successful",
-      google_token,
+      token, // 👈 đổi tên cho chuẩn
       user: {
         id: user.id,
         name: `${user.firstname} ${user.lastname}`.trim(),
@@ -127,12 +124,13 @@ export const updateUserProfile = async (req, res) => {
     const { id } = req.params;
     const { firstname, lastname, phone, avatarImg } = req.body;
 
-    const user = await User.findById(id);
+    const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     if (firstname) user.firstname = firstname;
+    if (middlename) user.middlename = middlename;
     if (lastname) user.lastname = lastname;
     if (phone) user.phone = phone;
     if (avatarImg) user.avatarImg = avatarImg;
@@ -147,7 +145,8 @@ export const updateUserProfile = async (req, res) => {
 export const updateMyProfile = async (req, res) => {
   try {
     const userId = req.user.id; // 👈 lấy từ JWT middleware
-    const { firstname, middlename, lastname, email, phone, avatarImg } = req.body;
+    const { firstname, middlename, lastname, email, phone, avatarImg } =
+      req.body;
 
     // ✅ Tìm user theo Primary Key
     const user = await User.findByPk(userId);

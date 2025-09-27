@@ -7,6 +7,11 @@
   "id": "ID",
   "email": "Email",
   "phone": "Phone",
+  "delete": "Delete",
+  "default": "Default",
+  "setDefault": "Set as default",
+  "addresses": "List Address",
+  "addNewAddress": "Add new address",
   "notUpdated": "Not updated",
   "notifications": "Notifications",
   "language": "Language",
@@ -58,5 +63,8 @@
   "quantity": "Quantity",
   "inStock": "In stock",
   "outOfStock": "Out of stock",
-  "addToCart": "Add to cart"
+  "addToCart": "Add to cart",
+  "description": "Description",
+  "reviews": "Reviews",
+  "noReviews": "No reviews yet."
 }

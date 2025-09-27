@@ -32,6 +32,8 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [defaultAddress, setDefaultAddress] = useState(null);
+
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const UserProfile = () => {
 
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("google_token");
+        const token = localStorage.getItem("token");
         if (!token) {
           setError(t("notLoggedIn"));
           setLoading(false);
@@ -67,8 +69,32 @@ const UserProfile = () => {
     fetchProfile();
   }, [t]);
 
+  // Khi user đã có, mới fetch địa chỉ mặc định
+  useEffect(() => {
+    const fetchDefaultAddress = async () => {
+      try {
+        if (!user?.id) return;
+        const res = await fetch(
+          `http://localhost:5000/api/addresses/user/${user.id}`
+        );
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          const found = data.find((addr) => addr.isDefault);
+          setDefaultAddress(found || null);
+        }
+      } catch (err) {
+        console.error("❌ Lỗi load địa chỉ:", err);
+      }
+    };
+
+    if (user?.id) {
+      fetchDefaultAddress();
+    }
+  }, [user]);
+
   const handleLogout = () => {
-    localStorage.removeItem("google_token");
+    localStorage.removeItem("token");
     navigate("/");
   };
 
@@ -132,135 +158,154 @@ const UserProfile = () => {
 
   return (
     <>
-    <MainHeader />
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
-      }}
-    >
-      <div style={{ padding: "40px 16px", maxWidth: 900, margin: "0 auto" }}>
-        <Card
-          style={{
-            borderRadius: 20,
-            boxShadow: "0 8px 32px rgba(60,60,120,0.10)",
-            border: "none",
-            background: "rgba(255,255,255,0.98)",
-            minHeight: 320,
-          }}
-          bodyStyle={{ padding: 0 }}
-        >
-          <Row gutter={[0, 0]} wrap align="middle">
-            {/* Left: Avatar & Basic Info */}
-            <Col
-              xs={24}
-              md={8}
-              style={{
-                background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
-                borderRadius: "20px 0 0 20px",
-                minHeight: 320,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 32,
-              }}
-            >
-              <Avatar
-                size={100}
-                src={user.avatarImg}
-                icon={<UserOutlined />}
+      <MainHeader />
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+        }}
+      >
+        <div style={{ padding: "40px 16px", maxWidth: 900, margin: "0 auto" }}>
+          <Card
+            style={{
+              borderRadius: 20,
+              boxShadow: "0 8px 32px rgba(60,60,120,0.10)",
+              border: "none",
+              background: "rgba(255,255,255,0.98)",
+              minHeight: 320,
+            }}
+            bodyStyle={{ padding: 0 }}
+          >
+            <Row gutter={[0, 0]} wrap align="middle">
+              {/* Left: Avatar & Basic Info */}
+              <Col
+                xs={24}
+                md={8}
                 style={{
-                  border: "4px solid #fff",
-                  marginBottom: 18,
-                  boxShadow: "0 2px 8px rgba(60,60,120,0.10)",
+                  background:
+                    "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+                  borderRadius: "20px 0 0 20px",
+                  minHeight: 320,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 32,
                 }}
-              />
-              <Title level={3} style={{ color: "#fff", marginBottom: 0 }}>
-                {user.firstname} {user.middlename} {user.lastname}
-              </Title>
-              <Text style={{ color: "#e0e7ff", fontSize: 15 }}>
-                {user.email}
-              </Text>
-            </Col>
-
-            {/* Right: Details & Actions */}
-            <Col xs={24} md={16} style={{ padding: 32 }}>
-              <Space
-                direction="vertical"
-                size="large"
-                style={{ width: "100%" }}
               >
-                <Title level={4} style={{ marginBottom: 0 }}>
-                  {t("profile")}
+                <Avatar
+                  size={100}
+                  src={user.avatarImg}
+                  icon={<UserOutlined />}
+                  style={{
+                    border: "4px solid #fff",
+                    marginBottom: 18,
+                    boxShadow: "0 2px 8px rgba(60,60,120,0.10)",
+                  }}
+                />
+                <Title level={3} style={{ color: "#fff", marginBottom: 0 }}>
+                  {user.firstname} {user.middlename} {user.lastname}
                 </Title>
-                <Divider style={{ margin: "8px 0 16px 0" }} />
+                <Text style={{ color: "#e0e7ff", fontSize: 15 }}>
+                  {user.email}
+                </Text>
+              </Col>
 
+              {/* Right: Details & Actions */}
+              <Col xs={24} md={16} style={{ padding: 32 }}>
                 <Space
                   direction="vertical"
-                  size="middle"
+                  size="large"
                   style={{ width: "100%" }}
                 >
-                  <Space>
-                    <IdcardOutlined
-                      style={{ color: "#6366f1", fontSize: 18 }}
+                  <Title level={4} style={{ marginBottom: 0 }}>
+                    {t("profile")}
+                  </Title>
+                  <Divider style={{ margin: "8px 0 16px 0" }} />
+
+                  <Space
+                    direction="vertical"
+                    size="middle"
+                    style={{ width: "100%" }}
+                  >
+                    <Space>
+                      <MailOutlined
+                        style={{ color: "#6366f1", fontSize: 18 }}
+                      />
+                      <Text strong>{t("email")}:</Text>
+                      <Text>{user.email}</Text>
+                    </Space>
+                    <Space>
+                      <PhoneOutlined
+                        style={{ color: "#6366f1", fontSize: 18 }}
+                      />
+                      <Text strong>{t("phone")}:</Text>
+                      <Text>
+                        {user.phone || (
+                          <Text type="secondary" italic>
+                            {t("notUpdated")}
+                          </Text>
+                        )}
+                      </Text>
+                    </Space>
+                  </Space>
+
+                  {/* ✅ Địa chỉ mặc định */}
+                  <Space align="start">
+                    <UserOutlined
+                      style={{ color: "#6366f1", fontSize: 18, marginTop: 2 }}
                     />
-                    <Text strong>ID:</Text>
-                    <Text>#{user.id}</Text>
-                  </Space>
-                  <Space>
-                    <MailOutlined style={{ color: "#6366f1", fontSize: 18 }} />
-                    <Text strong>{t("email")}:</Text>
-                    <Text>{user.email}</Text>
-                  </Space>
-                  <Space>
-                    <PhoneOutlined style={{ color: "#6366f1", fontSize: 18 }} />
-                    <Text strong>{t("phone")}:</Text>
-                    <Text>
-                      {user.phone || (
+                    <div>
+                      <Text strong>Địa chỉ mặc định:</Text>
+                      <br />
+                      {defaultAddress ? (
+                        <Text>
+                          {defaultAddress.street}, {defaultAddress.ward},{" "}
+                          {defaultAddress.province}
+                        </Text>
+                      ) : (
                         <Text type="secondary" italic>
-                          {t("notUpdated")}
+                          Chưa có địa chỉ mặc định
                         </Text>
                       )}
-                    </Text>
+                    </div>
+                  </Space>
+
+                  <Divider style={{ margin: "16px 0" }} />
+
+                  <Space size="middle">
+                    <Button
+                      type="primary"
+                      icon={<EditOutlined />}
+                      onClick={() => navigate("/profile/edit")}
+                      style={{
+                        borderRadius: 8,
+                        fontWeight: 600,
+                        minWidth: 120,
+                      }}
+                    >
+                      {t("updateProfile")}
+                    </Button>
+                    <Button
+                      danger
+                      icon={<LogoutOutlined />}
+                      onClick={handleLogout}
+                      style={{
+                        borderRadius: 8,
+                        fontWeight: 600,
+                        minWidth: 120,
+                      }}
+                    >
+                      {t("logout")}
+                    </Button>
                   </Space>
                 </Space>
-
-                <Divider style={{ margin: "16px 0" }} />
-
-                <Space size="middle">
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => navigate("/profile/edit")}
-                    style={{
-                      borderRadius: 8,
-                      fontWeight: 600,
-                      minWidth: 120,
-                    }}
-                  >
-                    {t("updateProfile")}
-                  </Button>
-                  <Button
-                    danger
-                    icon={<LogoutOutlined />}
-                    onClick={handleLogout}
-                    style={{
-                      borderRadius: 8,
-                      fontWeight: 600,
-                      minWidth: 120,
-                    }}
-                  >
-                    {t("logout")}
-                  </Button>
-                </Space>
-              </Space>
-            </Col>
-          </Row>
-        </Card>
+              </Col>
+            </Row>
+          </Card>
+        </div>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };

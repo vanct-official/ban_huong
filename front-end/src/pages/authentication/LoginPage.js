@@ -42,11 +42,10 @@ export default function LoginPage() {
 
   const checkAuthStatus = async () => {
     try {
-      const accessToken = localStorage.getItem("access_token");
-      const googleToken = localStorage.getItem("google_token");
+      const token = localStorage.getItem("token");
       const userData = localStorage.getItem("user_data");
 
-      if ((accessToken || googleToken) && userData) {
+      if (token && userData) {
         try {
           // Verify token với backend nếu có API
           const response = await fetch(
@@ -55,7 +54,7 @@ export default function LoginPage() {
             }/api/auth/me`,
             {
               headers: {
-                Authorization: `Bearer ${accessToken || googleToken}`,
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             }
@@ -98,80 +97,48 @@ export default function LoginPage() {
   };
 
   const clearAuthData = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("google_token");
+    localStorage.removeItem("token");
     localStorage.removeItem("user_data");
   };
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
-    setLoading(true);
+  setLoading(true);
+  try {
+    // Decode Google credential để lấy thông tin cơ bản
+    const decoded = jwtDecode(credentialResponse.credential);
+
     try {
-      // Decode token để lấy thông tin cơ bản
-      const decoded = jwtDecode(credentialResponse.credential);
-
-      try {
-        // Gửi Google token lên Backend để xác thực (nếu có API)
-        const response = await fetch(
-          `${
-            process.env.REACT_APP_API_URL || "http://localhost:5000"
-          }/api/auth/google`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              idToken: credentialResponse.credential,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-
-          // Lưu token và thông tin user từ backend
-          if (data.access_token) {
-            localStorage.setItem("access_token", data.access_token);
-          }
-          localStorage.setItem(
-            "google_token",
-            data.google_token || credentialResponse.credential
-          );
-
-          const userData = {
-            ...data.user,
-            picture:
-              data.user.avatar ||
-              data.user.picture ||
-              data.user.avatarImg ||
-              decoded.picture,
-            loginMethod: "google",
-          };
-
-          setUser(userData);
-          localStorage.setItem("user_data", JSON.stringify(userData));
-
-          notification.success({
-            message: "Đăng nhập thành công!",
-            description: `Chào mừng ${userData.name} đến với Bản Hương`,
-            placement: "topRight",
-            duration: 3,
-          });
-        } else {
-          throw new Error("Backend authentication failed");
+      // Gửi Google token lên Backend để xác thực
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_URL || "http://localhost:5000"
+        }/api/auth/google`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: credentialResponse.credential,
+          }),
         }
-      } catch (apiError) {
-        // Nếu không có API hoặc API lỗi, sử dụng thông tin từ Google token
-        console.log("Using Google token directly:", apiError.message);
+      );
 
-        localStorage.setItem("google_token", credentialResponse.credential);
+      if (response.ok) {
+        const data = await response.json();
+
+        // Lưu token và user từ backend
+        if (data.token) {
+          localStorage.setItem("token", data.token); // 🔑 chỉ dùng JWT từ backend
+        }
 
         const userData = {
-          id: decoded.sub,
-          name: decoded.name,
-          email: decoded.email,
-          picture: decoded.picture,
-          email_verified: decoded.email_verified,
+          ...data.user,
+          picture:
+            data.user.avatar ||
+            data.user.picture ||
+            data.user.avatarImg ||
+            decoded.picture,
           loginMethod: "google",
         };
 
@@ -184,18 +151,43 @@ export default function LoginPage() {
           placement: "topRight",
           duration: 3,
         });
+      } else {
+        throw new Error("Backend authentication failed");
       }
-    } catch (error) {
-      console.error("Google login error:", error);
-      notification.error({
-        message: "Đăng nhập thất bại",
-        description: "Có lỗi xảy ra trong quá trình đăng nhập với Google",
+    } catch (apiError) {
+      // Nếu backend lỗi, fallback tạm bằng thông tin từ Google
+      console.log("Backend auth failed, fallback to Google data:", apiError.message);
+
+      const userData = {
+        id: decoded.sub,
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
+        email_verified: decoded.email_verified,
+        loginMethod: "google",
+      };
+
+      setUser(userData);
+      localStorage.setItem("user_data", JSON.stringify(userData));
+
+      notification.success({
+        message: "Đăng nhập thành công!",
+        description: `Chào mừng ${userData.name} đến với Bản Hương`,
         placement: "topRight",
+        duration: 3,
       });
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error("Google login error:", error);
+    notification.error({
+      message: "Đăng nhập thất bại",
+      description: "Có lỗi xảy ra trong quá trình đăng nhập với Google",
+      placement: "topRight",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleGoogleLoginError = () => {
     notification.error({
@@ -207,10 +199,9 @@ export default function LoginPage() {
 
   const handleLogout = async () => {
     try {
-      const accessToken = localStorage.getItem("access_token");
-      const googleToken = localStorage.getItem("google_token");
+      const token = localStorage.getItem("token");
 
-      if (accessToken || googleToken) {
+      if (token) {
         try {
           // Gửi request logout lên Backend nếu có API
           await fetch(
@@ -220,7 +211,7 @@ export default function LoginPage() {
             {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${accessToken || googleToken}`,
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             }
