@@ -21,7 +21,10 @@ function WishlistButton({ productId }) {
 
         const data = await res.json();
         // Kiểm tra productId (số) hoặc string
-        setInWishlist(Array.isArray(data) && data.some(item => item.product?.id === productId));
+        setInWishlist(
+          Array.isArray(data) &&
+            data.some((item) => item.product?.id === productId)
+        );
       } catch (err) {
         setInWishlist(false);
       }
@@ -47,7 +50,8 @@ function WishlistButton({ productId }) {
       });
 
       const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Thêm vào wishlist thất bại");
+      if (!res.ok)
+        throw new Error(result.message || "Thêm vào wishlist thất bại");
 
       setInWishlist(true);
       message.success(result.message);
@@ -65,13 +69,17 @@ function WishlistButton({ productId }) {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Bạn cần đăng nhập");
 
-      const res = await fetch(`http://localhost:5000/api/wishlists/${productId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/wishlists/${productId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Xóa khỏi wishlist thất bại");
+      if (!res.ok)
+        throw new Error(result.message || "Xóa khỏi wishlist thất bại");
 
       setInWishlist(false);
       message.success(result.message);

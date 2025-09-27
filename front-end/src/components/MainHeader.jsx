@@ -1,17 +1,28 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Button, Dropdown, Row, Col, Badge, Avatar, notification, Drawer, Divider } from "antd";
-import { 
-  DownOutlined, 
-  SearchOutlined, 
-  ShoppingCartOutlined, 
-  LogoutOutlined, 
+import {
+  Input,
+  Button,
+  Dropdown,
+  Row,
+  Col,
+  Badge,
+  Avatar,
+  notification,
+  Drawer,
+  Divider,
+} from "antd";
+import {
+  DownOutlined,
+  SearchOutlined,
+  ShoppingCartOutlined,
+  LogoutOutlined,
   UserOutlined,
   SettingOutlined,
   ShoppingOutlined,
   HeartOutlined,
   BellOutlined,
   GiftOutlined,
-  MenuOutlined
+  MenuOutlined,
 } from "@ant-design/icons";
 import { Bell, HelpCircle, Globe, Facebook, Instagram } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -82,8 +93,8 @@ export default function MainHeader() {
     checkAuthStatus();
     // Listen for storage changes (when user logs in from another tab)
     const handleStorageChange = () => checkAuthStatus();
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const checkAuthStatus = () => {
@@ -91,16 +102,22 @@ export default function MainHeader() {
       // Check multiple token sources
       const token = localStorage.getItem("token");
       const userData = localStorage.getItem("user_data");
-      
+
       if (token && userData) {
         const user = JSON.parse(userData);
         setUser({
           ...user,
           // Ensure avatar URL is available
-          avatar: user.picture || user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.username || 'User')}&background=166534&color=fff`,
-          displayName: user.name || user.username || user.email?.split('@')[0] || 'User'
+          avatar:
+            user.picture ||
+            user.avatar ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              user.name || user.username || "User"
+            )}&background=166534&color=fff`,
+          displayName:
+            user.name || user.username || user.email?.split("@")[0] || "User",
         });
-        
+
         // Load cart count if user is authenticated
         loadCartCount();
       } else {
@@ -108,7 +125,7 @@ export default function MainHeader() {
         setCartCount(0);
       }
     } catch (error) {
-      console.error('Error checking auth status:', error);
+      console.error("Error checking auth status:", error);
       setUser(null);
     }
   };
@@ -123,30 +140,32 @@ export default function MainHeader() {
     try {
       // Call logout API if available
       // await authService.logout();
-      
+
       // Clear all auth data
       localStorage.removeItem("token");
       localStorage.removeItem("user_data");
       localStorage.removeItem("cart_count");
-      
+
       setUser(null);
       setCartCount(0);
-      
+
       notification.success({
-        message: 'Đăng xuất thành công',
-        description: 'Hẹn gặp lại bạn!',
-        placement: 'topRight',
+        message: "Đăng xuất thành công",
+        description: "Hẹn gặp lại bạn!",
+        placement: "topRight",
         duration: 3,
       });
-      
+
       // Redirect to home if on protected page
-      if (window.location.pathname.includes('/profile') || 
-          window.location.pathname.includes('/orders') ||
-          window.location.pathname.includes('/dashboard')) {
-        window.location.href = '/';
+      if (
+        window.location.pathname.includes("/profile") ||
+        window.location.pathname.includes("/orders") ||
+        window.location.pathname.includes("/dashboard")
+      ) {
+        window.location.href = "/";
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
       // Force logout even if API call fails
       localStorage.clear();
       setUser(null);
@@ -168,106 +187,136 @@ export default function MainHeader() {
   };
 
   const languageMenuItems = [
-    { 
-      key: "vi", 
+    {
+      key: "vi",
       label: (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "4px 0",
+          }}
+        >
           <span style={{ fontSize: 16 }}>🇻🇳</span>
           <span>Tiếng Việt</span>
         </div>
-      )
+      ),
     },
-    { 
-      key: "en", 
+    {
+      key: "en",
       label: (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "4px 0",
+          }}
+        >
           <span style={{ fontSize: 16 }}>🇺🇸</span>
           <span>English</span>
         </div>
-      )
+      ),
     },
   ];
 
-  const userMenuItems = user ? [
-    {
-      key: 'user-info',
-      label: (
-        <div style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0', marginBottom: 4 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Avatar 
-              src={user.avatar} 
-              size={40} 
-              icon={<UserOutlined />}
-              style={{ border: '2px solid #f0f0f0' }}
-            />
-            <div>
-              <div style={{ fontWeight: 600, color: '#262626', marginBottom: 2 }}>
-                {user.displayName}
-              </div>
-              <div style={{ fontSize: 12, color: '#8c8c8c' }}>
-                {user.email}
-              </div>
-              {user.email_verified && (
-                <div style={{ fontSize: 11, color: '#52c41a', marginTop: 2 }}>
-                  ✓ Đã xác minh
+  const userMenuItems = user
+    ? [
+        {
+          key: "user-info",
+          label: (
+            <div
+              style={{
+                padding: "8px 0",
+                borderBottom: "1px solid #f0f0f0",
+                marginBottom: 4,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Avatar
+                  src={user.avatar}
+                  size={40}
+                  icon={<UserOutlined />}
+                  style={{ border: "2px solid #f0f0f0" }}
+                />
+                <div>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      color: "#262626",
+                      marginBottom: 2,
+                    }}
+                  >
+                    {user.displayName}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#8c8c8c" }}>
+                    {user.email}
+                  </div>
+                  {user.email_verified && (
+                    <div
+                      style={{ fontSize: 11, color: "#52c41a", marginTop: 2 }}
+                    >
+                      ✓ Đã xác minh
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-      ),
-      disabled: true
-    },
-    {
-      key: 'profile',
-      label: t("profile"),
-      icon: <UserOutlined />,
-      onClick: () => window.location.href = '/profile'
-    },
-    {
-      key: 'orders',
-      label: t("myOrders"),
-      icon: <ShoppingOutlined />,
-      onClick: () => window.location.href = '/orders'
-    },
-    {
-      key: 'wishlist',
-      label: t("wishlist"),
-      icon: <HeartOutlined />,
-      onClick: () => window.location.href = '/wishlist'
-    },
-    {
-      key: 'notifications',
-      label: t("notifications"),
-      icon: <BellOutlined />,
-      onClick: () => window.location.href = '/notifications'
-    },
-    {
-      type: 'divider'
-    },
-    {
-      key: 'rewards',
-      label: t("bonusPoints"),
-      icon: <GiftOutlined />,
-      onClick: () => window.location.href = '/rewards'
-    },
-    {
-      key: 'settings',
-      label: t("settings"),
-      icon: <SettingOutlined />,
-      onClick: () => window.location.href = '/settings'
-    },
-    {
-      type: 'divider'
-    },
-    {
-      key: 'logout',
-      label: t("logout"),
-      icon: <LogoutOutlined />,
-      onClick: handleLogout,
-      style: { color: '#ff4d4f' }
-    },
-  ] : [];
+          ),
+          disabled: true,
+        },
+        {
+          key: "profile",
+          label: t("profile"),
+          icon: <UserOutlined />,
+          onClick: () => (window.location.href = "/profile"),
+        },
+        {
+          key: "orders",
+          label: t("myOrders"),
+          icon: <ShoppingOutlined />,
+          onClick: () => (window.location.href = "/orders"),
+        },
+        {
+          key: "wishlist",
+          label: t("wishlist"),
+          icon: <HeartOutlined />,
+          onClick: () => (window.location.href = "/wishlist"),
+        },
+        {
+          key: "notifications",
+          label: t("notifications"),
+          icon: <BellOutlined />,
+          onClick: () => (window.location.href = "/notifications"),
+        },
+        {
+          type: "divider",
+        },
+        {
+          key: "rewards",
+          label: t("bonusPoints"),
+          icon: <GiftOutlined />,
+          onClick: () => (window.location.href = "/rewards"),
+        },
+        {
+          key: "settings",
+          label: t("settings"),
+          icon: <SettingOutlined />,
+          onClick: () => (window.location.href = "/settings"),
+        },
+        {
+          type: "divider",
+        },
+        {
+          key: "logout",
+          label: t("logout"),
+          icon: <LogoutOutlined />,
+          onClick: handleLogout,
+          style: { color: "#ff4d4f" },
+        },
+      ]
+    : [];
 
   useEffect(() => {
     const lang = localStorage.getItem("lang");
@@ -289,45 +338,117 @@ export default function MainHeader() {
     <div style={{ padding: 16 }}>
       <div style={{ marginBottom: 24, textAlign: "center" }}>
         <Link to="/" onClick={() => setDrawerOpen(false)}>
-          <img src="/image/BanHuong.png" alt="Logo" width={40} style={{ borderRadius: 8 }} />
-          <div style={{ fontWeight: 800, fontSize: 24, marginTop: 8, color: "#166534" }}>Bản Hương</div>
+          <img
+            src="/image/BanHuong.png"
+            alt="Logo"
+            width={40}
+            style={{ borderRadius: 8 }}
+          />
+          <div
+            style={{
+              fontWeight: 800,
+              fontSize: 24,
+              marginTop: 8,
+              color: "#166534",
+            }}
+          >
+            Bản Hương
+          </div>
         </Link>
       </div>
       <Divider />
       {/* XÓA phần Input tìm kiếm ở đây */}
       <Divider />
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Dropdown menu={{ items: languageMenuItems, onClick: handleLanguageChange }} trigger={['click']} placement="bottomLeft">
+        <Dropdown
+          menu={{ items: languageMenuItems, onClick: handleLanguageChange }}
+          trigger={["click"]}
+          placement="bottomLeft"
+        >
           <Button icon={<Globe size={18} />} block>
             {i18n.language === "en" ? "EN" : "VI"} <DownOutlined />
           </Button>
         </Dropdown>
         <Link to="/cart" onClick={() => setDrawerOpen(false)}>
           <Button icon={<ShoppingCartOutlined />} block>
-            {t("cart")} <Badge count={cartCount} style={{ backgroundColor: "#166534", marginLeft: 8 }} />
+            {t("cart")}{" "}
+            <Badge
+              count={cartCount}
+              style={{ backgroundColor: "#166534", marginLeft: 8 }}
+            />
           </Button>
         </Link>
         {user && (
           <>
-            <Button icon={<UserOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/profile'; }}>
+            <Button
+              icon={<UserOutlined />}
+              block
+              onClick={() => {
+                setDrawerOpen(false);
+                window.location.href = "/profile";
+              }}
+            >
               {t("profile")}
             </Button>
-            <Button icon={<ShoppingOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/orders'; }}>
+            <Button
+              icon={<ShoppingOutlined />}
+              block
+              onClick={() => {
+                setDrawerOpen(false);
+                window.location.href = "/orders";
+              }}
+            >
               {t("myOrders")}
             </Button>
-            <Button icon={<HeartOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/wishlist'; }}>
+            <Button
+              icon={<HeartOutlined />}
+              block
+              onClick={() => {
+                setDrawerOpen(false);
+                window.location.href = "/wishlist";
+              }}
+            >
               {t("wishlist")}
             </Button>
-            <Button icon={<BellOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/notifications'; }}>
+            <Button
+              icon={<BellOutlined />}
+              block
+              onClick={() => {
+                setDrawerOpen(false);
+                window.location.href = "/notifications";
+              }}
+            >
               {t("notifications")}
             </Button>
-            <Button icon={<GiftOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/rewards'; }}>
+            <Button
+              icon={<GiftOutlined />}
+              block
+              onClick={() => {
+                setDrawerOpen(false);
+                window.location.href = "/rewards";
+              }}
+            >
               {t("bonusPoints")}
             </Button>
-            <Button icon={<SettingOutlined />} block onClick={() => { setDrawerOpen(false); window.location.href = '/settings'; }}>
+            <Button
+              icon={<SettingOutlined />}
+              block
+              onClick={() => {
+                setDrawerOpen(false);
+                window.location.href = "/settings";
+              }}
+            >
               {t("settings")}
             </Button>
-            <Button icon={<LogoutOutlined />} block danger onClick={() => { setDrawerOpen(false); handleLogout(); }}>
+            <Button
+              icon={<LogoutOutlined />}
+              block
+              danger
+              onClick={() => {
+                setDrawerOpen(false);
+                handleLogout();
+              }}
+            >
               {t("logout")}
             </Button>
           </>
@@ -342,62 +463,93 @@ export default function MainHeader() {
       </div>
       <Divider />
       <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-        <a href="#" style={{ color: "#4267B2" }}><Facebook size={20} /></a>
-        <a href="#" style={{ color: "#E1306C" }}><Instagram size={20} /></a>
-        <Button type="text" icon={<HelpCircle size={20} />} onClick={() => { setDrawerOpen(false); window.location.href = '/help'; }} />
+        <a href="#" style={{ color: "#4267B2" }}>
+          <Facebook size={20} />
+        </a>
+        <a href="#" style={{ color: "#E1306C" }}>
+          <Instagram size={20} />
+        </a>
+        <Button
+          type="text"
+          icon={<HelpCircle size={20} />}
+          onClick={() => {
+            setDrawerOpen(false);
+            window.location.href = "/help";
+          }}
+        />
       </div>
     </div>
   );
 
   return (
-    <header 
-      style={{ 
-        background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(230,244,234,0.95) 100%)",
+    <header
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(230,244,234,0.95) 100%)",
         backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(22,101,52,0.1)",
-        boxShadow: isScrolled 
-          ? "0 2px 20px rgba(22,101,52,0.12)" 
+        boxShadow: isScrolled
+          ? "0 2px 20px rgba(22,101,52,0.12)"
           : "0 2px 20px rgba(22,101,52,0.08)",
         position: "sticky",
         top: 0,
         zIndex: 100,
-        transition: "all 0.3s ease"
+        transition: "all 0.3s ease",
       }}
     >
-      <div className={`container mx-auto px-4 transition-all duration-300 ease-out ${isScrolled ? "py-2" : "py-8"}`}>
+      <div
+        className={`container mx-auto px-4 transition-all duration-300 ease-out ${
+          isScrolled ? "py-2" : "py-8"
+        }`}
+      >
         <Row justify="space-between" align="middle">
           {/* Logo */}
           <Col>
-            <Link to="/" style={{ display: "flex", alignItems: "center", gap: isScrolled ? 8 : 20, textDecoration: "none" }}>
-              <img 
-                src="/image/BanHuong.png" 
-                alt="Logo" 
-                width={isScrolled ? 24 : 40} 
-                height={isScrolled ? 24 : 40} 
-                style={{ 
+            <Link
+              to="/"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: isScrolled ? 8 : 20,
+                textDecoration: "none",
+              }}
+            >
+              <img
+                src="/image/BanHuong.png"
+                alt="Logo"
+                width={isScrolled ? 24 : 40}
+                height={isScrolled ? 24 : 40}
+                style={{
                   borderRadius: 6,
                   transition: "all 0.3s ease",
-                  filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))"
-                }} 
+                  filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))",
+                }}
               />
               <div>
-                <span style={{
-                  fontWeight: 800,
-                  fontSize: isScrolled ? 22 : 32,
-                  background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  letterSpacing: "-0.025em",
-                  textShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                  transition: "font-size 0.3s ease"
-                }}>Bản Hương</span>
-                <div style={{ 
-                  fontSize: isScrolled ? 10 : 14, 
-                  color: "#9ca3af", 
-                  fontWeight: 500, 
-                  marginTop: -2,
-                  transition: "font-size 0.3s ease"
-                }}>
+                <span
+                  style={{
+                    fontWeight: 800,
+                    fontSize: isScrolled ? 22 : 32,
+                    background:
+                      "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    letterSpacing: "-0.025em",
+                    textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                    transition: "font-size 0.3s ease",
+                  }}
+                >
+                  Bản Hương
+                </span>
+                <div
+                  style={{
+                    fontSize: isScrolled ? 10 : 14,
+                    color: "#9ca3af",
+                    fontWeight: 500,
+                    marginTop: -2,
+                    transition: "font-size 0.3s ease",
+                  }}
+                >
                   Essential Oils
                 </div>
               </div>
@@ -409,7 +561,9 @@ export default function MainHeader() {
             <Col>
               <Button
                 type="text"
-                icon={<MenuOutlined style={{ fontSize: 28, color: "#166534" }} />}
+                icon={
+                  <MenuOutlined style={{ fontSize: 28, color: "#166534" }} />
+                }
                 onClick={() => setDrawerOpen(true)}
                 style={{
                   borderRadius: 12,
@@ -417,7 +571,7 @@ export default function MainHeader() {
                   width: 44,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "center",
                 }}
               />
               <Drawer
@@ -426,7 +580,11 @@ export default function MainHeader() {
                 onClose={() => setDrawerOpen(false)}
                 open={drawerOpen}
                 width={300}
-                bodyStyle={{ padding: 0, background: "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)" }}
+                bodyStyle={{
+                  padding: 0,
+                  background:
+                    "linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%)",
+                }}
                 closeIcon={null}
               >
                 {drawerMenu}
@@ -434,9 +592,7 @@ export default function MainHeader() {
             </Col>
           ) : (
             // Desktop full menu
-            <Col flex="auto">
-              {/* XÓA toàn bộ phần Input tìm kiếm ở đây */}
-            </Col>
+            <Col flex="auto">{/* XÓA toàn bộ phần Input tìm kiếm ở đây */}</Col>
           )}
 
           {/* Actions */}
@@ -445,71 +601,97 @@ export default function MainHeader() {
               <Row align="middle" gutter={isScrolled ? 4 : 8}>
                 {/* Language */}
                 <Col>
-                  <Dropdown 
-                    menu={{ 
-                      items: languageMenuItems, 
-                      onClick: handleLanguageChange 
-                    }} 
-                    trigger={['click']} 
+                  <Dropdown
+                    menu={{
+                      items: languageMenuItems,
+                      onClick: handleLanguageChange,
+                    }}
+                    trigger={["click"]}
                     placement="bottomRight"
                   >
-                    <Button 
-                      type="text" 
-                      icon={<Globe size={isScrolled ? 16 : 18} />} 
-                      style={{ 
-                        color: "#166534", 
-                        borderRadius: 12, 
-                        height: isScrolled ? 32 : 40, 
+                    <Button
+                      type="text"
+                      icon={<Globe size={isScrolled ? 16 : 18} />}
+                      style={{
+                        color: "#166534",
+                        borderRadius: 12,
+                        height: isScrolled ? 32 : 40,
                         fontWeight: 500,
-                        transition: "all 0.2s ease"
+                        transition: "all 0.2s ease",
                       }}
                       className="hover-scale"
                     >
-                      {!isScrolled && (i18n.language === "en" ? "EN" : "VI")} <DownOutlined style={{ fontSize: isScrolled ? 10 : 12 }} />
+                      {!isScrolled && (i18n.language === "en" ? "EN" : "VI")}{" "}
+                      <DownOutlined
+                        style={{ fontSize: isScrolled ? 10 : 12 }}
+                      />
                     </Button>
                   </Dropdown>
                 </Col>
                 {/* Cart */}
                 <Col>
-                  <Link to="/cart">
-                    <Badge 
-                      count={cartCount} 
-                      size="small" 
-                      style={{ 
-                        backgroundColor: "#166534", 
-                        boxShadow: "0 2px 8px rgba(22,101,52,0.4)" 
-                      }}
-                    >
-                      <Button 
-                        type="text" 
-                        icon={<ShoppingCartOutlined style={{ fontSize: isScrolled ? 16 : 20 }} />} 
-                        style={{ 
-                          color: "#166534", 
-                          borderRadius: 12, 
-                          height: isScrolled ? 32 : 40, 
-                          width: isScrolled ? 32 : 40,
-                          transition: "all 0.2s ease"
-                        }}
-                        className="hover-scale"
+                  <Button
+                    type="text"
+                    icon={
+                      <ShoppingCartOutlined
+                        style={{ fontSize: isScrolled ? 16 : 20 }}
                       />
-                    </Badge>
-                  </Link>
-                </Col>
-                {/* Thêm nút Wishlist vào đây */}
-                <Col>
-                  <Link to="/wishlist">
-                    <Button
-                      type="text"
-                      icon={<HeartOutlined style={{ fontSize: isScrolled ? 16 : 20, color: "#dc2626" }} />}
+                    }
+                    style={{
+                      color: "#166534",
+                      borderRadius: 12,
+                      height: isScrolled ? 32 : 40,
+                      width: isScrolled ? 32 : 40,
+                      transition: "all 0.2s ease",
+                    }}
+                    className="hover-scale"
+                    onClick={() => {
+                      if (!user) {
+                        alert("⚠️ Bạn cần đăng nhập để xem giỏ hàng");
+                        return;
+                      }
+                      navigate("/cart");
+                    }}
+                  >
+                    <Badge
+                      count={cartCount}
+                      size="small"
                       style={{
-                        borderRadius: 12,
-                        height: isScrolled ? 32 : 40,
-                        width: isScrolled ? 32 : 40,
-                        transition: "all 0.2s ease"
+                        backgroundColor: "#166534",
+                        boxShadow: "0 2px 8px rgba(22,101,52,0.4)",
                       }}
-                      className="hover-scale"
                     />
-                  </Link>
+                  </Button>
+                </Col>
+                {/* Wishlist */}
+                <Col>
+                  <Button
+                    type="text"
+                    icon={
+                      <HeartOutlined
+                        style={{
+                          fontSize: isScrolled ? 16 : 20,
+                          color: "#dc2626",
+                        }}
+                      />
+                    }
+                    style={{
+                      borderRadius: 12,
+                      height: isScrolled ? 32 : 40,
+                      width: isScrolled ? 32 : 40,
+                      transition: "all 0.2s ease",
+                    }}
+                    className="hover-scale"
+                    onClick={() => {
+                      if (!user) {
+                        alert(
+                          "⚠️ Bạn cần đăng nhập để xem danh sách yêu thích"
+                        );
+                        return;
+                      }
+                      navigate("/wishlist");
+                    }}
+                  />
                 </Col>
                 {/* Notifications / Help / Social - Only show when not scrolled */}
                 {!isScrolled && (
@@ -517,58 +699,66 @@ export default function MainHeader() {
                     {user && (
                       <Col>
                         <Badge dot={false} size="small">
-                          <Button 
-                            type="text" 
-                            icon={<Bell size={18} />} 
-                            style={{ 
-                              color: "#6b7280", 
-                              borderRadius: 12, 
-                              height: 40, 
-                              width: 40 
+                          <Button
+                            type="text"
+                            icon={<Bell size={18} />}
+                            style={{
+                              color: "#6b7280",
+                              borderRadius: 12,
+                              height: 40,
+                              width: 40,
                             }}
                             className="hover-scale"
-                            onClick={() => window.location.href = '/notifications'}
+                            onClick={() =>
+                              (window.location.href = "/notifications")
+                            }
                           />
                         </Badge>
                       </Col>
                     )}
                     <Col>
-                      <Button 
-                        type="text" 
-                        icon={<HelpCircle size={18} />} 
-                        style={{ 
-                          color: "#6b7280", 
-                          borderRadius: 12, 
-                          height: 40, 
-                          width: 40 
+                      <Button
+                        type="text"
+                        icon={<HelpCircle size={18} />}
+                        style={{
+                          color: "#6b7280",
+                          borderRadius: 12,
+                          height: 40,
+                          width: 40,
                         }}
                         className="hover-scale"
-                        onClick={() => window.location.href = '/help'}
+                        onClick={() => (window.location.href = "/help")}
                       />
                     </Col>
                     <Col>
-                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        <Link 
-                          to="#" 
-                          style={{ 
-                            color: "#4267B2", 
-                            padding: 8, 
-                            borderRadius: 10, 
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Link
+                          to="#"
+                          style={{
+                            color: "#4267B2",
+                            padding: 8,
+                            borderRadius: 10,
                             display: "flex",
-                            transition: "transform 0.2s ease"
+                            transition: "transform 0.2s ease",
                           }}
                           className="hover-scale"
                         >
                           <Facebook size={18} />
                         </Link>
-                        <Link 
-                          to="#" 
-                          style={{ 
-                            color: "#E1306C", 
-                            padding: 8, 
-                            borderRadius: 10, 
+                        <Link
+                          to="#"
+                          style={{
+                            color: "#E1306C",
+                            padding: 8,
+                            borderRadius: 10,
                             display: "flex",
-                            transition: "transform 0.2s ease"
+                            transition: "transform 0.2s ease",
                           }}
                           className="hover-scale"
                         >
@@ -581,67 +771,78 @@ export default function MainHeader() {
                 {/* Auth / User */}
                 <Col>
                   {user ? (
-                    <Dropdown 
-                      menu={{ items: userMenuItems }} 
-                      placement="bottomRight" 
-                      trigger={['click']}
+                    <Dropdown
+                      menu={{ items: userMenuItems }}
+                      placement="bottomRight"
+                      trigger={["click"]}
                       overlayStyle={{ marginTop: 8 }}
                     >
-                      <Button 
-                        type="text" 
-                        style={{ 
-                          display: "flex", 
-                          alignItems: "center", 
+                      <Button
+                        type="text"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
                           gap: isScrolled ? 6 : 8,
                           height: isScrolled ? 32 : 40,
                           padding: isScrolled ? "0 8px" : "0 12px",
                           borderRadius: 12,
                           background: "rgba(22,101,52,0.05)",
                           border: "1px solid rgba(22,101,52,0.1)",
-                          transition: "all 0.2s ease"
+                          transition: "all 0.2s ease",
                         }}
                         className="hover-scale"
                       >
-                        <Avatar 
-                          src={user.avatar} 
-                          size={isScrolled ? 24 : 32} 
+                        <Avatar
+                          src={user.avatar}
+                          size={isScrolled ? 24 : 32}
                           icon={<UserOutlined />}
-                          style={{ 
+                          style={{
                             border: "2px solid #fff",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
                           }}
                         />
                         {!isScrolled && (
-                          <span style={{ 
-                            fontWeight: 500,
-                            color: "#166534",
-                            maxWidth: 100,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                          }}>
+                          <span
+                            style={{
+                              fontWeight: 500,
+                              color: "#166534",
+                              maxWidth: 100,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
                             {user.displayName}
                           </span>
                         )}
-                        <DownOutlined style={{ 
-                          fontSize: isScrolled ? 10 : 12,
-                          color: "#166534"
-                        }} />
+                        <DownOutlined
+                          style={{
+                            fontSize: isScrolled ? 10 : 12,
+                            color: "#166534",
+                          }}
+                        />
                       </Button>
                     </Dropdown>
                   ) : (
-                    <div style={{ display: "flex", gap: isScrolled ? 8 : 12, alignItems: "center" }}>
-                      <Link 
-                        to="/login" 
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: isScrolled ? 8 : 12,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Link
+                        to="/login"
                         style={{
                           color: "#fff",
                           fontWeight: 600,
                           textDecoration: "none",
                           padding: isScrolled ? "6px 12px" : "8px 18px",
                           borderRadius: 12,
-                          background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                          background:
+                            "linear-gradient(135deg, #166534 0%, #15803d 100%)",
                           boxShadow: "0 2px 12px rgba(22,101,52,0.3)",
-                          transition: "all 0.2s ease"
+                          transition: "all 0.2s ease",
                         }}
                         className="hover-scale"
                       >
