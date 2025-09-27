@@ -61,6 +61,8 @@ const Cart = () => {
     0
   );
 
+  // Tính tổng số sản phẩm
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   return (
     <>
       <MainHeader />
@@ -122,7 +124,7 @@ const Cart = () => {
           ))}
         </Row>
 
-        {/* Tổng tiền */}
+        {/* Tổng tiền + Tổng sản phẩm */}
         <div
           style={{
             marginTop: 30,
@@ -134,12 +136,33 @@ const Cart = () => {
             fontSize: 18,
           }}
         >
-          Tổng tiền: {Number(total).toLocaleString("vi-VN")} đ
+          <div
+            style={{
+              color: "#6b7280", // xám nhạt
+              fontWeight: 400,
+              fontSize: 16,
+              marginTop: 4,
+            }}
+          >
+            Tổng tiền: {total.toLocaleString("vi-VN")} đ
+          </div>
+          <div
+            style={{
+              color: "#6b7280", // xám nhạt
+              fontWeight: 400,
+              fontSize: 16,
+              marginTop: 4,
+            }}
+          >
+            Bạn có: {totalItems} sản phẩm
+          </div>
+
           <div
             style={{
               display: "flex",
               justifyContent: "flex-end",
               gap: 12,
+              marginTop: 10,
             }}
           >
             <Button
@@ -147,7 +170,6 @@ const Cart = () => {
               style={{
                 borderRadius: 8,
                 fontWeight: 600,
-                marginTop: 10,
               }}
             >
               Tiếp tục mua hàng
@@ -160,7 +182,6 @@ const Cart = () => {
                 fontWeight: 600,
                 background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
                 border: "none",
-                marginTop: 10,
               }}
             >
               Đặt hàng ngay
