@@ -17,6 +17,10 @@ import AdminProductList from "./pages/private/admin/AdminProductList";
 import Cart from "./pages/public/Cart";
 import UpdateProduct from "./pages/private/admin/UpdateProduct";
 import UserManagement from "./pages/private/admin/UserManagement";
+import AdminAnalytics from "./pages/private/admin/AdminAnalytics";
+import AdminOrders from "./pages/private/admin/AdminOrders";
+import AdminMarketing from "./pages/private/admin/AdminMarketing";
+import AdminSettings from "./pages/private/admin/AdminSettings";
 
 function App() {
   return (
@@ -43,6 +47,10 @@ function App() {
             element={<UpdateProduct />}
           />
           <Route path="admin/users" element={<UserManagement />} />
+          <Route path="admin/analytics" element={<AdminAnalytics />} />
+          <Route path="admin/orders" element={<AdminOrders />} />
+          <Route path="admin/marketing" element={<AdminMarketing />} />
+          <Route path="admin/settings" element={<AdminSettings />} />
         </Routes>
       </main>
     </>
