@@ -1,5 +1,3 @@
-// import Product from "../models/product.model.js";
-// import ProductImage from "../models/productimage.model.js"; // Nếu có
 import { Product, ProductImage } from "../models/index.js";
 import { Op } from "sequelize";
 
@@ -51,23 +49,6 @@ export const createProduct = async (req, res) => {
   } catch (err) {
     console.error("Lỗi khi thêm sản phẩm:", err);
     res.status(500).json({ message: "Lỗi server" });
-  }
-};
-
-// Tìm kiếm sản phẩm theo tên
-export const searchProducts = async (req, res) => {
-  const keyword = req.query.q || "";
-  try {
-    const products = await Product.findAll({
-      where: {
-        productName: {
-          [Op.like]: `%${keyword}%`,
-        },
-      },
-    });
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json({ error: "Lỗi server khi tìm kiếm" });
   }
 };
 
@@ -154,5 +135,46 @@ export const getProductById = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi khi lấy sản phẩm:", err);
     res.status(500).json({ error: "Lỗi server" });
+  }
+};
+
+export const searchProducts = async (req, res) => {
+  try {
+    const q = req.query.q || "";
+    const products = await Product.findAll({
+      where: {
+        productName: { [Op.like]: `%${q}%` },
+      },
+      include: [
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          separate: true,
+          limit: 1,
+        },
+      ],
+    });
+
+    const host = `${req.protocol}://${req.get("host")}`;
+
+    const formattedProducts = products.map((p) => {
+      const prod = p.toJSON();
+
+      // ✅ Lấy ảnh đầu tiên từ images
+      if (prod.images && prod.images.length > 0) {
+        prod.productImg = `${host}/${prod.images[0].productImg}`;
+      } else {
+        prod.productImg = null;
+      }
+
+      delete prod.images;
+      return prod;
+    });
+
+    res.json(formattedProducts);
+  } catch (err) {
+    console.error("❌ Error searchProducts:", err);
+    res.status(500).json({ message: err.message });
   }
 };

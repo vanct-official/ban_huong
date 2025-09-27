@@ -61,8 +61,15 @@ function ProductList() {
       });
   };
 
+  // const debouncedSearch = useCallback(
+  //   debounce((q) => fetchProducts(q), 500),
+  //   []
+  // );
   const debouncedSearch = useCallback(
-    debounce((q) => fetchProducts(q), 500),
+    debounce((q) => {
+      fetchProducts(q);
+      setCurrentPage(1); // 👉 reset về trang 1
+    }, 500),
     []
   );
 
@@ -75,6 +82,7 @@ function ProductList() {
   const handleSearch = (value) => {
     setSearchTerm(value);
     fetchProducts(value);
+    setCurrentPage(1); // 👉 reset về trang 1
   };
 
   useEffect(() => {
