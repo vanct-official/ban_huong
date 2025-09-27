@@ -21,6 +21,7 @@ import AdminAnalytics from "./pages/private/admin/AdminAnalytics";
 import AdminOrders from "./pages/private/admin/AdminOrders";
 import AdminMarketing from "./pages/private/admin/AdminMarketing";
 import AdminSettings from "./pages/private/admin/AdminSettings";
+import AdminFeedback from "./pages/private/admin/AdminFeedback";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
           <Route path="admin/orders" element={<AdminOrders />} />
           <Route path="admin/marketing" element={<AdminMarketing />} />
           <Route path="admin/settings" element={<AdminSettings />} />
+          <Route path="admin/feedback" element={<AdminFeedback />} />
         </Routes>
       </main>
     </>

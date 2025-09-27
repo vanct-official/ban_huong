@@ -25,6 +25,7 @@ import {
   KeyOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  RedoOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -54,6 +55,12 @@ const menuItems = [
     icon: <TeamOutlined />,
     label: "Người dùng",
     path: "/admin/users",
+  },
+  {
+    key: "feedback",
+    icon: <RedoOutlined />,
+    label: "Feedback",
+    path: "/admin/feedback",
   },
   {
     key: "analytics",
