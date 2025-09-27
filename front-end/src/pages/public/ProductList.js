@@ -43,6 +43,11 @@ function ProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
 
+  // --- Hàm định dạng giá tiền ---
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN").format(Number(price));
+  };
+
   // --- Lấy dữ liệu từ API ---
   const fetchProducts = (q = "") => {
     setLoading(true);
@@ -183,8 +188,8 @@ function ProductList() {
               >
                 Khoảng giá:{" "}
                 <span style={{ color: "#ea580c" }}>
-                  {priceRange[0].toLocaleString()} đ -{" "}
-                  {priceRange[1].toLocaleString()} đ
+                  {formatPrice(priceRange[0])} đ - {formatPrice(priceRange[1])}{" "}
+                  đ
                 </span>
               </div>
               <Slider
@@ -194,7 +199,7 @@ function ProductList() {
                 step={5000}
                 value={priceRange}
                 onChange={(value) => setPriceRange(value)}
-                tooltip={{ formatter: (v) => `${v.toLocaleString()} đ` }}
+                tooltip={{ formatter: (v) => `${formatPrice(v)} đ` }}
               />
             </div>
 
@@ -289,6 +294,8 @@ function ProductList() {
                       >
                         <Tooltip title={p.productName}>{p.productName}</Tooltip>
                       </Title>
+
+                      {/* Giá cũ và giảm giá */}
                       {p.oldPrice && p.unitPrice < p.oldPrice && (
                         <div style={{ marginBottom: 2 }}>
                           <span
@@ -298,7 +305,7 @@ function ProductList() {
                               fontSize: 14,
                             }}
                           >
-                            {p.oldPrice.toLocaleString()} đ
+                            {formatPrice(p.oldPrice)} đ
                           </span>
                           <span
                             style={{
@@ -317,6 +324,8 @@ function ProductList() {
                           </span>
                         </div>
                       )}
+
+                      {/* Giá hiện tại */}
                       <div
                         style={{
                           color: "#ea580c",
@@ -325,7 +334,7 @@ function ProductList() {
                           marginBottom: 8,
                         }}
                       >
-                        {p.unitPrice.toLocaleString()} đ
+                        {formatPrice(p.unitPrice)} đ
                       </div>
 
                       {/* Nút chức năng */}
