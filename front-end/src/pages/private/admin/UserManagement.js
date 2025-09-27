@@ -120,11 +120,11 @@ export default function UserManagement() {
         <Space>
           <Button
             type={record.active ? "default" : "primary"}
-            danger={record.active}
+            danger={record.active} // nếu đang active thì nút sẽ màu đỏ
             size="small"
             onClick={() => handleToggleActive(record.id, record.active)}
           >
-            {record.active ? "Vô hiệu hóa" : "Kích hoạt"}
+            {record.active ? "Ban" : "Hoạt động"}
           </Button>
         </Space>
       ),
