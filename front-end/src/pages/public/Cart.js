@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Spin, message, Button } from "antd";
+import { Card, Row, Col, Spin, message, Button, InputNumber } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
@@ -24,6 +24,36 @@ const Cart = () => {
       message.error(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Cập nhật số lượng sản phẩm trong giỏ hàng
+  const handleUpdateQty = async (productId, qty) => {
+    // ✅ B1: update UI ngay lập tức
+    setCart((prev) =>
+      prev.map((item) =>
+        item.productId === productId ? { ...item, quantity: qty } : item
+      )
+    );
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:5000/api/cart/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ quantity: qty }),
+      });
+
+      if (!res.ok) throw new Error("Cập nhật thất bại");
+      // Không cần fetchCart nữa, vì UI đã cập nhật
+    } catch (err) {
+      message.error(err.message);
+
+      // ❌ Nếu thất bại, rollback lại state cũ bằng fetchCart
+      fetchCart();
     }
   };
 
@@ -115,7 +145,24 @@ const Cart = () => {
                         )}{" "}
                         đ
                       </div>
-                      <div>Quantity: {item.quantity}</div>
+                      {/* ✅ Điều chỉnh số lượng */}
+                      <div
+                        style={{
+                          marginTop: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span>Số lượng:</span>
+                        <InputNumber
+                          min={1}
+                          value={item.quantity}
+                          onChange={(val) =>
+                            handleUpdateQty(item.productId, val)
+                          }
+                        />
+                      </div>
                     </>
                   }
                 />
