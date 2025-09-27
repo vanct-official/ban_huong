@@ -1,6 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import MainHeader from "./components/MainHeader";
-import Footer from "./components/Footer";
 
 import HomePage from "./pages/public/HomePage";
 import ProvincesList from "./pages/ProvinceList";
@@ -10,12 +8,14 @@ import LoginPage from "./pages/authentication/LoginPage";
 import AdminPage from "./pages/private/admin/AdminPage";
 import UserProfile from "./pages/private/UserProfile";
 import EditUserProfile from "./pages/private/EditUserProfile";
+import AddProduct from "./pages/private/admin/AddProduct";
 import ProductList from "./pages/public/ProductList";
 import ProductDetail from "./pages/public/ProductDetail";
 import WishlistPage from "./pages/public/WishlistPage";
 
 import AdminProductList from "./pages/private/admin/AdminProductList";
 import Cart from "./pages/public/Cart";
+import UpdateProduct from "./pages/private/admin/UpdateProduct";
 
 function App() {
   return (
@@ -36,6 +36,8 @@ function App() {
           <Route path="wishlist" element={<WishlistPage />} />
           <Route path="/admin/products" element={<AdminProductList />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/admin/products/add" element={<AddProduct />} />
+          <Route path="/admin/products/update/:id" element={<UpdateProduct />} />
         </Routes>
       </main>
     </>

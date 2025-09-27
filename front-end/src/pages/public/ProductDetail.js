@@ -262,13 +262,21 @@ export default function ProductDetail() {
                   key: "description",
                   label: t("description") || "Mô tả",
                   children: (
-                    <Paragraph
-                      style={{ fontSize: 16, color: "#444", marginBottom: 18 }}
-                    >
-                      {product.description || (
-                        <Text type="secondary">{t("noDescription")}</Text>
-                      )}
-                    </Paragraph>
+                    <div
+                      style={{
+                        fontSize: 16,
+                        color: "#444",
+                        marginBottom: 18,
+                        lineHeight: 1.6,
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          product.description ||
+                          `<span style="color:#999">${t(
+                            "noDescription"
+                          )}</span>`,
+                      }}
+                    />
                   ),
                 },
                 {

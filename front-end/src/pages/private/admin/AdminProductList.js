@@ -129,7 +129,7 @@ export default function AdminProductList() {
         <Space>
           <Button
             icon={<EditOutlined />}
-            onClick={() => navigate(`/admin/products/edit/${record.id}`)}
+            onClick={() => navigate(`/admin/products/update/${record.id}`)}
             type="primary"
             size="small"
           >
@@ -202,7 +202,7 @@ export default function AdminProductList() {
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => navigate("/admin/products/create")}
+              onClick={() => navigate("/admin/products/add")}
               style={{ borderRadius: 8, fontWeight: 600, fontSize: isMobile ? 13 : 16, height: isMobile ? 32 : 40 }}
             >
               Thêm sản phẩm

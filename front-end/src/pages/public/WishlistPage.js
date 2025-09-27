@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Spin, message, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom"; // <-- import
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // <-- tạo navigate
 
   const fetchWishlist = async () => {
     try {
@@ -45,6 +47,10 @@ const Wishlist = () => {
     }
   };
 
+  const handleCardClick = (productId) => {
+    navigate(`/products/${productId}`); // <-- chuyển hướng
+  };
+
   useEffect(() => {
     fetchWishlist();
   }, []);
@@ -65,6 +71,7 @@ const Wishlist = () => {
             <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
               <Card
                 hoverable
+                onClick={() => handleCardClick(item.product.id)} // <-- thêm
                 cover={
                   item.product.productImg ? (
                     <img
@@ -91,7 +98,10 @@ const Wishlist = () => {
                   <Button
                     danger
                     icon={<DeleteOutlined />}
-                    onClick={() => handleRemove(item.product.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // <-- quan trọng: ngăn click Card
+                      handleRemove(item.product.id);
+                    }}
                   >
                     Remove
                   </Button>,
