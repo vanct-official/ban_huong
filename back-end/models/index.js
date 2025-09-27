@@ -79,6 +79,10 @@ Wishlist.belongsTo(Product, { foreignKey: "productId", as: "product" });
 User.hasMany(Feedback, { foreignKey: "userId" });
 Feedback.belongsTo(User, { foreignKey: "userId" });
 
+// ✅ Quan hệ Product - Feedback
+Product.hasMany(Feedback, { foreignKey: "productId" });
+Feedback.belongsTo(Product, { foreignKey: "productId" });
+
 export {
   Product,
   ProductImage,

@@ -1,5 +1,7 @@
 import { Product, ProductImage } from "../models/index.js";
 import { Op } from "sequelize";
+import { fn, col } from "sequelize";
+import Feedback from "../models/feedback.model.js";
 
 // Lấy tất cả sản phẩm
 export const getProducts = async (req, res) => {
@@ -231,7 +233,6 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-
 // Xoá sản phẩm theo ID
 export const deleteProduct = async (req, res) => {
   const { id } = req.params;
@@ -254,5 +255,27 @@ export const deleteProduct = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi khi xoá sản phẩm:", err);
     res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      include: [
+        {
+          model: Feedback,
+          attributes: [],
+        },
+      ],
+      attributes: {
+        include: [[fn("AVG", col("Feedback.rate")), "avgRating"]],
+      },
+      group: ["Product.id"],
+    });
+
+    res.json(products);
+  } catch (err) {
+    console.error("❌ Lỗi lấy products:", err);
+    res.status(500).json({ message: err.message });
   }
 };

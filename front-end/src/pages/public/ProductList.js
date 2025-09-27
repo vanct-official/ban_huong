@@ -14,6 +14,7 @@ import {
   Spin,
   Tag,
   Tooltip,
+  Rate,
 } from "antd";
 import { ShoppingCartOutlined, FireOutlined } from "@ant-design/icons";
 import debounce from "lodash.debounce";
@@ -251,7 +252,18 @@ function ProductList() {
                       <div style={{ color: "#ea580c", fontWeight: 700 }}>
                         {Number(p.unitPrice).toLocaleString("vi-VN")} đ
                       </div>
-
+                      {/* ✅ Rating trung bình */}
+                      {/* <div style={{ marginTop: 4 }}>
+                        <Rate
+                          disabled
+                          value={p.avgRating || 0}
+                          allowHalf
+                          style={{ fontSize: 14 }}
+                        />
+                        <span style={{ marginLeft: 6, color: "#666" }}>
+                          {p.avgRating ? p.avgRating.toFixed(1) : "0.0"} / 5
+                        </span>
+                      </div> */}
                       <div
                         style={{
                           display: "flex",

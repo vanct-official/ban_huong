@@ -13,6 +13,7 @@ import {
   Divider,
   message,
   Tabs,
+  Rate,
 } from "antd";
 import {
   ShoppingCartOutlined,
@@ -29,6 +30,7 @@ import ProductFeedback from "../../components/ProductFeedback";
 const { Title, Paragraph, Text } = Typography;
 
 export default function ProductDetail() {
+  const [avgRating, setAvgRating] = useState(0);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
@@ -61,6 +63,15 @@ export default function ProductDetail() {
     fetchProduct();
     // eslint-disable-next-line
   }, [id, t]);
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`http://localhost:5000/api/feedback/avg/${id}`)
+        .then((res) => setAvgRating(res.data.avgRating || 0))
+        .catch(() => setAvgRating(0));
+    }
+  }, [id]);
 
   const handleAddToCart = async () => {
     try {
@@ -161,6 +172,7 @@ export default function ProductDetail() {
               </Col>
 
               {/* Right: Thông tin sản phẩm */}
+
               <Col xs={24} md={14} style={{ padding: 32 }}>
                 <Title level={2} style={{ marginBottom: 8, color: "#166534" }}>
                   {product.productName}
@@ -174,6 +186,18 @@ export default function ProductDetail() {
                     </Tag>
                   )}
                 </Title>
+
+                {/* ✅ Hiển thị số sao trung bình */}
+                <div style={{ marginBottom: 12 }}>
+                  <span style={{ fontWeight: 500, marginRight: 8 }}>
+                    Đánh giá:
+                  </span>
+                  <Rate disabled value={avgRating} allowHalf />
+                  <span style={{ marginLeft: 8, color: "#666" }}>
+                    {avgRating.toFixed(1)} / 5
+                  </span>
+                </div>
+
                 <div style={{ marginBottom: 12 }}>
                   {product.oldPrice && product.unitPrice < product.oldPrice && (
                     <>
@@ -202,6 +226,7 @@ export default function ProductDetail() {
                     {Number(product.unitPrice).toLocaleString()} đ
                   </span>
                 </div>
+
                 <Divider style={{ margin: "16px 0" }} />
                 <div
                   style={{
@@ -225,6 +250,8 @@ export default function ProductDetail() {
                     ({t("inStock")}: {product.quantity})
                   </span>
                 </div>
+
+                {/* ✅ Nút thêm vào giỏ */}
                 <Button
                   type="primary"
                   icon={<ShoppingCartOutlined />}
