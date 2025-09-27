@@ -124,306 +124,308 @@ function ProductList() {
 
   return (
     <>
-    <MainHeader />
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #f0fdf4 0%, #fef9c3 100%)",
-        padding: "32px 0",
-      }}
-    >
-      
+      <MainHeader />
       <div
         style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          padding: "0 16px",
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #f0fdf4 0%, #fef9c3 100%)",
+          padding: "32px 0",
         }}
       >
-        {/* Thanh công cụ */}
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 24,
-            marginBottom: 32,
-            background: "rgba(255,255,255,0.85)",
-            borderRadius: 16,
-            boxShadow: "0 2px 16px rgba(22,101,52,0.07)",
-            padding: 20,
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "0 16px",
           }}
         >
-          {/* Ô tìm kiếm */}
-          <Search
-            placeholder={t("searchPlaceholder")}
-            allowClear
-            enterButton={t("searchButton")}
-            value={searchTerm}
-            onChange={handleChangeSearch}
-            onSearch={handleSearch}
+          {/* Thanh công cụ */}
+          <div
             style={{
-              maxWidth: 340,
-              flex: 1,
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 24,
+              marginBottom: 32,
+              background: "rgba(255,255,255,0.85)",
               borderRadius: 16,
-              background: "rgba(255,255,255,0.97)",
-              boxShadow: "0 2px 12px rgba(22,101,52,0.10)",
-              padding: "2px 8px",
-              border: "1.5px solid #a7f3d0",
-              fontSize: 17,
-              fontWeight: 500,
+              boxShadow: "0 2px 16px rgba(22,101,52,0.07)",
+              padding: 20,
             }}
-            className="custom-search"
-            size="large"
-          />
-
-          {/* Bộ lọc giá */}
-          <div style={{ width: 260, minWidth: 200 }}>
-            <div style={{ fontWeight: 500, color: "#166534", marginBottom: 4 }}>
-              Khoảng giá:{" "}
-              <span style={{ color: "#ea580c" }}>
-                {priceRange[0].toLocaleString()} đ -{" "}
-                {priceRange[1].toLocaleString()} đ
-              </span>
-            </div>
-            <Slider
-              range
-              min={0}
-              max={100000}
-              step={5000}
-              value={priceRange}
-              onChange={(value) => setPriceRange(value)}
-              tooltip={{ formatter: (v) => `${v.toLocaleString()} đ` }}
-            />
-          </div>
-
-          {/* Bộ lọc sắp xếp */}
-          <Select
-            value={sortOption}
-            onChange={(value) => setSortOption(value)}
-            style={{ width: 200 }}
-            size="large"
           >
-            <Option value="latest">{t("sortLatest")}</Option>
-            <Option value="priceAsc">{t("sortPriceAsc")}</Option>
-            <Option value="priceDesc">{t("sortPriceDesc")}</Option>
-            <Option value="nameAsc">{t("sortNameAsc")}</Option>
-            <Option value="nameDesc">{t("sortNameDesc")}</Option>
-          </Select>
-        </div>
-
-        {/* Danh sách sản phẩm */}
-        {loading ? (
-          <div style={{ textAlign: "center", marginTop: 80 }}>
-            <Spin tip="Đang tải sản phẩm..." size="large" />
-          </div>
-        ) : (
-          <>
-            <Row gutter={[24, 32]}>
-              {currentProducts.map((p) => (
-                <Col xs={24} sm={12} md={8} lg={6} key={p.id}>
-                  <Card
-                    hoverable
-                    className="product-card"
-                    style={{
-                      borderRadius: 18,
-                      boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
-                      overflow: "hidden",
-                      background: "#fff",
-                      transition: "box-shadow 0.2s",
-                      cursor: "pointer",
-                    }}
-                    cover={
-                      <div style={{ position: "relative" }}>
-                        <img
-                          alt={p.productName}
-                          // Lấy ảnh đầu tiên trong mảng productImgs nếu có, nếu không thì dùng productImg hoặc ảnh mặc định
-                          src={
-                            Array.isArray(p.productImgs) && p.productImgs.length > 0
-                              ? p.productImgs[0]
-                              : p.productImg || "/default-product.png"
-                          }
-                          style={{
-                            height: 210,
-                            objectFit: "cover",
-                            width: "100%",
-                            borderTopLeftRadius: 18,
-                            borderTopRightRadius: 18,
-                            transition: "transform 0.3s",
-                          }}
-                          className="product-img"
-                        />
-                        {p.isHot && (
-                          <Tag
-                            color="red"
-                            style={{
-                              position: "absolute",
-                              top: 12,
-                              left: 12,
-                              fontWeight: 700,
-                              fontSize: 13,
-                              borderRadius: 8,
-                              padding: "2px 10px",
-                              background: "#dc2626",
-                              color: "#fff",
-                              border: "none",
-                              boxShadow: "0 2px 8px rgba(220,38,38,0.12)",
-                            }}
-                            icon={<FireOutlined />}
-                          >
-                            HOT
-                          </Tag>
-                        )}
-                        {p.oldPrice && p.unitPrice < p.oldPrice && (
-                          <Tag
-                            color="orange"
-                            style={{
-                              position: "absolute",
-                              top: 12,
-                              right: 12,
-                              fontWeight: 700,
-                              fontSize: 13,
-                              borderRadius: 8,
-                              padding: "2px 10px",
-                              background: "#f59e42",
-                              color: "#fff",
-                              border: "none",
-                              boxShadow: "0 2px 8px rgba(245,158,66,0.12)",
-                            }}
-                          >
-                            Giảm giá
-                          </Tag>
-                        )}
-
-                        {/* Nút wishlist */}
-      <div style={{ position: "absolute", top: 12, right: 12 }}>
-        <WishlistButton productId={p.id} />
-      </div>
-                      </div>
-                    }
-                    onClick={() => handleProductClick(p.id)}
-                  >
-                    <Title
-                      level={5}
-                      style={{
-                        marginBottom: 6,
-                        fontWeight: 700,
-                        color: "#166534",
-                      }}
-                    >
-                      <Tooltip title={p.productName}>{p.productName}</Tooltip>
-                    </Title>
-                    {p.oldPrice && p.unitPrice < p.oldPrice && (
-                      <div style={{ marginBottom: 2 }}>
-                        <span
-                          style={{
-                            textDecoration: "line-through",
-                            color: "#b91c1c",
-                            fontSize: 14,
-                          }}
-                        >
-                          {p.oldPrice.toLocaleString()} đ
-                        </span>
-                        <span
-                          style={{
-                            background: "#fee2e2",
-                            color: "#dc2626",
-                            fontWeight: 600,
-                            fontSize: 13,
-                            borderRadius: 6,
-                            padding: "2px 8px",
-                            marginLeft: 8,
-                          }}
-                        >
-                          -
-                          {Math.round(
-                            100 - (p.unitPrice / p.oldPrice) * 100
-                          )}
-                          %
-                        </span>
-                      </div>
-                    )}
-                    <div
-                      style={{
-                        color: "#ea580c",
-                        fontWeight: 700,
-                        fontSize: 18,
-                        marginBottom: 8,
-                      }}
-                    >
-                      {p.unitPrice.toLocaleString()} đ
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        marginTop: 10,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <InputNumber
-                        min={1}
-                        max={99}
-                        defaultValue={1}
-                        size="small"
-                        style={{ borderRadius: 8 }}
-                      />
-                      <Button
-                        type="primary"
-                        icon={<ShoppingCartOutlined />}
-                        style={{
-                          borderRadius: 8,
-                          fontWeight: 600,
-                          background:
-                            "linear-gradient(135deg, #166534 0%, #15803d 100%)",
-                          border: "none",
-                          boxShadow: "0 2px 8px rgba(22,101,52,0.10)",
-                        }}
-                      >
-                        Thêm
-                      </Button>
-                    </div>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-
-            {/* Phân trang */}
-            <div
+            {/* Ô tìm kiếm */}
+            <Search
+              placeholder={t("searchPlaceholder")}
+              allowClear
+              enterButton={t("searchButton")}
+              value={searchTerm}
+              onChange={handleChangeSearch}
+              onSearch={handleSearch}
               style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 40,
+                maxWidth: 340,
+                flex: 1,
+                borderRadius: 16,
+                background: "rgba(255,255,255,0.97)",
+                boxShadow: "0 2px 12px rgba(22,101,52,0.10)",
+                padding: "2px 8px",
+                border: "1.5px solid #a7f3d0",
+                fontSize: 17,
+                fontWeight: 500,
               }}
-            >
-              <Pagination
-                current={currentPage}
-                pageSize={pageSize}
-                total={filteredProducts.length}
-                onChange={(page) => setCurrentPage(page)}
-                showSizeChanger={false}
-                style={{
-                  borderRadius: 12,
-                  background: "#fff",
-                  boxShadow: "0 2px 12px rgba(22,101,52,0.07)",
-                  padding: "8px 24px",
-                }}
+              className="custom-search"
+              size="large"
+            />
+
+            {/* Bộ lọc giá */}
+            <div style={{ width: 260, minWidth: 200 }}>
+              <div
+                style={{ fontWeight: 500, color: "#166534", marginBottom: 4 }}
+              >
+                Khoảng giá:{" "}
+                <span style={{ color: "#ea580c" }}>
+                  {priceRange[0].toLocaleString()} đ -{" "}
+                  {priceRange[1].toLocaleString()} đ
+                </span>
+              </div>
+              <Slider
+                range
+                min={0}
+                max={100000}
+                step={5000}
+                value={priceRange}
+                onChange={(value) => setPriceRange(value)}
+                tooltip={{ formatter: (v) => `${v.toLocaleString()} đ` }}
               />
             </div>
-          </>
-        )}
-      </div>
-      
-      {/* Hiệu ứng hover cho ảnh sản phẩm */}
-      <style>{`
+
+            {/* Bộ lọc sắp xếp */}
+            <Select
+              value={sortOption}
+              onChange={(value) => setSortOption(value)}
+              style={{ width: 200 }}
+              size="large"
+            >
+              <Option value="latest">{t("sortLatest")}</Option>
+              <Option value="priceAsc">{t("sortPriceAsc")}</Option>
+              <Option value="priceDesc">{t("sortPriceDesc")}</Option>
+              <Option value="nameAsc">{t("sortNameAsc")}</Option>
+              <Option value="nameDesc">{t("sortNameDesc")}</Option>
+            </Select>
+          </div>
+
+          {/* Danh sách sản phẩm */}
+          {loading ? (
+            <div style={{ textAlign: "center", marginTop: 80 }}>
+              <Spin tip="Đang tải sản phẩm..." size="large" />
+            </div>
+          ) : (
+            <>
+              <Row gutter={[24, 32]}>
+                {currentProducts.map((p) => (
+                  <Col xs={24} sm={12} md={8} lg={6} key={p.id}>
+                    <Card
+                      hoverable
+                      className="product-card"
+                      style={{
+                        borderRadius: 18,
+                        boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
+                        overflow: "hidden",
+                        background: "#fff",
+                        transition: "box-shadow 0.2s",
+                        cursor: "pointer",
+                      }}
+                      cover={
+                        <div style={{ position: "relative" }}>
+                          <img
+                            alt={p.productName}
+                            // Lấy ảnh đầu tiên trong mảng productImgs nếu có, nếu không thì dùng productImg hoặc ảnh mặc định
+                            src={
+                              Array.isArray(p.productImgs) &&
+                              p.productImgs.length > 0
+                                ? p.productImgs[0]
+                                : p.productImg || "/default-product.png"
+                            }
+                            style={{
+                              height: 210,
+                              objectFit: "cover",
+                              width: "100%",
+                              borderTopLeftRadius: 18,
+                              borderTopRightRadius: 18,
+                              transition: "transform 0.3s",
+                            }}
+                            className="product-img"
+                          />
+                          {p.isHot && (
+                            <Tag
+                              color="red"
+                              style={{
+                                position: "absolute",
+                                top: 12,
+                                left: 12,
+                                fontWeight: 700,
+                                fontSize: 13,
+                                borderRadius: 8,
+                                padding: "2px 10px",
+                                background: "#dc2626",
+                                color: "#fff",
+                                border: "none",
+                                boxShadow: "0 2px 8px rgba(220,38,38,0.12)",
+                              }}
+                              icon={<FireOutlined />}
+                            >
+                              HOT
+                            </Tag>
+                          )}
+                          {p.oldPrice && p.unitPrice < p.oldPrice && (
+                            <Tag
+                              color="orange"
+                              style={{
+                                position: "absolute",
+                                top: 12,
+                                right: 12,
+                                fontWeight: 700,
+                                fontSize: 13,
+                                borderRadius: 8,
+                                padding: "2px 10px",
+                                background: "#f59e42",
+                                color: "#fff",
+                                border: "none",
+                                boxShadow: "0 2px 8px rgba(245,158,66,0.12)",
+                              }}
+                            >
+                              Giảm giá
+                            </Tag>
+                          )}
+
+                          {/* Nút wishlist */}
+                          <div
+                            style={{ position: "absolute", top: 12, right: 12 }}
+                          >
+                            <WishlistButton productId={p.id} />
+                          </div>
+                        </div>
+                      }
+                      onClick={() => handleProductClick(p.id)}
+                    >
+                      <Title
+                        level={5}
+                        style={{
+                          marginBottom: 6,
+                          fontWeight: 700,
+                          color: "#166534",
+                        }}
+                      >
+                        <Tooltip title={p.productName}>{p.productName}</Tooltip>
+                      </Title>
+                      {p.oldPrice && p.unitPrice < p.oldPrice && (
+                        <div style={{ marginBottom: 2 }}>
+                          <span
+                            style={{
+                              textDecoration: "line-through",
+                              color: "#b91c1c",
+                              fontSize: 14,
+                            }}
+                          >
+                            {p.oldPrice.toLocaleString()} đ
+                          </span>
+                          <span
+                            style={{
+                              background: "#fee2e2",
+                              color: "#dc2626",
+                              fontWeight: 600,
+                              fontSize: 13,
+                              borderRadius: 6,
+                              padding: "2px 8px",
+                              marginLeft: 8,
+                            }}
+                          >
+                            -
+                            {Math.round(100 - (p.unitPrice / p.oldPrice) * 100)}
+                            %
+                          </span>
+                        </div>
+                      )}
+                      <div
+                        style={{
+                          color: "#ea580c",
+                          fontWeight: 700,
+                          fontSize: 18,
+                          marginBottom: 8,
+                        }}
+                      >
+                        {p.unitPrice.toLocaleString()} đ
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          marginTop: 10,
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <InputNumber
+                          min={1}
+                          max={99}
+                          defaultValue={1}
+                          size="small"
+                          style={{ borderRadius: 8 }}
+                        />
+                        <Button
+                          type="primary"
+                          icon={<ShoppingCartOutlined />}
+                          style={{
+                            borderRadius: 8,
+                            fontWeight: 600,
+                            background:
+                              "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                            border: "none",
+                            boxShadow: "0 2px 8px rgba(22,101,52,0.10)",
+                          }}
+                        >
+                          Thêm
+                        </Button>
+                      </div>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+
+              {/* Phân trang */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 40,
+                }}
+              >
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={filteredProducts.length}
+                  onChange={(page) => setCurrentPage(page)}
+                  showSizeChanger={false}
+                  style={{
+                    borderRadius: 12,
+                    background: "#fff",
+                    boxShadow: "0 2px 12px rgba(22,101,52,0.07)",
+                    padding: "8px 24px",
+                  }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Hiệu ứng hover cho ảnh sản phẩm */}
+        <style>{`
         .product-card:hover .product-img {
           transform: scale(1.06);
         }
       `}</style>
-    </div>
-    <Footer />
+      </div>
+      <Footer />
     </>
   );
 }

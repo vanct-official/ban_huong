@@ -26,10 +26,10 @@ const Wishlist = () => {
     }
   };
 
-  const handleRemove = async (id) => {
+  const handleRemove = async (productId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/wishlists/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/wishlists/${productId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -88,7 +88,7 @@ const Wishlist = () => {
                   <Button
                     danger
                     icon={<DeleteOutlined />}
-                    onClick={() => handleRemove(item.id)}
+                    onClick={() => handleRemove(item.product.id)}
                   >
                     Remove
                   </Button>,
