@@ -106,7 +106,13 @@ const Cart = () => {
                   title={item.product?.productName}
                   description={
                     <>
-                      <div>Price: {item.product?.unitPrice} VND</div>
+                      <div>
+                        Price:{" "}
+                        {Number(item.product?.unitPrice).toLocaleString(
+                          "vi-VN"
+                        )}{" "}
+                        đ
+                      </div>
                       <div>Quantity: {item.quantity}</div>
                     </>
                   }
@@ -128,7 +134,7 @@ const Cart = () => {
             fontSize: 18,
           }}
         >
-          Tổng tiền: {total.toLocaleString("vi-VN")} VND
+          Tổng tiền: {Number(total).toLocaleString("vi-VN")} đ
         </div>
       </div>
       <Footer />

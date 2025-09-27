@@ -29,10 +29,13 @@ const Wishlist = () => {
   const handleRemove = async (productId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/wishlists/${productId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/wishlists/${productId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!res.ok) throw new Error("Xóa thất bại");
       message.success("Đã xóa khỏi wishlist");
       fetchWishlist();
@@ -98,7 +101,11 @@ const Wishlist = () => {
                   title={item.product.productName}
                   description={
                     <>
-                      <div>Price: {item.product.unitPrice} VND</div>
+                      <div>
+                        Price:{" "}
+                        {Number(item.product.unitPrice).toLocaleString("vi-VN")}{" "}
+                        đ
+                      </div>
                       <div>Quantity: {item.product.quantity}</div>
                       {item.product.description && (
                         <div>{item.product.description}</div>

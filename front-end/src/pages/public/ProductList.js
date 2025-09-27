@@ -182,7 +182,7 @@ function ProductList() {
                       </Title>
 
                       <div style={{ color: "#ea580c", fontWeight: 700 }}>
-                        {p.unitPrice.toLocaleString()} đ
+                        {Number(p.unitPrice).toLocaleString("vi-VN")} đ
                       </div>
 
                       <div
