@@ -300,9 +300,7 @@ function ProductList() {
                         )}
 
                         {/* Nút wishlist */}
-      <div style={{ position: "absolute", top: 12, right: 12 }}>
-        <WishlistButton productId={p.id} />
-      </div>
+      
                       </div>
                     }
                     onClick={() => handleProductClick(p.id)}
@@ -373,6 +371,7 @@ function ProductList() {
                         size="small"
                         style={{ borderRadius: 8 }}
                       />
+        <WishlistButton productId={p.id} />
                       <Button
                         type="primary"
                         icon={<ShoppingCartOutlined />}
