@@ -12,6 +12,7 @@ import {
   Tag,
   Divider,
   message,
+  Tabs,
 } from "antd";
 import { ShoppingCartOutlined, FireOutlined, GlobalOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -96,7 +97,7 @@ export default function ProductDetail() {
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px" }}>
           {/* Nút chuyển ngôn ngữ */}
           <div style={{ textAlign: "right", marginBottom: 12 }}>
-          
+            {/* ...nếu có nút chuyển ngôn ngữ... */}
           </div>
           <Card
             style={{
@@ -169,13 +170,6 @@ export default function ProductDetail() {
                   </span>
                 </div>
                 <Divider style={{ margin: "16px 0" }} />
-                <Paragraph
-                  style={{ fontSize: 16, color: "#444", marginBottom: 18 }}
-                >
-                  {product.description || (
-                    <Text type="secondary">{t("noDescription")}</Text>
-                  )}
-                </Paragraph>
                 <div
                   style={{
                     display: "flex",
@@ -219,6 +213,36 @@ export default function ProductDetail() {
               </Col>
             </Row>
           </Card>
+          {/* Tabs cho mô tả và nhận xét đặt bên dưới Card */}
+          <div style={{ marginTop: 32, background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px rgba(22,101,52,0.07)", padding: 24 }}>
+            <Tabs
+              defaultActiveKey="description"
+              items={[
+                {
+                  key: "description",
+                  label: t("description") || "Mô tả",
+                  children: (
+                    <Paragraph
+                      style={{ fontSize: 16, color: "#444", marginBottom: 18 }}
+                    >
+                      {product.description || (
+                        <Text type="secondary">{t("noDescription")}</Text>
+                      )}
+                    </Paragraph>
+                  ),
+                },
+                {
+                  key: "reviews",
+                  label: t("reviews") || "Nhận xét",
+                  children: (
+                    <div style={{ minHeight: 60, color: "#888" }}>
+                      {t("noReviews") || "Chưa có nhận xét nào."}
+                    </div>
+                  ),
+                },
+              ]}
+            />
+          </div>
         </div>
       </div>
       <Footer />

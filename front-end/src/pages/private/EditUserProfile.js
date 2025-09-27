@@ -11,8 +11,18 @@ import {
   Row,
   Col,
   Tooltip,
+  Divider,
+  List,
+  Switch,
+  Select,
+  Modal,
 } from "antd";
-import { UserOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import MainHeader from "../../components/MainHeader";
@@ -26,13 +36,23 @@ const EditUserProfile = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // 📌 Load profile từ API
-  useEffect(() => {
+  const [addresses, setAddresses] = useState([]);
+  const [addrLoading, setAddrLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [provinces, setProvinces] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const { Option } = Select;
+
+  const [addressForm] = Form.useForm();
+
+  // Load profile từ API
+  useEffect(() => {
     document.title = t("editProfile") + " - Bản Hương";
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("google_token");
+        const token = localStorage.getItem("token");
         if (!token) {
           setError(t("notLoggedIn"));
           setLoading(false);
@@ -49,7 +69,7 @@ const EditUserProfile = () => {
 
         const data = await res.json();
         setUser(data.user);
-        form.setFieldsValue(data.user); // load dữ liệu vào form
+        form.setFieldsValue(data.user);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -57,13 +77,41 @@ const EditUserProfile = () => {
       }
     };
 
+    const fetchAddresses = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("http://localhost:5000/api/addresses/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setAddresses(Array.isArray(data) ? data : []);
+      } catch (err) {
+        message.error("Lỗi khi tải địa chỉ");
+        setAddresses([]);
+      } finally {
+        setAddrLoading(false);
+      }
+    };
+
+    const fetchProvinces = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/provinces");
+        const data = await res.json();
+        setProvinces(data.data || data); // tuỳ API
+      } catch (err) {
+        message.error("Lỗi khi tải tỉnh/thành");
+      }
+    };
+
+    fetchProvinces();
+    fetchAddresses();
     fetchProfile();
   }, [form, t]);
 
-  // 📌 Xử lý update
+  // Xử lý update
   const handleUpdate = async (values) => {
     try {
-      const token = localStorage.getItem("google_token");
+      const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:5000/api/auth/me", {
         method: "PUT",
         headers: {
@@ -78,9 +126,99 @@ const EditUserProfile = () => {
       }
 
       message.success(t("profileUpdated"));
-      navigate("/profile"); // quay lại profile
+      navigate("/profile");
     } catch (err) {
       console.error("Update error:", err);
+      message.error(err.message);
+    }
+  };
+
+  const fetchWards = async (provinceCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/wards/province/${provinceCode}`
+      );
+      const data = await res.json();
+      setWards(data.data || data);
+    } catch (err) {
+      message.error("Lỗi khi tải xã/phường");
+    }
+  };
+
+  // Xử lý thêm địa chỉ
+  const handleAddAddress = async (values) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/addresses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(values),
+      });
+      if (!res.ok) throw new Error("Thêm địa chỉ thất bại");
+      message.success("Đã thêm địa chỉ!");
+      setIsModalOpen(false);
+      addressForm.resetFields();
+      // Reload addresses
+      setAddrLoading(true);
+      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addrData = await addrRes.json();
+      setAddresses(addrData);
+      setAddrLoading(false);
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
+  // Xử lý xóa địa chỉ
+  const handleDeleteAddress = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:5000/api/addresses/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Xóa địa chỉ thất bại");
+      message.success("Đã xóa địa chỉ!");
+      // Reload addresses
+      setAddrLoading(true);
+      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addrData = await addrRes.json();
+      setAddresses(addrData);
+      setAddrLoading(false);
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
+
+  // Xử lý đặt địa chỉ mặc định
+  const handleSetDefault = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:5000/api/addresses/${id}/default`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!res.ok) throw new Error("Đặt mặc định thất bại");
+      message.success("Đã đặt địa chỉ mặc định!");
+      // Reload addresses
+      setAddrLoading(true);
+      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addrData = await addrRes.json();
+      setAddresses(addrData);
+      setAddrLoading(false);
+    } catch (err) {
       message.error(err.message);
     }
   };
@@ -126,7 +264,7 @@ const EditUserProfile = () => {
 
   return (
     <>
-    <MainHeader />
+      <MainHeader />
       <div
         style={{
           minHeight: "100vh",
@@ -210,7 +348,6 @@ const EditUserProfile = () => {
             </Form.Item>
             <Form.Item name="avatarImg" label={t("avatar")}>
               <Input placeholder={t("avatarUrl")} />
-              {/* Nếu cần upload file thực, phải làm endpoint upload */}
             </Form.Item>
             <Form.Item>
               <Button
@@ -237,6 +374,143 @@ const EditUserProfile = () => {
               </Button>
             </Form.Item>
           </Form>
+
+          <Divider style={{ margin: "24px 0" }}>{t("addresses")}</Divider>
+
+          {addresses.length === 0 ? (
+            <Alert
+              type="info"
+              message={t("noAddress") || "Bạn chưa có địa chỉ nào."}
+              style={{ marginBottom: 16, borderRadius: 8 }}
+            />
+          ) : (
+            <List
+              loading={addrLoading}
+              bordered
+              dataSource={addresses}
+              renderItem={(item) => (
+                <List.Item
+                  style={{
+                    background: item.isDefault ? "#e0f7fa" : "#fff",
+                    borderRadius: 8,
+                    marginBottom: 8,
+                    border: item.isDefault ? "1.5px solid #22d3ee" : undefined,
+                  }}
+                  actions={[
+                    !item.isDefault && (
+                      <Button
+                        type="link"
+                        onClick={() => handleSetDefault(item.id)}
+                        style={{ color: "#0ea5e9", fontWeight: 600 }}
+                      >
+                        {t("setDefault") || "Đặt mặc định"}
+                      </Button>
+                    ),
+                    addresses.length > 1 && (
+                      <Button
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDeleteAddress(item.id)}
+                      >
+                        {t("delete")}
+                      </Button>
+                    ),
+                  ].filter(Boolean)}
+                >
+                  <List.Item.Meta
+                    title={
+                      <span>
+                        {item.street}, {item.ward}, {item.province}
+                        {item.isDefault && (
+                          <span
+                            style={{
+                              color: "#0ea5e9",
+                              fontWeight: 700,
+                              marginLeft: 8,
+                            }}
+                          >
+                            ({t("default") || "Mặc định"})
+                          </span>
+                        )}
+                      </span>
+                    }
+                    description={item.note}
+                  />
+                </List.Item>
+              )}
+            />
+          )}
+
+          <Button
+            type="dashed"
+            icon={<PlusOutlined />}
+            style={{ marginTop: 16, width: "100%" }}
+            onClick={() => setIsModalOpen(true)}
+          >
+            {t("addNewAddress")}
+          </Button>
+
+          <Modal
+            title={t("addNewAddress")}
+            open={isModalOpen}
+            onCancel={() => setIsModalOpen(false)}
+            onOk={() => addressForm.submit()}
+          >
+            <Form
+              form={addressForm}
+              layout="vertical"
+              onFinish={handleAddAddress}
+            >
+              <Form.Item
+                name="province_code"
+                label="Tỉnh/Thành"
+                rules={[{ required: true, message: "Chọn tỉnh/thành" }]}
+              >
+                <Select
+                  placeholder="Chọn tỉnh/thành"
+                  onChange={(value) => {
+                    setSelectedProvince(value);
+                    fetchWards(value); // load các xã/phường tương ứng
+                    addressForm.setFieldsValue({ ward_code: undefined }); // reset ward
+                  }}
+                >
+                  {provinces.map((p) => (
+                    <Option key={p.code} value={p.code}>
+                      {p.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="ward_code"
+                label="Xã/Phường"
+                rules={[{ required: true, message: "Chọn xã/phường" }]}
+              >
+                <Select
+                  placeholder="Chọn xã/phường"
+                  disabled={!selectedProvince}
+                >
+                  {wards.map((w) => (
+                    <Option key={w.code} value={w.code}>
+                      {w.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="street"
+                label={t("street")}
+                rules={[{ required: true }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name="note" label={t("note")}>
+                <Input />
+              </Form.Item>
+            </Form>
+          </Modal>
         </Card>
       </div>
       <Footer />

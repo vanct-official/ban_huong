@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom"; // Thêm dòng này
 import "./ProductList.css"; // Nếu muốn tách CSS riêng, tạo file này cùng thư mục
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
+import WishlistButton from "../../components/WishlistButton";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -294,6 +295,11 @@ function ProductList() {
                             Giảm giá
                           </Tag>
                         )}
+
+                        {/* Nút wishlist */}
+      <div style={{ position: "absolute", top: 12, right: 12 }}>
+        <WishlistButton productId={p.id} />
+      </div>
                       </div>
                     }
                     onClick={() => handleProductClick(p.id)}

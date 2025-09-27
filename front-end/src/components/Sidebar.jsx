@@ -143,7 +143,7 @@ export default function AdminSidebar({
       )}
       <Menu
         mode="inline"
-        selectedKeys={[selectedKey]}
+        selectedKeys={[]}
         onClick={({ key }) => {
           const item = menuItems.find(i => i.key === key);
           if (item && item.path) {

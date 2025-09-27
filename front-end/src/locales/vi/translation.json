@@ -9,6 +9,12 @@
   "email": "Email",
   "phone": "Số điện thoại",
   "notUpdated": "Chưa cập nhật",
+  "delete": "Xóa",
+  "default": "Mặc định",
+  "setDefault": "Cập nhật mặc định",
+  "addresses": "Danh sách địa chỉ",
+  "addNewAddress": "Thêm địa chỉ mới",
+
 
   "language": "Ngôn ngữ",
   "changeLanguage": "Thay đổi ngôn ngữ",
@@ -64,5 +70,8 @@
   "quantity": "Số lượng",
   "inStock": "Còn lại",
   "outOfStock": "Hết hàng",
-  "addToCart": "Thêm vào giỏ hàng"
+  "addToCart": "Thêm vào giỏ hàng",
+"description": "Mô tả",
+  "reviews": "Nhận xét",
+  "noReviews": "Chưa có nhận xét nào."
 }

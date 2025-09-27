@@ -24,7 +24,7 @@ export default function HomePage() {
         <div className="absolute bottom-36 left-16 w-40 h-40 bg-gradient-to-br from-rose-200 to-pink-200 rounded-full blur-xl animate-pulse delay-700"></div>
         <div className="absolute bottom-20 right-12 w-28 h-28 bg-gradient-to-br from-orange-300 to-amber-300 rounded-full blur-lg animate-pulse delay-1000"></div>
       </div>
-<MainHeader />
+      <MainHeader />
       {/* Main Content */}
       <main className="container flex flex-col justify-center items-center min-h-[70vh] px-4 md:px-6 relative z-10">
         {/* Logo & Slogan */}
@@ -35,9 +35,10 @@ export default function HomePage() {
               alt="Bản Hương"
               className="rounded-2xl shadow-xl"
               style={{
-                width: 90,
-                height: 90,
+                width: 150,
+                height: 150,
                 objectFit: "cover",
+                alignContent: "center",
                 border: "4px solid #fff",
               }}
             />
@@ -119,9 +120,54 @@ export default function HomePage() {
             </Button>
           </Link>
         </Card>
+        <section
+          style={{
+            marginTop: 60,
+            maxWidth: 900,
+            marginLeft: "auto",
+            marginRight: "auto",
+            padding: "0 16px",
+          }}
+        >
+          <Title
+            level={2}
+            style={{
+              textAlign: "center",
+              color: "#166534",
+              fontWeight: 800,
+              marginBottom: 24,
+            }}
+          >
+            Giới thiệu về Bản Hương
+          </Title>
 
-        {/* Features */}
-        {/* Giữ nguyên phần Features của bạn ở đây */}
+          <Paragraph
+            style={{ fontSize: 16, lineHeight: 1.8, color: "#374151" }}
+          >
+            <strong>
+              Bản Hương – Tinh dầu thiên nhiên cho cuộc sống xanh.
+            </strong>{" "}
+            Trong nhịp sống hối hả, đôi khi chúng ta quên mất việc chăm sóc cho
+            chính mình. Bản Hương ra đời với mong muốn mang lại sự cân bằng cho
+            bạn qua những sản phẩm tinh dầu thiên nhiên nguyên chất.
+          </Paragraph>
+
+          <Paragraph
+            style={{ fontSize: 16, lineHeight: 1.8, color: "#374151" }}
+          >
+            Mỗi giọt tinh dầu đều được chắt lọc từ nguyên liệu sạch, an toàn,
+            giữ trọn hương thơm tinh túy từ thiên nhiên. Chúng tôi tin rằng
+            hương thơm không chỉ để thư giãn, mà còn là một liệu pháp giúp bạn
+            tái tạo năng lượng, giảm căng thẳng, và tìm lại sự bình yên.
+          </Paragraph>
+
+          <Paragraph
+            style={{ fontSize: 16, lineHeight: 1.8, color: "#374151" }}
+          >
+            Hãy để Bản Hương đồng hành cùng bạn trên hành trình sống xanh, lành
+            mạnh và đầy cảm hứng.
+          </Paragraph>
+        </section>
       </main>
       <Footer />
     </div>

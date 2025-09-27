@@ -12,6 +12,7 @@ import UserProfile from "./pages/private/UserProfile";
 import EditUserProfile from "./pages/private/EditUserProfile";
 import ProductList from "./pages/public/ProductList";
 import ProductDetail from "./pages/public/ProductDetail";
+import WishlistPage from "./pages/public/WishlistPage";
 
 import AdminProductList from "./pages/private/admin/AdminProductList";
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="wishlist" element={<WishlistPage />} />
           <Route path="/admin/products" element={<AdminProductList />} />
         </Routes>
       </main>
