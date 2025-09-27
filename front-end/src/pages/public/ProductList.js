@@ -28,6 +28,12 @@ import { useNavigate } from "react-router-dom"; // Thêm dòng này
 import "./ProductList.css"; // Nếu muốn tách CSS riêng, tạo file này cùng thư mục
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
+import {
+  addToWishlist,
+  removeFromWishlist,
+  getWishlist,
+} from "../../services/api";
+import { message } from "antd";
 
 const { Title } = Typography;
 const { Option } = Select;

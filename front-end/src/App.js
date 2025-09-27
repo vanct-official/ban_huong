@@ -14,11 +14,11 @@ import ProductList from "./pages/public/ProductList";
 import ProductDetail from "./pages/public/ProductDetail";
 
 import AdminProductList from "./pages/private/admin/AdminProductList";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   return (
     <>
-
       {/* Nội dung thay đổi theo route */}
       <main style={{ minHeight: "80vh" }}>
         <Routes>
@@ -33,6 +33,7 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/admin/products" element={<AdminProductList />} />
+          <Route path="/wishlist" element={<Wishlist />} />
         </Routes>
       </main>
     </>
