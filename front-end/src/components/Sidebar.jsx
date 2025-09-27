@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Thêm dòng này
 import {
   Layout,
@@ -10,7 +10,7 @@ import {
   Button,
   Tooltip,
   Drawer,
-} from 'antd';
+} from "antd";
 import {
   DashboardOutlined,
   ShoppingOutlined,
@@ -25,25 +25,60 @@ import {
   KeyOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 const menuItems = [
-  { key: 'dashboard', icon: <DashboardOutlined />, label: 'Tổng quan', path: '/admin' },
-  { key: 'orders', icon: <ShoppingOutlined />, label: 'Đơn hàng', path: '/admin/orders' },
-  { key: 'products', icon: <AppstoreOutlined />, label: 'Sản phẩm', path: '/admin/products' },
-  { key: 'users', icon: <TeamOutlined />, label: 'Người dùng', path: '/admin/users' },
-  { key: 'analytics', icon: <BarChartOutlined />, label: 'Thống kê', path: '/admin/analytics' },
-  { key: 'marketing', icon: <GiftOutlined />, label: 'Khuyến mãi', path: '/admin/marketing' },
-  { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt', path: '/admin/settings' },
+  {
+    key: "dashboard",
+    icon: <DashboardOutlined />,
+    label: "Tổng quan",
+    path: "/admin",
+  },
+  {
+    key: "orders",
+    icon: <ShoppingOutlined />,
+    label: "Đơn hàng",
+    path: "/admin/orders",
+  },
+  {
+    key: "products",
+    icon: <AppstoreOutlined />,
+    label: "Sản phẩm",
+    path: "/admin/products",
+  },
+  {
+    key: "users",
+    icon: <TeamOutlined />,
+    label: "Người dùng",
+    path: "/admin/users",
+  },
+  {
+    key: "analytics",
+    icon: <BarChartOutlined />,
+    label: "Thống kê",
+    path: "/admin/analytics",
+  },
+  {
+    key: "marketing",
+    icon: <GiftOutlined />,
+    label: "Khuyến mãi",
+    path: "/admin/marketing",
+  },
+  {
+    key: "settings",
+    icon: <SettingOutlined />,
+    label: "Cài đặt",
+    path: "/admin/settings",
+  },
 ];
 
 export default function AdminSidebar({
   collapsed,
   onCollapse,
-  selectedKey = 'dashboard',
+  selectedKey = "dashboard",
   onMenuSelect,
 }) {
   const [user, setUser] = useState(null);
@@ -54,8 +89,8 @@ export default function AdminSidebar({
   useEffect(() => {
     // Responsive: auto hide sidebar on mobile
     const handleResize = () => setIsMobile(window.innerWidth < 900);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -74,21 +109,21 @@ export default function AdminSidebar({
 
   const profileMenuItems = [
     {
-      key: 'edit-profile',
+      key: "edit-profile",
       icon: <EditOutlined />,
-      label: 'Chỉnh sửa thông tin',
-      onClick: () => window.location.href = "/profile/edit",
+      label: "Chỉnh sửa thông tin",
+      onClick: () => (window.location.href = "/profile/edit"),
     },
     {
-      key: 'change-password',
+      key: "change-password",
       icon: <KeyOutlined />,
-      label: 'Đổi mật khẩu',
-      onClick: () => window.location.href = "/profile/change-password",
+      label: "Đổi mật khẩu",
+      onClick: () => (window.location.href = "/profile/change-password"),
     },
     {
-      key: 'logout',
+      key: "logout",
       icon: <LogoutOutlined />,
-      label: 'Đăng xuất',
+      label: "Đăng xuất",
       danger: true,
       onClick: handleLogout,
     },
@@ -96,45 +131,73 @@ export default function AdminSidebar({
 
   const sidebarContent = (
     <>
-      <div style={{
-        padding: 20,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 14,
-        background: 'rgba(255,255,255,0.07)',
-        borderBottom: '1px solid #14532d22'
-      }}>
-        <img src="/image/BanHuong.png" alt="Bản Hương" style={{ width: 38, height: 38, borderRadius: 10 }} />
+      <div
+        style={{
+          padding: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          background: "rgba(255,255,255,0.07)",
+          borderBottom: "1px solid #14532d22",
+        }}
+      >
+        <img
+          src="/image/BanHuong.png"
+          alt="Bản Hương"
+          style={{ width: 38, height: 38, borderRadius: 10 }}
+        />
         {!collapsed && (
-          <Title level={4} style={{
-            margin: 0,
-            color: '#fff',
-            fontWeight: 800,
-            letterSpacing: 1,
-            fontSize: 22,
-            background: "linear-gradient(135deg, #fff 0%, #a7f3d0 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text"
-          }}>
+          <Title
+            level={4}
+            style={{
+              margin: 0,
+              color: "#fff",
+              fontWeight: 800,
+              letterSpacing: 1,
+              fontSize: 22,
+              background: "linear-gradient(135deg, #fff 0%, #a7f3d0 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
             Bản Hương
           </Title>
         )}
       </div>
       {user && (
-        <div style={{
-          padding: collapsed ? "16px 0" : "16px",
-          textAlign: collapsed ? "center" : "left",
-          background: 'rgba(255,255,255,0.03)',
-          borderBottom: '1px solid #14532d22'
-        }}>
-          <Dropdown menu={{ items: profileMenuItems }} trigger={['click']} arrow>
-            <Space align="center" style={{ cursor: 'pointer', width: "100%", justifyContent: collapsed ? "center" : "flex-start" }}>
+        <div
+          style={{
+            padding: collapsed ? "16px 0" : "16px",
+            textAlign: collapsed ? "center" : "left",
+            background: "rgba(255,255,255,0.03)",
+            borderBottom: "1px solid #14532d22",
+          }}
+        >
+          <Dropdown
+            menu={{ items: profileMenuItems }}
+            trigger={["click"]}
+            arrow
+          >
+            <Space
+              align="center"
+              style={{
+                cursor: "pointer",
+                width: "100%",
+                justifyContent: collapsed ? "center" : "flex-start",
+              }}
+            >
               <Avatar size={48} src={user.avatar} icon={<UserOutlined />} />
               {!collapsed && (
                 <div>
-                  <Text style={{ color: '#fff', fontWeight: 600, fontSize: 16 }}>{user.displayName}</Text>
-                  <div style={{ color: "#a7f3d0", fontSize: 13 }}>{user.role || "User"}</div>
+                  <Text
+                    style={{ color: "#fff", fontWeight: 600, fontSize: 16 }}
+                  >
+                    {user.displayName}
+                  </Text>
+                  <div style={{ color: "#a7f3d0", fontSize: 13 }}>
+                    {user.role || "User"}
+                  </div>
                 </div>
               )}
             </Space>
@@ -145,7 +208,7 @@ export default function AdminSidebar({
         mode="inline"
         selectedKeys={[]}
         onClick={({ key }) => {
-          const item = menuItems.find(i => i.key === key);
+          const item = menuItems.find((i) => i.key === key);
           if (item && item.path) {
             navigate(item.path);
           }
@@ -153,23 +216,25 @@ export default function AdminSidebar({
         }}
         items={menuItems}
         style={{
-          background: 'transparent',
-          border: 'none',
+          background: "transparent",
+          border: "none",
           marginTop: 8,
           fontWeight: 600,
         }}
         theme="dark"
         inlineIndent={20}
       />
-      <div style={{
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        padding: collapsed ? 8 : 16,
-        background: "rgba(255,255,255,0.04)",
-        borderTop: "1px solid #14532d22",
-        textAlign: collapsed ? "center" : "right"
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          padding: collapsed ? 8 : 16,
+          background: "rgba(255,255,255,0.04)",
+          borderTop: "1px solid #14532d22",
+          textAlign: collapsed ? "center" : "right",
+        }}
+      >
         <Tooltip title={collapsed ? "Mở rộng" : "Thu gọn"}>
           <Button
             type="text"
@@ -179,7 +244,7 @@ export default function AdminSidebar({
               color: "#fff",
               fontSize: 20,
               borderRadius: 8,
-              background: "rgba(22,101,52,0.15)"
+              background: "rgba(22,101,52,0.15)",
             }}
           />
         </Tooltip>
@@ -201,7 +266,7 @@ export default function AdminSidebar({
             zIndex: 1100,
             borderRadius: 8,
             background: "#166534",
-            border: "none"
+            border: "none",
           }}
           onClick={() => setDrawerOpen(true)}
         />
@@ -210,7 +275,10 @@ export default function AdminSidebar({
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
           width={240}
-          bodyStyle={{ padding: 0, background: "linear-gradient(180deg, #166534 0%, #15803d 100%)" }}
+          bodyStyle={{
+            padding: 0,
+            background: "linear-gradient(180deg, #166534 0%, #15803d 100%)",
+          }}
           closable={false}
         >
           {sidebarContent}
@@ -227,16 +295,16 @@ export default function AdminSidebar({
       collapsed={collapsed}
       width={240}
       style={{
-        height: '100vh',
-        position: 'fixed',
+        height: "100vh",
+        position: "fixed",
         left: 0,
         top: 0,
         bottom: 0,
         zIndex: 1000,
-        background: 'linear-gradient(180deg, #166534 0%, #15803d 100%)',
-        boxShadow: '4px 0 20px rgba(22,101,52,0.10)',
-        overflowY: 'auto',
-        overflowX: 'hidden'
+        background: "linear-gradient(180deg, #166534 0%, #15803d 100%)",
+        boxShadow: "4px 0 20px rgba(22,101,52,0.10)",
+        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       {sidebarContent}

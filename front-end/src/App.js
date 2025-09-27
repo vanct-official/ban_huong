@@ -16,6 +16,7 @@ import WishlistPage from "./pages/public/WishlistPage";
 import AdminProductList from "./pages/private/admin/AdminProductList";
 import Cart from "./pages/public/Cart";
 import UpdateProduct from "./pages/private/admin/UpdateProduct";
+import UserManagement from "./pages/private/admin/UserManagement";
 
 function App() {
   return (
@@ -37,7 +38,11 @@ function App() {
           <Route path="/admin/products" element={<AdminProductList />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/admin/products/add" element={<AddProduct />} />
-          <Route path="/admin/products/update/:id" element={<UpdateProduct />} />
+          <Route
+            path="/admin/products/update/:id"
+            element={<UpdateProduct />}
+          />
+          <Route path="admin/users" element={<UserManagement />} />
         </Routes>
       </main>
     </>
