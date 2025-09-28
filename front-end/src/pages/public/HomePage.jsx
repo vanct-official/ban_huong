@@ -15,6 +15,7 @@ import {
   GiftOutlined,
 } from "@ant-design/icons";
 import TopRatedProducts from "./product/TopRatedProducts";
+import BestSellerProducts from "./product/BestSellerProducts";
 
 const { Title, Paragraph } = Typography;
 
@@ -240,6 +241,7 @@ export default function HomePage() {
         </section>
       </main>
       <TopRatedProducts />
+      <BestSellerProducts />
       {/* Features Section */}
       <div
         style={{

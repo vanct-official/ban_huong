@@ -45,7 +45,7 @@ export default function TopRatedProducts() {
           marginBottom: 32,
         }}
       >
-        Top 5 sản phẩm được đánh giá cao nhất
+        Top sản phẩm được đánh giá cao nhất
       </Title>
 
       <Carousel

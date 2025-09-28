@@ -1,4 +1,4 @@
-import { Product, ProductImage } from "../models/index.js";
+import { Product, ProductImage, OrderItem } from "../models/index.js";
 import { Op } from "sequelize";
 import { fn, col } from "sequelize";
 import Feedback from "../models/feedback.model.js";
@@ -316,5 +316,45 @@ export const getTopRatedProducts = async (req, res) => {
   } catch (error) {
     console.error("❌ Lỗi getTopRatedProducts:", error);
     res.status(500).json({ error: "Không thể lấy sản phẩm top rating" });
+  }
+};
+
+// ✅ Top 5 sản phẩm bán chạy nhất
+export const getBestSellers = async (req, res) => {
+  try {
+    const bestSellers = await Product.findAll({
+      attributes: [
+        "id",
+        "productName",
+        "unitPrice",
+        // tính tổng quantity từ bảng orderitems
+        [
+          sequelize.fn("SUM", sequelize.col("orderItems.quantity")),
+          "totalSold",
+        ],
+      ],
+      include: [
+        {
+          model: OrderItem,
+          as: "orderItems", // phải khớp alias trong index.js
+          attributes: [], // không cần lấy field từ OrderItem
+        },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          limit: 1,
+        },
+      ],
+      group: ["Product.id"],
+      order: [[sequelize.literal("totalSold"), "DESC"]],
+      limit: 5,
+      subQuery: false,
+    });
+
+    res.json(bestSellers);
+  } catch (err) {
+    console.error("❌ Lỗi getBestSellers:", err);
+    res.status(500).json({ message: "Lỗi khi lấy sản phẩm bán chạy" });
   }
 };

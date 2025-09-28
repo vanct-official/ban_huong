@@ -8,6 +8,7 @@ import {
   updateProduct,
   deleteProduct,
   getTopRatedProducts,
+  getBestSellers,
 } from "../controllers/product.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
@@ -15,6 +16,7 @@ const router = express.Router();
 
 // ✅ Đặt route đặc biệt trước route động
 router.get("/top-rated", getTopRatedProducts);
+router.get("/best-sellers", getBestSellers);
 
 router.get("/", getProducts);
 router.post("/", upload.array("images", 5), createProduct);
