@@ -23,6 +23,7 @@ import AdminOrders from "./pages/private/admin/AdminOrders";
 import AdminMarketing from "./pages/private/admin/AdminMarketing";
 import AdminSettings from "./pages/private/admin/AdminSettings";
 import AdminFeedback from "./pages/private/admin/AdminFeedback";
+import AdminPromotion from "./pages/private/admin/AdminPromotion";
 
 function App() {
   return (
@@ -104,7 +105,7 @@ function App() {
           path="/admin/marketing"
           element={
             <AdminRoute>
-              <AdminMarketing />
+              <AdminPromotion />
             </AdminRoute>
           }
         />
