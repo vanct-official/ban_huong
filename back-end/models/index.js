@@ -79,12 +79,9 @@ Wishlist.belongsTo(Product, { foreignKey: "productId", as: "product" });
 User.hasMany(Feedback, { foreignKey: "userId" });
 Feedback.belongsTo(User, { foreignKey: "userId" });
 
-// ✅ Quan hệ Product - Feedback
-Product.hasMany(Feedback, { foreignKey: "productId" });
-Feedback.belongsTo(Product, { foreignKey: "productId" });
-
-Product.hasMany(Feedback, { foreignKey: "productId" });
-Feedback.belongsTo(Product, { foreignKey: "productId" });
+// ✅ Quan hệ Product - Feedback (sử dụng alias 'feedbacks')
+Product.hasMany(Feedback, { foreignKey: "productId", as: "feedbacks" });
+Feedback.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 User.hasMany(Feedback, { foreignKey: "userId" });
 Feedback.belongsTo(User, { foreignKey: "userId" });

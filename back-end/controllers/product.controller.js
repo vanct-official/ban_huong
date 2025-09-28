@@ -2,6 +2,8 @@ import { Product, ProductImage } from "../models/index.js";
 import { Op } from "sequelize";
 import { fn, col } from "sequelize";
 import Feedback from "../models/feedback.model.js";
+// import Sequelize from "sequelize";
+import { sequelize } from "../config/db.js"; // 👈 Thêm dòng này
 
 // Lấy tất cả sản phẩm
 export const getProducts = async (req, res) => {
@@ -277,5 +279,42 @@ export const getAllProducts = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi lấy products:", err);
     res.status(500).json({ message: err.message });
+  }
+};
+
+// ✅ Top 5 sản phẩm theo rating
+export const getTopRatedProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      attributes: [
+        "id",
+        "productName",
+        "unitPrice",
+        [sequelize.fn("AVG", sequelize.col("feedbacks.rate")), "avgRating"],
+        [sequelize.fn("COUNT", sequelize.col("feedbacks.id")), "feedbackCount"],
+      ],
+      include: [
+        {
+          model: Feedback,
+          as: "feedbacks", // 👈 phải khớp với alias ở association
+          attributes: [],
+        },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          limit: 1,
+        },
+      ],
+      group: ["Product.id"],
+      order: [[sequelize.literal("avgRating"), "DESC"]],
+      limit: 5,
+      subQuery: false,
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error("❌ Lỗi getTopRatedProducts:", error);
+    res.status(500).json({ error: "Không thể lấy sản phẩm top rating" });
   }
 };

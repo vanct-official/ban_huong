@@ -14,6 +14,7 @@ import {
   RobotOutlined,
   GiftOutlined,
 } from "@ant-design/icons";
+import TopRatedProducts from "./product/TopRatedProducts";
 
 const { Title, Paragraph } = Typography;
 
@@ -238,6 +239,7 @@ export default function HomePage() {
           </Paragraph>
         </section>
       </main>
+      <TopRatedProducts />
       {/* Features Section */}
       <div
         style={{
@@ -288,6 +290,7 @@ export default function HomePage() {
           </Col>
         </Row>
       </div>
+
       <Footer />
     </div>
   );

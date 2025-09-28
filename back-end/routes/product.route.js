@@ -7,10 +7,14 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  getTopRatedProducts,
 } from "../controllers/product.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
+
+// ✅ Đặt route đặc biệt trước route động
+router.get("/top-rated", getTopRatedProducts);
 
 router.get("/", getProducts);
 router.post("/", upload.array("images", 5), createProduct);
