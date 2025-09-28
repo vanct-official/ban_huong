@@ -6,6 +6,14 @@ import { Link } from "react-router-dom";
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 import { useEffect } from "react";
+import { Carousel, Row, Col } from "antd";
+import {
+  ShoppingCartOutlined,
+  SafetyCertificateOutlined,
+  ShopOutlined,
+  RobotOutlined,
+  GiftOutlined,
+} from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
@@ -28,15 +36,18 @@ export default function HomePage() {
       {/* Main Content */}
       <main className="container flex flex-col justify-center items-center min-h-[70vh] px-4 md:px-6 relative z-10">
         {/* Logo & Slogan */}
-        <div className="flex flex-col items-center mb-8">
+        <div
+          className="w-full flex flex-col items-center mb-8"
+          style={{ maxWidth: "75vw", margin: "0 auto" }}
+        >
           <div className="relative mb-4">
             <img
               src="/image/BanHuong.png"
               alt="Bản Hương"
               className="rounded-2xl shadow-xl"
               style={{
-                width: 150,
-                height: 150,
+                width: 100,
+                height: 100,
                 objectFit: "cover",
                 alignContent: "center",
                 border: "4px solid #fff",
@@ -51,7 +62,6 @@ export default function HomePage() {
                 "linear-gradient(135deg, #166534 0%, #15803d 50%, #dc2626 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
               textAlign: "center",
               fontWeight: 800,
               fontSize: "2.5rem",
@@ -123,12 +133,71 @@ export default function HomePage() {
         <section
           style={{
             marginTop: 60,
-            maxWidth: 900,
+            maxWidth: 1200,
             marginLeft: "auto",
             marginRight: "auto",
             padding: "0 16px",
           }}
         >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "75vw",
+              margin: "0 auto",
+              marginBottom: 40,
+            }}
+          >
+            <Carousel autoplay autoplaySpeed={4000} effect="scrollx" dots>
+              <div>
+                <img
+                  src="/image/bia1.png"
+                  alt="Banner 1"
+                  style={{
+                    width: "100%",
+                    height: "500px",
+                    objectFit: "cover",
+                    borderRadius: "16px",
+                  }}
+                />
+              </div>
+              <div>
+                <img
+                  src="/image/bia2.png"
+                  alt="Banner 2"
+                  style={{
+                    width: "100%",
+                    height: "500px",
+                    objectFit: "cover",
+                    borderRadius: "16px",
+                  }}
+                />
+              </div>
+              <div>
+                <img
+                  src="/image/bia3.png"
+                  alt="Banner 3"
+                  style={{
+                    width: "100%",
+                    height: "500px",
+                    objectFit: "cover",
+                    borderRadius: "16px",
+                  }}
+                />
+              </div>
+              <div>
+                <img
+                  src="/image/bia4.png"
+                  alt="Banner 4"
+                  style={{
+                    width: "100%",
+                    height: "500px",
+                    objectFit: "cover",
+                    borderRadius: "16px",
+                  }}
+                />
+              </div>
+            </Carousel>
+          </div>
           <Title
             level={2}
             style={{
@@ -169,6 +238,56 @@ export default function HomePage() {
           </Paragraph>
         </section>
       </main>
+      {/* Features Section */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "75vw",
+          margin: "40px auto",
+          padding: "30px 20px",
+          background: "#fff",
+          borderRadius: 12,
+          boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+        }}
+      >
+        <Row gutter={[32, 24]} justify="center" align="middle">
+          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
+            <ShoppingCartOutlined style={{ fontSize: 36, color: "#166534" }} />
+            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Mua sắm dễ dàng</h3>
+            <p style={{ color: "#555" }}>Dễ dàng tìm kiếm sản phẩm</p>
+          </Col>
+
+          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
+            <SafetyCertificateOutlined
+              style={{ fontSize: 36, color: "#166534" }}
+            />
+            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Tính bảo mật cao</h3>
+            <p style={{ color: "#555" }}>Giữ kín thông tin khách hàng</p>
+          </Col>
+
+          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
+            <ShopOutlined style={{ fontSize: 36, color: "#166534" }} />
+            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Tích hợp</h3>
+            <p style={{ color: "#555" }}>
+              Kiểm soát chất lượng qua từng sản phẩm
+            </p>
+          </Col>
+
+          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
+            <RobotOutlined style={{ fontSize: 36, color: "#166534" }} />
+            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Tích hợp AI</h3>
+            <p style={{ color: "#555" }}>
+              AI giúp bạn trả lời các câu hỏi về sản phẩm
+            </p>
+          </Col>
+
+          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
+            <GiftOutlined style={{ fontSize: 36, color: "#166534" }} />
+            <h3 style={{ marginTop: 10, fontWeight: 700 }}>So sánh sản phẩm</h3>
+            <p style={{ color: "#555" }}>Hỗ trợ so sánh các sản phẩm</p>
+          </Col>
+        </Row>
+      </div>
       <Footer />
     </div>
   );
