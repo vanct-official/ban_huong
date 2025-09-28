@@ -46,8 +46,14 @@ export const loginWithGoogle = async (req, res) => {
         lastname: lastName,
         email,
         avatarImg: picture || null,
+        isActive: true, // 👈 mặc định active khi tạo mới
       });
     } else {
+      // Nếu user bị disable thì chặn login
+      if (user.isActive === false) {
+        return res.status(403).json({ message: "Tài khoản của bạn đã bị khóa." });
+      }
+
       if (picture && user.avatarImg !== picture) {
         user.avatarImg = picture;
         await user.save();
@@ -63,7 +69,7 @@ export const loginWithGoogle = async (req, res) => {
 
     res.status(200).json({
       message: "Google login successful",
-      token, // 👈 đổi tên cho chuẩn
+      token,
       user: {
         id: user.id,
         name: `${user.firstname} ${user.lastname}`.trim(),
@@ -77,6 +83,7 @@ export const loginWithGoogle = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 /**
  * 2. Get user profile

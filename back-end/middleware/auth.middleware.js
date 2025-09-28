@@ -1,5 +1,6 @@
 // === middleware/auth.middleware.js ===
 import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 
 export const verifyToken = (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
@@ -13,6 +14,13 @@ export const verifyToken = (req, res, next) => {
   } catch (err) {
     return res.status(403).json({ message: "Invalid token" });
   }
+};
+
+export const authorizeAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Chỉ admin mới có quyền này." });
+  }
+  next();
 };
 
 export default verifyToken;

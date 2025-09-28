@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Avatar, message, Space, Tag, Drawer } from "antd";
+import { Table, Button, Avatar, message, Space, Tag, Drawer, Modal, Radio } from "antd";
 import { ReloadOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
+
+const API_BASE = "http://localhost:5000";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -10,22 +12,28 @@ export default function UserManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
 
-  // Responsive check
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [actionType, setActionType] = useState("");
+
+  const getToken = () => localStorage.getItem("token");
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 900);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch users
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/users");
+      const res = await axios.get(`${API_BASE}/api/admin/users`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
       setUsers(res.data);
     } catch (err) {
       console.error(err);
-      message.error("Lỗi khi tải danh sách người dùng!");
+      message.error("Lỗi khi tải danh sách user");
     }
     setLoading(false);
   };
@@ -34,20 +42,30 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
-  // Toggle active/inactive user
-  const handleToggleActive = async (id, currentActive) => {
+  const handleAction = async () => {
+    if (!selectedUser || !actionType) return;
+    const urlMap = {
+      suspend: `${API_BASE}/api/admin/users/${selectedUser.id}/suspend`,
+      activate: `${API_BASE}/api/admin/users/${selectedUser.id}/activate`,
+      "make-admin": `${API_BASE}/api/admin/users/${selectedUser.id}/make-admin`,
+    };
     try {
-      await axios.patch(`http://localhost:5000/api/users/${id}`, {
-        active: !currentActive,
+      await axios.put(urlMap[actionType], {}, {
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
-      message.success(
-        `Người dùng đã được ${currentActive ? "vô hiệu hóa" : "kích hoạt"}!`
-      );
+      message.success("Thao tác thành công!");
+      setModalVisible(false);
       fetchUsers();
     } catch (err) {
       console.error(err);
-      message.error("Thay đổi trạng thái thất bại!");
+      message.error("Thao tác thất bại!");
     }
+  };
+
+  const showActionModal = (user) => {
+    setSelectedUser(user);
+    setActionType(""); // reset
+    setModalVisible(true);
   };
 
   const columns = [
@@ -56,159 +74,74 @@ export default function UserManagement() {
       key: "avatar",
       render: (record) => {
         const img = record.avatar || record.avatarImg || record.picture || null;
-
-        return img ? (
-          <Avatar
-            src={
-              img.startsWith("http") ? img : `http://localhost:5000/${img}` // Nếu chỉ là đường dẫn file thì thêm host
-            }
-            size={40}
-          />
-        ) : (
-          <Avatar icon={<UserOutlined />} size={40} />
-        );
+        return img ? <Avatar src={img.startsWith("http") ? img : `${API_BASE}/uploads/${img}`} size={40} />
+                   : <Avatar icon={<UserOutlined />} size={40} />;
       },
       width: 80,
       align: "center",
     },
-
     {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      render: (text) => <span style={{ fontWeight: 600 }}>{text}</span>,
+      render: text => <strong>{text}</strong>,
       width: 180,
-      ellipsis: true,
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      render: (text) => <span style={{ color: "#555" }}>{text}</span>,
+      render: text => <span style={{ color: "#555" }}>{text}</span>,
       width: 220,
-      ellipsis: true,
     },
     {
-      title: "Vai trò",
+      title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role) => (
-        <Tag color={role === "admin" ? "red" : "green"}>
-          {role === "admin" ? "Quản trị" : "Người dùng"}
-        </Tag>
-      ),
+      render: role => <Tag color={role === "admin" ? "red" : "green"}>{role === "admin" ? "Admin" : "User"}</Tag>,
       width: 120,
       align: "center",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "active",
-      key: "active",
-      render: (active) =>
-        active ? (
-          <Tag color="green">Hoạt động</Tag>
-        ) : (
-          <Tag color="volcano">Vô hiệu hóa</Tag>
-        ),
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: active => active ? <Tag color="green">Active</Tag> : <Tag color="volcano">Disabled</Tag>,
       width: 120,
       align: "center",
     },
     {
-      title: "Hành động",
+      title: "Actions",
       key: "action",
-      render: (_, record) => (
-        <Space>
-          <Button
-            type={record.active ? "default" : "primary"}
-            danger={record.active} // nếu đang active thì nút sẽ màu đỏ
-            size="small"
-            onClick={() => handleToggleActive(record.id, record.active)}
-          >
-            {record.active ? "Ban" : "Hoạt động"}
-          </Button>
-        </Space>
-      ),
-      width: 160,
+      render: (_, record) => {
+        if (record.role === "admin") return null;
+        return <Button type="primary" size="small" onClick={() => showActionModal(record)}>Hành động</Button>;
+      },
+      width: 150,
       align: "center",
     },
   ];
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f6f8fa" }}>
-      {/* Sidebar */}
-      {!isMobile && (
-        <div
-          style={{
-            minWidth: 220,
-            background: "#fff",
-            borderRight: "1px solid #eee",
-          }}
-        >
-          <AdminSidebar collapsed={false} />
-        </div>
-      )}
+      {!isMobile && <div style={{ minWidth: 220, background: "#fff", borderRight: "1px solid #eee" }}>
+        <AdminSidebar collapsed={false} />
+      </div>}
 
-      {/* Drawer sidebar for mobile */}
-      {isMobile && (
-        <Drawer
-          placement="left"
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          bodyStyle={{ padding: 0 }}
-          width={220}
-        >
-          <AdminSidebar collapsed={false} />
-        </Drawer>
-      )}
+      {isMobile && <Drawer placement="left" open={sidebarOpen} onClose={() => setSidebarOpen(false)} bodyStyle={{ padding: 0 }} width={220}>
+        <AdminSidebar collapsed={false} />
+      </Drawer>}
 
-      {/* Main content */}
-      <div
-        style={{
-          flex: 1,
-          padding: isMobile ? 8 : 24,
-          maxWidth: 1200,
-          margin: "0 auto",
-        }}
-      >
-        {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: isMobile ? 12 : 24,
-            gap: 8,
-          }}
-        >
+      <div style={{ flex: 1, padding: isMobile ? 8 : 24, maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: isMobile ? 12 : 24, gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {isMobile && (
-              <Button
-                icon={<MenuOutlined />}
-                onClick={() => setSidebarOpen(true)}
-                style={{ borderRadius: 8, marginRight: 8 }}
-              />
-            )}
-            <h2
-              style={{
-                margin: 0,
-                color: "#166534",
-                fontSize: isMobile ? 20 : 26,
-              }}
-            >
-              Quản lý người dùng
-            </h2>
+            {isMobile && <Button icon={<MenuOutlined />} onClick={() => setSidebarOpen(true)} style={{ borderRadius: 8, marginRight: 8 }} />}
+            <h2 style={{ margin: 0, color: "#166534", fontSize: isMobile ? 20 : 26 }}>Quản lý người dùng</h2>
           </div>
+          <Button icon={<ReloadOutlined />} onClick={fetchUsers} loading={loading}>Làm mới</Button>
         </div>
 
-        {/* Table */}
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
-            padding: isMobile ? 4 : 24,
-          }}
-        >
+        <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 4px 24px rgba(22,101,52,0.08)", padding: isMobile ? 4 : 24 }}>
           <Table
             columns={columns}
             dataSource={users}
@@ -220,6 +153,22 @@ export default function UserManagement() {
             size={isMobile ? "small" : "middle"}
           />
         </div>
+
+        {/* Modal chọn hành động */}
+        <Modal
+          title={`Hành động cho "${selectedUser?.username}"`}
+          open={modalVisible}
+          onCancel={() => setModalVisible(false)}
+          onOk={handleAction}
+          okText="Xác nhận"
+          cancelText="Hủy"
+        >
+          <Radio.Group onChange={e => setActionType(e.target.value)} value={actionType}>
+            {selectedUser?.isActive && <Radio value="suspend">Đình chỉ</Radio>}
+            {!selectedUser?.isActive && <Radio value="activate">Kích hoạt</Radio>}
+            {selectedUser?.role !== "admin" && <Radio value="make-admin">Cấp quyền Admin</Radio>}
+          </Radio.Group>
+        </Modal>
       </div>
     </div>
   );

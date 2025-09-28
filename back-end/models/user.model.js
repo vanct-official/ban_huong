@@ -18,6 +18,7 @@ const User = sequelize.define(
       defaultValue: "customer",
     },
     avatarImg: { type: DataTypes.STRING, allowNull: true },
+    isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     // createdAt & updatedAt sẽ tự được Sequelize quản lý khi timestamps: true
   },
   {

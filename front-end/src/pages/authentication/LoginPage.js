@@ -102,92 +102,85 @@ export default function LoginPage() {
   };
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
-  setLoading(true);
-  try {
-    // Decode Google credential để lấy thông tin cơ bản
-    const decoded = jwtDecode(credentialResponse.credential);
-
+    setLoading(true);
     try {
-      // Gửi Google token lên Backend để xác thực
-      const response = await fetch(
-        `${
-          process.env.REACT_APP_API_URL || "http://localhost:5000"
-        }/api/auth/google`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: credentialResponse.credential,
-          }),
+      const decoded = jwtDecode(credentialResponse.credential);
+
+      try {
+        const response = await fetch(
+          `${
+            process.env.REACT_APP_API_URL || "http://localhost:5000"
+          }/api/auth/google`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idToken: credentialResponse.credential }),
+          }
+        );
+
+        const data = await response.json().catch(() => ({})); // luôn parse JSON
+
+        if (response.ok) {
+          // ✅ Login thành công
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+          }
+
+          const userData = {
+            ...data.user,
+            picture:
+              data.user.avatar ||
+              data.user.picture ||
+              data.user.avatarImg ||
+              decoded.picture,
+            loginMethod: "google",
+          };
+
+          setUser(userData);
+          localStorage.setItem("user_data", JSON.stringify(userData));
+
+          notification.success({
+            message: "Đăng nhập thành công!",
+            description: `Chào mừng ${userData.name} đến với Bản Hương`,
+            placement: "topRight",
+            duration: 3,
+          });
+        } else {
+          // ❌ Xử lý lỗi từ backend
+          let message = data.message || "Không thể đăng nhập bằng Google.";
+          if (response.status === 403) {
+            alert(
+              "⚠️ Tài khoản của bạn đã bị khóa, vui lòng liên hệ quản trị viên qua email: vanctquantrivien@gmail.com!"
+            );
+            return;
+          }
+
+          notification.error({
+            message: `Đăng nhập thất bại (${response.status})`,
+            description: message,
+            placement: "topRight",
+            duration: 4,
+          });
         }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // Lưu token và user từ backend
-        if (data.token) {
-          localStorage.setItem("token", data.token); // 🔑 chỉ dùng JWT từ backend
-        }
-
-        const userData = {
-          ...data.user,
-          picture:
-            data.user.avatar ||
-            data.user.picture ||
-            data.user.avatarImg ||
-            decoded.picture,
-          loginMethod: "google",
-        };
-
-        setUser(userData);
-        localStorage.setItem("user_data", JSON.stringify(userData));
-
-        notification.success({
-          message: "Đăng nhập thành công!",
-          description: `Chào mừng ${userData.name} đến với Bản Hương`,
+      } catch (apiError) {
+        console.error("❌ Backend auth error:", apiError);
+        notification.error({
+          message: "Lỗi máy chủ",
+          description: "Không thể kết nối tới server. Vui lòng thử lại sau.",
           placement: "topRight",
-          duration: 3,
         });
-      } else {
-        throw new Error("Backend authentication failed");
       }
-    } catch (apiError) {
-      // Nếu backend lỗi, fallback tạm bằng thông tin từ Google
-      console.log("Backend auth failed, fallback to Google data:", apiError.message);
-
-      const userData = {
-        id: decoded.sub,
-        name: decoded.name,
-        email: decoded.email,
-        picture: decoded.picture,
-        email_verified: decoded.email_verified,
-        loginMethod: "google",
-      };
-
-      setUser(userData);
-      localStorage.setItem("user_data", JSON.stringify(userData));
-
-      notification.success({
-        message: "Đăng nhập thành công!",
-        description: `Chào mừng ${userData.name} đến với Bản Hương`,
+    } catch (error) {
+      console.error("Google login error:", error);
+      notification.error({
+        message: "Đăng nhập thất bại",
+        description: "Có lỗi xảy ra trong quá trình đăng nhập với Google",
         placement: "topRight",
-        duration: 3,
       });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Google login error:", error);
-    notification.error({
-      message: "Đăng nhập thất bại",
-      description: "Có lỗi xảy ra trong quá trình đăng nhập với Google",
-      placement: "topRight",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleGoogleLoginError = () => {
     notification.error({
@@ -241,8 +234,8 @@ export default function LoginPage() {
   };
 
   const handleHome = () => {
-    if(!user) {
-      notification.warning({message: "Vui lòng đăng nhập"});
+    if (!user) {
+      notification.warning({ message: "Vui lòng đăng nhập" });
       return navigate("/login");
     }
     navigate(user.role === "admin" ? "/admin" : "/");
@@ -613,6 +606,26 @@ export default function LoginPage() {
                       </Text>
                     </Space>
                   </Space>
+
+                  {/* 🚫 Thông báo tài khoản bị khóa */}
+                  {user.isActive === false && (
+                    <div
+                      style={{
+                        marginTop: "16px",
+                        padding: "12px",
+                        borderRadius: "8px",
+                        background: "rgba(239,68,68,0.1)",
+                        border: "1px solid #ef4444",
+                        color: "#b91c1c",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      ⚠️ Tài khoản của bạn hiện đang{" "}
+                      <strong>không hoạt động</strong>. Vui lòng liên hệ quản
+                      trị viên để được hỗ trợ.
+                    </div>
+                  )}
                 </div>
 
                 {/* User Stats/Info */}
