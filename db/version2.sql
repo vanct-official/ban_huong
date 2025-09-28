@@ -1,6 +1,6 @@
--- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: banhuong
+-- Host: localhost    Database: banhuong
 -- ------------------------------------------------------
 -- Server version	8.0.29
 
@@ -98,7 +98,7 @@ CREATE TABLE `carts` (
   KEY `productId` (`productId`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `feedback` (
   KEY `productId` (`productId`),
   CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE,
   CONSTRAINT `feedback_chk_1` CHECK ((`rate` between 1 and 5))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +139,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (1,2,3,'f','2025-09-28 08:29:40','2025-09-28 08:29:40',9);
+INSERT INTO `feedback` VALUES (1,2,3,'f','2025-09-28 08:29:40','2025-09-28 08:29:40',9),(2,2,5,'con cac','2025-09-28 11:13:26','2025-09-28 11:13:26',9),(3,2,5,'d','2025-09-28 11:13:54','2025-09-28 11:13:54',9),(4,2,5,'cc','2025-09-28 11:14:32','2025-09-28 11:14:32',10);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -282,14 +282,11 @@ CREATE TABLE `promotion` (
   `promotionName` varchar(255) NOT NULL,
   `description` text,
   `discountPercent` decimal(5,2) NOT NULL,
-  `startDate` datetime NOT NULL,
-  `endDate` datetime NOT NULL,
-  `status` enum('active','inactive') DEFAULT 'inactive',
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `promotion_chk_1` CHECK (((`discountPercent` >= 0) and (`discountPercent` <= 100)))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,6 +295,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
+INSERT INTO `promotion` VALUES (1,'Back fai day','Giảm sâu nha sea',21.00,'2025-09-28 11:51:16','2025-09-28 12:30:11'),(2,'Tết duong lịch','Giảm ít nhé boi fpt uni',11.00,'2025-09-28 11:52:12','2025-09-28 12:06:53'),(3,'Tung hoa mi','Giảm sâu nha',45.00,'2025-09-28 12:05:48','2025-09-28 12:06:27');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,7 +353,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -364,7 +362,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-08-14 15:13:13',1),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-26 00:56:56',1),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 08:33:25',1),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-28 08:18:58',1);
+INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-08-14 15:13:13',1),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-26 00:56:56',1),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 11:46:08',1),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-28 08:18:58',1),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-28 11:46:08',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -440,4 +438,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-28 16:17:13
+-- Dump completed on 2025-09-28 19:33:45
