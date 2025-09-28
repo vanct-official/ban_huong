@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Spin, Typography, Rate } from "antd";
+import { Card, Spin, Typography, Rate, Carousel } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -47,33 +47,65 @@ export default function TopRatedProducts() {
       >
         Top 5 sản phẩm được đánh giá cao nhất
       </Title>
-      <Row gutter={[24, 24]}>
+
+      <Carousel
+        dots
+        autoplay
+        autoplaySpeed={4000}
+        slidesToShow={3} // số sản phẩm hiển thị cùng lúc
+        responsive={[
+          {
+            breakpoint: 1024,
+            settings: { slidesToShow: 2 },
+          },
+          {
+            breakpoint: 768,
+            settings: { slidesToShow: 1 },
+          },
+        ]}
+      >
         {products.map((p) => (
-          <Col xs={24} sm={12} md={8} lg={6} key={p.id}>
+          <div key={p.id} style={{ padding: "0 10px" }}>
             <Card
               hoverable
               cover={
                 <img
                   src={p.productImg || "/default-product.png"}
                   alt={p.productName}
-                  style={{ height: 220, objectFit: "cover" }}
+                  style={{
+                    height: 220,
+                    objectFit: "cover",
+                    borderTopLeftRadius: "8px",
+                    borderTopRightRadius: "8px",
+                  }}
                 />
               }
               onClick={() => navigate(`/products/${p.id}`)}
+              style={{ maxWidth: 300, margin: "0 auto" }}
             >
-              <h3 style={{ fontWeight: 600 }}>{p.productName}</h3>
-              <p style={{ color: "#ea580c", fontWeight: 700 }}>
+              <h3 style={{ fontWeight: 600, textAlign: "center" }}>
+                {p.productName}
+              </h3>
+              <p
+                style={{
+                  color: "#ea580c",
+                  fontWeight: 700,
+                  textAlign: "center",
+                }}
+              >
                 {Number(p.unitPrice).toLocaleString()} đ
               </p>
-              <Rate disabled value={parseFloat(p.avgRating)} allowHalf />
-              <p style={{ fontSize: 13, color: "#666" }}>
-                {parseFloat(p.avgRating).toFixed(1)} ★ ({p.feedbackCount} nhận
-                xét)
-              </p>
+              <div style={{ textAlign: "center" }}>
+                <Rate disabled value={parseFloat(p.avgRating)} allowHalf />
+                <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+                  {parseFloat(p.avgRating).toFixed(1)} ★ ({p.feedbackCount} nhận
+                  xét)
+                </p>
+              </div>
             </Card>
-          </Col>
+          </div>
         ))}
-      </Row>
+      </Carousel>
     </div>
   );
 }
