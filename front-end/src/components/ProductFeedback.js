@@ -14,7 +14,7 @@ export default function ProductFeedback({ productId }) {
   const fetchFeedbacks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/feedback/${productId}`
+        `http://localhost:5000/api/feedback/product/${productId}`
       );
       setFeedbacks(res.data);
     } catch (err) {
@@ -103,11 +103,11 @@ export default function ProductFeedback({ productId }) {
           <List.Item>
             <List.Item.Meta
               avatar={
-                <Avatar src={fb.User?.avatarImg || "/default-avatar.png"} />
+                <Avatar src={fb.user?.avatarImg || "/default-avatar.png"} />
               }
               title={
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span>{fb.User?.username}</span>
+                  <span>{fb.user?.username}</span>
                   <Rate disabled value={fb.rate} style={{ fontSize: 14 }} />
                 </div>
               }

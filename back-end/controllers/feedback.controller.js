@@ -28,17 +28,15 @@ export const getFeedbackByProduct = async (req, res) => {
     const feedbacks = await Feedback.findAll({
       where: { productId },
       include: [
-        {
-          model: User,
-          attributes: ["username", "avatarImg"], // ✅ chỉ lấy username + avatar
-        },
+        { model: User, as: "user", attributes: ["username", "avatarImg"] },
+        { model: Product, as: "product", attributes: ["productName"] },
       ],
       order: [["createdAt", "DESC"]],
     });
 
     res.json(feedbacks);
   } catch (err) {
-    console.error("❌ Lỗi khi lấy feedback:", err);
+    console.error("❌ Lỗi lấy feedback theo product:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -69,8 +67,8 @@ export const getFeedbackByProductId = async (req, res) => {
     const feedbacks = await Feedback.findAll({
       where: { productId },
       include: [
-        { model: User, attributes: ["username", "avatarImg"] },
-        { model: Product, attributes: ["productName"] },
+        { model: User, as : "user", attributes: ["username", "avatarImg"] },
+        { model: Product, as: "product", attributes: ["productName"] },
       ],
       order: [["createdAt", "DESC"]],
     });
@@ -104,8 +102,16 @@ export const getAllFeedbacks = async (req, res) => {
   try {
     const feedbacks = await Feedback.findAll({
       include: [
-        { model: User, attributes: ["username", "avatarImg"] },
-        { model: Product, attributes: ["productName"] },
+        { 
+          model: User, 
+          as: "user",           // ✅ trùng alias trong model
+          attributes: ["username", "avatarImg"] 
+        },
+        { 
+          model: Product, 
+          as: "product",        // ✅ trùng alias trong model
+          attributes: ["productName"] 
+        },
       ],
       order: [["createdAt", "DESC"]],
     });

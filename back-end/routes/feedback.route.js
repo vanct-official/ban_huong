@@ -11,12 +11,22 @@ import verifyToken from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", verifyToken, createFeedback); // tạo feedback
-router.get("/:productId", getFeedbackByProduct); // feedback cho 1 product (frontend detail)
-router.get("/avg/:productId", getAverageRating); // lấy trung bình số sao cho 1 sản phẩm
-router.get("/", getAllFeedbacks); // tất cả feedback
-router.get("/product/:productId", getFeedbackByProductId); // ✅ admin lọc theo product
+// Tạo feedback (user)
 router.post("/", verifyToken, createFeedback);
+
+// Feedback cho 1 product (frontend)
+router.get("/product/:productId", getFeedbackByProduct); 
+
+// Trung bình số sao cho 1 sản phẩm
+router.get("/avg/:productId", getAverageRating);
+
+// Tất cả feedback (admin)
+router.get("/", getAllFeedbacks);
+
+// Admin lọc theo product
+router.get("/admin/product/:productId", getFeedbackByProductId);
+
+// Xoá feedback (admin)
 router.delete("/:id", deleteFeedback);
 
 export default router;

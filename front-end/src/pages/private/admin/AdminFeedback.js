@@ -80,7 +80,7 @@ export default function AdminFeedback() {
   const columns = [
     {
       title: "Người dùng",
-      dataIndex: "User",
+      dataIndex: "user",
       key: "user",
       render: (user) => (
         <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -92,7 +92,7 @@ export default function AdminFeedback() {
     },
     {
       title: "Sản phẩm",
-      dataIndex: "Product",
+      dataIndex: "product",
       key: "product",
       render: (product) => (
         <Tag color="green" style={{ fontWeight: 500 }}>
