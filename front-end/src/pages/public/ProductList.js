@@ -25,6 +25,8 @@ import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 import WishlistButton from "../../components/WishlistButton";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { Title } = Typography;
 const { Option } = Select;
 const { Search } = Input;
@@ -47,8 +49,8 @@ function ProductList() {
   const fetchProducts = (q = "") => {
     setLoading(true);
     const url = q
-      ? `http://localhost:5000/api/products/search?q=${q}`
-      : "http://localhost:5000/api/products";
+      ? `${API_URL}/api/products/search?q=${q}`
+      : `${API_URL}/api/products`;
 
     axios
       .get(url)
@@ -129,7 +131,7 @@ function ProductList() {
         return;
       }
 
-      const res = await fetch("http://localhost:5000/api/cart/add", {
+      const res = await fetch(`${API_URL}/api/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../../components/Sidebar";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export default function AdminProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ export default function AdminProductList() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get(`${API_URL}/api/products`);
       setProducts(res.data);
     } catch (err) {
       message.error("Lỗi khi tải danh sách sản phẩm!");
@@ -36,7 +38,7 @@ export default function AdminProductList() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`${API_URL}/api/products/${id}`);
       message.success("Đã xóa sản phẩm!");
       fetchProducts();
     } catch (err) {

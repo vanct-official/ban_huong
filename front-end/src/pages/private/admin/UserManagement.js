@@ -4,7 +4,7 @@ import { ReloadOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
 
-const API_BASE = "http://localhost:5000";
+const API_URL = process.env.REACT_APP_API_URL;
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -27,7 +27,7 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_BASE}/api/admin/users`, {
+      const res = await axios.get(`${API_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setUsers(res.data);
@@ -45,9 +45,9 @@ export default function UserManagement() {
   const handleAction = async () => {
     if (!selectedUser || !actionType) return;
     const urlMap = {
-      suspend: `${API_BASE}/api/admin/users/${selectedUser.id}/suspend`,
-      activate: `${API_BASE}/api/admin/users/${selectedUser.id}/activate`,
-      "make-admin": `${API_BASE}/api/admin/users/${selectedUser.id}/make-admin`,
+      suspend: `${API_URL}/api/admin/users/${selectedUser.id}/suspend`,
+      activate: `${API_URL}/api/admin/users/${selectedUser.id}/activate`,
+      "make-admin": `${API_URL}/api/admin/users/${selectedUser.id}/make-admin`,
     };
     try {
       await axios.put(urlMap[actionType], {}, {
@@ -74,7 +74,7 @@ export default function UserManagement() {
       key: "avatar",
       render: (record) => {
         const img = record.avatar || record.avatarImg || record.picture || null;
-        return img ? <Avatar src={img.startsWith("http") ? img : `${API_BASE}/uploads/${img}`} size={40} />
+        return img ? <Avatar src={img.startsWith("http") ? img : `${API_URL}/uploads/${img}`} size={40} />
                    : <Avatar icon={<UserOutlined />} size={40} />;
       },
       width: 80,

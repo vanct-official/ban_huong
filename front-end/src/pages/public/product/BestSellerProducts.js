@@ -3,6 +3,8 @@ import { Card, Carousel, Spin, Typography } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { Title } = Typography;
 
 export default function BestSellerProducts() {
@@ -13,9 +15,7 @@ export default function BestSellerProducts() {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/products/best-sellers"
-        );
+         const res = await axios.get(`${API_URL}/api/products/best-sellers`);
         setProducts(res.data);
       } catch (err) {
         console.error("❌ Lỗi tải sản phẩm bán chạy:", err);

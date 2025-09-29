@@ -3,6 +3,10 @@ import { Card, Spin, Typography, Rate, Carousel } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
+console.log("API_URL:", API_URL);
+
 const { Title } = Typography;
 
 export default function TopRatedProducts() {
@@ -13,9 +17,7 @@ export default function TopRatedProducts() {
   useEffect(() => {
     const fetchTop = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/products/top-rated"
-        );
+        const res = await axios.get(`${API_URL}/api/products/top-rated`);
         setProducts(res.data);
       } catch (err) {
         console.error("❌ Lỗi tải top sản phẩm:", err);

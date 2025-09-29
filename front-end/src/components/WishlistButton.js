@@ -2,6 +2,8 @@ import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { Button, message } from "antd";
 import { useState, useEffect } from "react";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function WishlistButton({ productId }) {
   const [inWishlist, setInWishlist] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -13,7 +15,7 @@ function WishlistButton({ productId }) {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await fetch("http://localhost:5000/api/wishlists/me", {
+        const res = await fetch(`${API_URL}/api/wishlists/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -40,7 +42,7 @@ function WishlistButton({ productId }) {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Bạn cần đăng nhập");
 
-      const res = await fetch("http://localhost:5000/api/wishlists", {
+      const res = await fetch(`${API_URL}/api/wishlists`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +72,7 @@ function WishlistButton({ productId }) {
       if (!token) throw new Error("Bạn cần đăng nhập");
 
       const res = await fetch(
-        `http://localhost:5000/api/wishlists/${productId}`,
+        `${API_URL}/api/wishlists/${productId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },

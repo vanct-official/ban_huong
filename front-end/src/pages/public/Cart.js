@@ -18,6 +18,8 @@ import { DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,7 @@ const Cart = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/cart", {
+      const res = await fetch(`${API_URL}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Lấy giỏ hàng thất bại");
@@ -65,7 +67,7 @@ const Cart = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/cart/${productId}`, {
+      const res = await fetch(`${API_URL}/api/cart/${productId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +88,7 @@ const Cart = () => {
   const handleRemove = async (productId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/cart/${productId}`, {
+      const res = await fetch(`${API_URL}/api/cart/${productId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -118,7 +120,7 @@ const Cart = () => {
     setPromoLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/promotions/apply", {
+      const res = await fetch(`${API_URL}/api/promotions/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: promoCode.trim() }),
@@ -187,8 +189,7 @@ const Cart = () => {
     if (!productImg) return "/default-product.png";
     if (productImg.startsWith("http")) return productImg;
     if (productImg.startsWith("/uploads"))
-      return `http://localhost:5000${productImg}`;
-    return `http://localhost:5000/uploads/${productImg}`;
+    return `${API_URL}/uploads/${productImg}`;
   };
 
   useEffect(() => {

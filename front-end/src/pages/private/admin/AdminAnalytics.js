@@ -12,6 +12,8 @@ import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import AdminSidebar from "../../../components/Sidebar";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export default function AdminAnalytics() {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
@@ -33,7 +35,7 @@ export default function AdminAnalytics() {
     setLoading(true);
     try {
       // 👉 gọi API backend để lấy số liệu thống kê
-      const res = await axios.get("http://localhost:5000/api/admin/stats");
+      const res = await axios.get(`${API_URL}/api/admin/stats`);
       setStats(res.data);
     } catch (err) {
       console.error(err);

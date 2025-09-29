@@ -29,6 +29,8 @@ import { useState, useEffect } from "react";
 import "../i18n";
 import { useTranslation } from "react-i18next";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export default function MainHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState(null);
@@ -45,7 +47,7 @@ export default function MainHeader() {
     const token = params.get("token");
     if (token) {
       window.history.replaceState({}, document.title, window.location.pathname);
-      fetch("http://localhost:5000/api/auth/me", {
+      fetch(`${API_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
