@@ -244,12 +244,15 @@ export default function HomePage() {
         </section>
       </main>
       <TopRatedProducts />
-      <PopularSearches />
+      <div style={{ maxWidth: "75vw", margin: "0 auto", padding: "0 16px" }}>
+        <PopularSearches />
+      </div>
+
       <BestSellerProducts />
       {/* Latest Posts + Post Detail */}
       <div
         style={{
-          maxWidth: "75vw",
+          maxWidth: "84vw",
           margin: "0 auto",
           padding: "0 16px",
         }}
