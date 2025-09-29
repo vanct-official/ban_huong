@@ -9,7 +9,7 @@ import Address from "./address.model.js";
 import Wishlist from "./wishlist.model.js";
 import Feedback from "./feedback.model.js";
 import Order from "./order.model.js";
-import OrderItem from "./orderitem.model.js";
+import OrderItem from "./orderItem.model.js";
 
 // =======================
 // Product ↔ ProductImage
