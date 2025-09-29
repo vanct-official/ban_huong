@@ -24,6 +24,7 @@ import "./ProductList.css";
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 import WishlistButton from "../../components/WishlistButton";
+import { useLocation } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -32,6 +33,7 @@ const { Option } = Select;
 const { Search } = Input;
 
 function ProductList() {
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,6 +89,13 @@ function ProductList() {
     fetchProducts(value);
     setCurrentPage(1); // 👉 reset về trang 1
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const keyword = params.get("q") || ""; // 👈 lấy từ khóa từ URL
+    setSearchTerm(keyword); // lưu vào state searchTerm
+    fetchProducts(keyword); // gọi API theo keyword
+  }, [location.search]); // chạy lại khi query string đổi
 
   useEffect(() => {
     document.title = t("productList") + " - Bản Hương";

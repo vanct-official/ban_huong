@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import TopRatedProducts from "./product/TopRatedProducts";
 import BestSellerProducts from "./product/BestSellerProducts";
+import PopularSearches from "./product/PopularSearches";
 
 const { Title, Paragraph } = Typography;
 
@@ -241,6 +242,7 @@ export default function HomePage() {
         </section>
       </main>
       <TopRatedProducts />
+      <PopularSearches />
       <BestSellerProducts />
 
       {/* Features Section */}

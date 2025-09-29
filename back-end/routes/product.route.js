@@ -10,6 +10,7 @@ import {
   getTopRatedProducts,
   getBestSellers,
   getProductRating,
+  getPopularSearches,
 } from "../controllers/product.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
@@ -18,6 +19,8 @@ const router = express.Router();
 // ✅ Đặt route đặc biệt trước route động
 router.get("/top-rated", getTopRatedProducts);
 router.get("/best-sellers", getBestSellers);
+
+router.get("/popular-searches", getPopularSearches); // ✅ lấy từ khóa tìm kiếm phổ biến
 
 router.get("/", getProducts);
 router.post("/", upload.array("images", 5), createProduct);
@@ -28,4 +31,5 @@ router.get("/:id", getProductById);
 router.put("/:id", upload.array("images", 5), updateProduct); // ✅ update
 router.delete("/:id", deleteProduct); // ✅ route xoá
 router.get("/:id/rating", getProductRating); // ✅ lấy đánh giá & số sao trung bình
+
 export default router;

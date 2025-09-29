@@ -4,6 +4,7 @@ import { fn, col } from "sequelize";
 import Feedback from "../models/feedback.model.js";
 // import Sequelize from "sequelize";
 import { sequelize } from "../config/db.js"; // 👈 Thêm dòng này
+import PopularSearch from "../models/popularSearch.model.js";
 
 // Lấy tất cả sản phẩm
 export const getProducts = async (req, res) => {
@@ -156,46 +157,46 @@ export const getProductById = async (req, res) => {
   }
 };
 
-export const searchProducts = async (req, res) => {
-  try {
-    const q = req.query.q || "";
-    const products = await Product.findAll({
-      where: {
-        productName: { [Op.like]: `%${q}%` },
-      },
-      include: [
-        {
-          model: ProductImage,
-          as: "images",
-          attributes: ["productImg"],
-          separate: true,
-          limit: 1,
-        },
-      ],
-    });
+// export const searchProducts = async (req, res) => {
+//   try {
+//     const q = req.query.q || "";
+//     const products = await Product.findAll({
+//       where: {
+//         productName: { [Op.like]: `%${q}%` },
+//       },
+//       include: [
+//         {
+//           model: ProductImage,
+//           as: "images",
+//           attributes: ["productImg"],
+//           separate: true,
+//           limit: 1,
+//         },
+//       ],
+//     });
 
-    const host = `${req.protocol}://${req.get("host")}`;
+//     const host = `${req.protocol}://${req.get("host")}`;
 
-    const formattedProducts = products.map((p) => {
-      const prod = p.toJSON();
+//     const formattedProducts = products.map((p) => {
+//       const prod = p.toJSON();
 
-      // ✅ Lấy ảnh đầu tiên từ images
-      if (prod.images && prod.images.length > 0) {
-        prod.productImg = `${host}/${prod.images[0].productImg}`;
-      } else {
-        prod.productImg = null;
-      }
+//       // ✅ Lấy ảnh đầu tiên từ images
+//       if (prod.images && prod.images.length > 0) {
+//         prod.productImg = `${host}/${prod.images[0].productImg}`;
+//       } else {
+//         prod.productImg = null;
+//       }
 
-      delete prod.images;
-      return prod;
-    });
+//       delete prod.images;
+//       return prod;
+//     });
 
-    res.json(formattedProducts);
-  } catch (err) {
-    console.error("❌ Error searchProducts:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
+//     res.json(formattedProducts);
+//   } catch (err) {
+//     console.error("❌ Error searchProducts:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 // Cập nhật sản phẩm theo ID
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
@@ -434,5 +435,67 @@ export const getAllProducts = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi getAllProducts:", err);
     res.status(500).json({ error: "Không thể lấy sản phẩm" });
+  }
+};
+
+export const searchProducts = async (req, res) => {
+  const q = req.query.q || "";
+  try {
+    // 👉 log từ khóa
+    if (q) {
+      const [record, created] = await PopularSearch.findOrCreate({
+        where: { keyword: q },
+        defaults: { count: 1 },
+      });
+
+      if (!created) {
+        await record.increment("count");
+      }
+    }
+
+    // 👉 tìm sản phẩm kèm ảnh
+    const products = await Product.findAll({
+      where: {
+        productName: { [Op.like]: `%${q}%` },
+      },
+      include: [
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          limit: 1, // chỉ lấy ảnh đầu tiên
+        },
+      ],
+    });
+
+    // 👉 format lại để có ảnh chính (productImg)
+    const host = `${req.protocol}://${req.get("host")}`;
+    const result = products.map((p) => {
+      const data = p.toJSON();
+      data.productImg =
+        data.images && data.images.length > 0
+          ? `${host}/${data.images[0].productImg}`
+          : null;
+      delete data.images;
+      return data;
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Lỗi searchProducts:", err);
+    res.status(500).json({ error: "Không thể tìm sản phẩm" });
+  }
+};
+
+export const getPopularSearches = async (req, res) => {
+  try {
+    const topKeywords = await PopularSearch.findAll({
+      order: [["count", "DESC"]],
+      limit: 15,
+    });
+    res.json(topKeywords);
+  } catch (err) {
+    console.error("❌ Lỗi getPopularSearches:", err);
+    res.status(500).json({ error: "Không thể lấy từ khóa phổ biến" });
   }
 };
