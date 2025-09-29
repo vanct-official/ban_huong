@@ -18,6 +18,7 @@ export const loginWithGoogle = async (req, res) => {
   try {
     const { idToken } = req.body;
 
+    // Verify Google idToken
     const ticket = await client.verifyIdToken({
       idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -27,18 +28,24 @@ export const loginWithGoogle = async (req, res) => {
     const email = payload.email;
     const name = payload.name;
     const picture = payload.picture;
+    const googleId = payload.sub; // unique Google account ID
 
     // Tách tên
-    let firstName = "",
-      lastName = "";
+    let firstName = "", lastName = "";
     if (name) {
       const parts = name.trim().split(" ");
       firstName = parts[0];
       lastName = parts.slice(1).join(" ");
     }
 
-    // Tìm hoặc tạo user
-    let user = await User.findOne({ where: { email } });
+    // Tìm user theo email hoặc googleId
+    let user = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { googleId }],
+      },
+    });
+
+    // Nếu chưa có user -> tạo mới
     if (!user) {
       user = await User.create({
         username: email.split("@")[0],
@@ -46,21 +53,30 @@ export const loginWithGoogle = async (req, res) => {
         lastname: lastName,
         email,
         avatarImg: picture || null,
-        isActive: true, // 👈 mặc định active khi tạo mới
+        isActive: true,
+        googleId,
+        isNewUser: true,
       });
     } else {
-      // Nếu user bị disable thì chặn login
-      if (user.isActive === false) {
+      // Cập nhật googleId nếu chưa có
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
+
+      // Chặn login nếu user bị disable
+      if (!user.isActive) {
         return res.status(403).json({ message: "Tài khoản của bạn đã bị khóa." });
       }
 
+      // Cập nhật avatar nếu khác
       if (picture && user.avatarImg !== picture) {
         user.avatarImg = picture;
         await user.save();
       }
     }
 
-    // Tạo JWT backend cấp
+    // Tạo JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,

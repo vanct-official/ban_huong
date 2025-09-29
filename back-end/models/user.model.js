@@ -17,6 +17,8 @@ const User = sequelize.define(
       allowNull: false,
       defaultValue: "customer",
     },
+    googleId: { type: DataTypes.STRING, allowNull: true, unique: true }, // <-- thêm cột
+    isNewUser: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }, // <-- thêm cột
     avatarImg: { type: DataTypes.STRING, allowNull: true },
     isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     // createdAt & updatedAt sẽ tự được Sequelize quản lý khi timestamps: true
