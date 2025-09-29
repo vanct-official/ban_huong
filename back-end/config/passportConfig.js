@@ -10,7 +10,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback", // phải trùng với route callback
+      callbackURL: process.env.GOOGLE_CALLBACK_URL, // dùng tuyệt đối từ .env
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -32,7 +32,6 @@ passport.use(
   )
 );
 
-// Nếu dùng session
 passport.serializeUser((user, done) => {
   done(null, user);
 });
