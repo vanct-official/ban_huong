@@ -258,12 +258,15 @@ function ProductList() {
                       <div style={{ marginTop: 4 }}>
                         <Rate
                           disabled
-                          value={p.avgRating || 0}
+                          value={p.avgRating}
                           allowHalf
                           style={{ fontSize: 14 }}
                         />
                         <span style={{ marginLeft: 6, color: "#666" }}>
-                          {p.avgRating ? p.avgRating.toFixed(1) : "0.0"} / 5
+                          {p.avgRating?.toFixed
+                            ? p.avgRating?.toFixed(1)
+                            : "0.0"}{" "}
+                          / 5 ({p.feedbackCount} đánh giá)
                         </span>
                       </div>
 
