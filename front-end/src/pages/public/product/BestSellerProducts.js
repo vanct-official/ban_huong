@@ -45,7 +45,7 @@ export default function BestSellerProducts() {
           marginBottom: 32,
         }}
       >
-        Top sản phẩm bán chạy nhất
+        Sản phẩm bán chạy nhất
       </Title>
       <Carousel autoplay autoplaySpeed={4000} dots slidesToShow={3}>
         {products.map((p) => (

@@ -70,3 +70,27 @@ export const deletePromotion = async (req, res) => {
     res.status(500).json({ message: "Lỗi server" });
   }
 };
+
+// Áp dụng mã khuyến mãi
+export const applyPromotion = async (req, res) => {
+  try {
+    const { code } = req.body;
+
+    const promo = await Promotion.findOne({
+      where: { promotionName: code }, // chỉ check theo tên mã
+    });
+
+    if (!promo) {
+      return res.status(400).json({ message: "Mã khuyến mãi không hợp lệ" });
+    }
+
+    res.json({
+      id: promo.id,
+      promotionName: promo.promotionName,
+      discountPercent: promo.discountPercent,
+    });
+  } catch (err) {
+    console.error("❌ Lỗi applyPromotion:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};

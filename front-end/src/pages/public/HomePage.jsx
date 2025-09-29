@@ -242,6 +242,7 @@ export default function HomePage() {
       </main>
       <TopRatedProducts />
       <BestSellerProducts />
+
       {/* Features Section */}
       <div
         style={{

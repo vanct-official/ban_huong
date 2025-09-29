@@ -5,6 +5,7 @@ import {
   createPromotion,
   updatePromotion,
   deletePromotion,
+  applyPromotion,
 } from "../controllers/promotion.controller.js";
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get("/:id", getPromotionById);
 router.post("/", createPromotion);
 router.put("/:id", updatePromotion);
 router.delete("/:id", deletePromotion);
+router.post("/apply", applyPromotion);
 
 export default router;
