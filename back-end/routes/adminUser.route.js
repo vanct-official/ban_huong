@@ -1,6 +1,10 @@
-// routes/adminUser.route.js
 import express from "express";
-import { getAllUsers, suspendUser, activateUser, makeAdmin } from "../controllers/adminUser.controller.js";
+import {
+  getAllUsers,
+  suspendUser,
+  activateUser,
+  makeAdmin,
+} from "../controllers/adminUser.controller.js";
 import { verifyToken, authorizeAdmin } from "../middleware/auth.middleware.js";
 
 const router = express.Router();

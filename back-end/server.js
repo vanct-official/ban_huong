@@ -26,6 +26,7 @@ import feedbackRoutes from "./routes/feedback.route.js";
 import adminUserRoutes from "./routes/adminUser.route.js";
 import promotionRoutes from "./routes/promotion.route.js";
 import orderRoutes from "./routes/order.routes.js";
+import adminOrderRoutes from "./routes/adminOrder.routes.js";
 
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -90,6 +91,7 @@ app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/promotions", promotionRoutes);
 
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin/orders", adminOrderRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

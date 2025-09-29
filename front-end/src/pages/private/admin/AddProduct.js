@@ -67,7 +67,9 @@ const AddProduct = () => {
             <Form.Item
               label="Tên sản phẩm"
               name="productName"
-              rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập tên sản phẩm" },
+              ]}
             >
               <Input placeholder="Nhập tên sản phẩm" />
             </Form.Item>

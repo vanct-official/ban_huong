@@ -1,201 +1,148 @@
-import React, { useState } from "react";
-import { Table, Tag, Space, Button, Drawer } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
-import AdminSidebar from "../../../components/Sidebar";
+import React, { useEffect, useState } from "react";
+import { Table, Spin, message, Select, Card, Tag } from "antd";
+import axios from "axios";
+import Sidebar from "../../../components/Sidebar";
 
-export default function AdminOrders() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+const API_URL = process.env.REACT_APP_API_URL;
 
-  // Mock data cho UI
-  const orders = [
-    {
-      id: 1,
-      customer: { username: "nguyenvana", email: "a@gmail.com" },
-      products: ["Tinh dầu cam", "Tinh dầu oải hương"],
-      totalPrice: 350000,
-      createdAt: "2025-09-25",
-      status: "pending",
-    },
-    {
-      id: 2,
-      customer: { username: "tranthib", email: "b@gmail.com" },
-      products: ["Tinh dầu sả chanh"],
-      totalPrice: 150000,
-      createdAt: "2025-09-24",
-      status: "completed",
-    },
-    {
-      id: 3,
-      customer: { username: "lecuong", email: "c@gmail.com" },
-      products: ["Tinh dầu bạc hà", "Tinh dầu quế"],
-      totalPrice: 270000,
-      createdAt: "2025-09-23",
-      status: "processing",
-    },
-  ];
+const AdminOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Lấy danh sách đơn hàng
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${API_URL}/api/admin/orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(res.data);
+    } catch (err) {
+      console.error("❌ Lỗi tải đơn hàng:", err);
+      message.error("Không thể tải đơn hàng");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Cập nhật trạng thái
+  const handleUpdateStatus = async (id, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `${API_URL}/api/admin/orders/${id}/status`,
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      message.success("✅ Cập nhật trạng thái thành công");
+      fetchOrders();
+    } catch (err) {
+      console.error("❌ Lỗi cập nhật:", err);
+      message.error("Cập nhật thất bại");
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  // Map màu trạng thái
+  const statusColors = {
+    pending: "orange",
+    paid: "blue",
+    shipped: "purple",
+    completed: "green",
+    cancelled: "red",
+  };
+
+  // Cột bảng
   const columns = [
-    {
-      title: "Mã đơn",
-      dataIndex: "id",
-      key: "id",
-      render: (id) => <strong>#{id}</strong>,
-      width: 100,
-    },
+    { title: "Mã đơn", dataIndex: "id", key: "id" },
     {
       title: "Khách hàng",
-      key: "customer",
-      render: (_, record) => (
-        <span>
-          {record.customer.username} <br />
-          <small style={{ color: "#666" }}>{record.customer.email}</small>
-        </span>
-      ),
-      width: 200,
+      dataIndex: ["user", "email"],
+      key: "user",
+      render: (email) => email || <Tag color="default">Ẩn danh</Tag>,
     },
     {
-      title: "Sản phẩm",
-      key: "products",
-      render: (_, record) =>
-        record.products.map((p, i) => (
-          <Tag key={i} color="blue">
-            {p}
-          </Tag>
-        )),
-      width: 250,
-    },
-    {
-      title: "Tổng tiền",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      render: (value) => (
-        <span style={{ color: "#d97706", fontWeight: 600 }}>
-          {Number(value).toLocaleString("vi-VN")} đ
-        </span>
-      ),
-      width: 150,
-    },
-    {
-      title: "Ngày tạo",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: 150,
+      title: "Ngày đặt",
+      dataIndex: "orderDate",
+      render: (date) => new Date(date).toLocaleString("vi-VN"),
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
-      key: "status",
-      render: (status) => {
-        const colorMap = {
-          pending: "orange",
-          processing: "blue",
-          completed: "green",
-          cancelled: "red",
-        };
-        return <Tag color={colorMap[status]}>{status}</Tag>;
-      },
-      width: 150,
+      render: (status, record) => (
+        <Select
+          value={status}
+          style={{ width: 140 }}
+          onChange={(val) => handleUpdateStatus(record.id, val)}
+        >
+          <Select.Option value="pending">Đang chờ</Select.Option>
+          <Select.Option value="paid">Đã thanh toán</Select.Option>
+          <Select.Option value="shipped">Đang giao</Select.Option>
+          <Select.Option value="completed">Hoàn thành</Select.Option>
+          <Select.Option value="cancelled">Hủy</Select.Option>
+        </Select>
+      ),
     },
     {
-      title: "Hành động",
-      key: "action",
-      render: (_, record) => (
-        <Space>
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => alert(`Xem chi tiết đơn #${record.id}`)}
-          >
-            Xem
-          </Button>
-          <Button danger size="small">
-            Cập nhật
-          </Button>
-        </Space>
+      title: "Tổng tiền",
+      dataIndex: "totalAmount",
+      render: (val) => (
+        <span style={{ fontWeight: 600, color: "#ea580c" }}>
+          {Number(val).toLocaleString("vi-VN")} đ
+        </span>
       ),
-      width: 180,
+    },
+    {
+      title: "Chi tiết",
+      dataIndex: "items",
+      render: (items) =>
+        items && items.length > 0 ? (
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {items.map((i) => (
+              <li key={i.id}>
+                {i.product?.productName} × {i.quantity}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Tag color="red">Chưa có sản phẩm</Tag>
+        ),
     },
   ];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#f6f8fa" }}>
-      {/* Sidebar */}
-      {!isMobile && (
-        <div
+    <div style={{ display: "flex" }}>
+      <Sidebar />
+      <div style={{ flex: 1, padding: 24, marginLeft: 250 }}>
+        <Card
+          title="📦 Quản lý đơn hàng"
+          bordered
           style={{
-            minWidth: 220,
-            background: "#fff",
-            borderRight: "1px solid #eee",
+            borderRadius: 12,
+            boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
           }}
         >
-          <AdminSidebar collapsed={false} selectedKey="orders" />
-        </div>
-      )}
-
-      {/* Drawer Sidebar (Mobile) */}
-      {isMobile && (
-        <Drawer
-          placement="left"
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          bodyStyle={{ padding: 0 }}
-          width={220}
-        >
-          <AdminSidebar collapsed={false} selectedKey="orders" />
-        </Drawer>
-      )}
-
-      {/* Main content */}
-      <div
-        style={{
-          flex: 1,
-          padding: isMobile ? 8 : 24,
-          maxWidth: 1200,
-          margin: "0 auto",
-        }}
-      >
-        {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: isMobile ? 12 : 24,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {isMobile && (
-              <Button
-                icon={<MenuOutlined />}
-                onClick={() => setSidebarOpen(true)}
-                style={{ borderRadius: 8 }}
-              />
-            )}
-            <h2 style={{ margin: 0, color: "#166534" }}>📦 Quản lý đơn hàng</h2>
-          </div>
-        </div>
-
-        {/* Table */}
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
-            padding: isMobile ? 4 : 24,
-          }}
-        >
-          <Table
-            columns={columns}
-            dataSource={orders}
-            rowKey="id"
-            pagination={{ pageSize: isMobile ? 5 : 10 }}
-            bordered
-            scroll={{ x: 900 }}
-            size={isMobile ? "small" : "middle"}
-          />
-        </div>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: 50 }}>
+              <Spin size="large" tip="Đang tải đơn hàng..." />
+            </div>
+          ) : (
+            <Table
+              rowKey="id"
+              columns={columns}
+              dataSource={orders}
+              pagination={{ pageSize: 8 }}
+              bordered
+            />
+          )}
+        </Card>
       </div>
     </div>
   );
-}
+};
+
+export default AdminOrders;

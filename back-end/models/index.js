@@ -107,6 +107,12 @@ Product.hasMany(OrderItem, { as: "orderItems", foreignKey: "productId" });
 OrderItem.belongsTo(Product, { as: "product", foreignKey: "productId" });
 
 // =======================
+// Order ↔ User
+// =======================
+Order.belongsTo(User, { foreignKey: "userId", as: "user" });
+User.hasMany(Order, { foreignKey: "userId", as: "orders" });
+
+// =======================
 // Export all models
 // =======================
 export {
