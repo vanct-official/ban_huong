@@ -30,34 +30,6 @@ export const getAllPosts = async (req, res) => {
   }
 };
 
-// ✅ Lấy bài viết theo slug
-export const getPostBySlug = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const post = await Post.findOne({ where: { slug } });
-
-    if (!post)
-      return res.status(404).json({ error: "Không tìm thấy bài viết" });
-
-    const host = `${req.protocol}://${req.get("host")}`;
-    const data = post.toJSON();
-
-    res.json({
-      ...data,
-      thumbnail: data.thumbnail
-        ? `${host}${
-            data.thumbnail.startsWith("/")
-              ? data.thumbnail
-              : "/" + data.thumbnail
-          }`
-        : null,
-    });
-  } catch (err) {
-    console.error("❌ Lỗi getPostBySlug:", err);
-    res.status(500).json({ error: "Không thể lấy bài viết" });
-  }
-};
-
 // ✅ Tạo bài viết mới
 export const createPost = async (req, res) => {
   try {
@@ -112,6 +84,16 @@ export const deletePost = async (req, res) => {
 export const getLatestPosts = async (req, res) => {
   try {
     const posts = await Post.findAll({
+      attributes: [
+        "id",
+        "title",
+        "slug",
+        "content",
+        "thumbnail",
+        "author",
+        "createdAt",
+        "updatedAt",
+      ], // 👈 lấy đủ cột
       order: [["createdAt", "DESC"]],
       limit: 5,
     });
@@ -120,7 +102,13 @@ export const getLatestPosts = async (req, res) => {
     const formatted = posts.map((p) => {
       const data = p.toJSON();
       return {
-        ...data,
+        id: data.id,
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        author: data.author,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
         thumbnail: data.thumbnail
           ? `${host}${data.thumbnail}`
           : "/default-post.png",
@@ -131,5 +119,38 @@ export const getLatestPosts = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi getLatestPosts:", err);
     res.status(500).json({ error: "Không thể lấy bài viết mới nhất" });
+  }
+};
+export const getPostBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const post = await Post.findOne({
+      where: { slug },
+      attributes: [
+        "id",
+        "title",
+        "slug",
+        "content",
+        "thumbnail",
+        "author",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Bài viết không tồn tại" });
+    }
+
+    const host = `${req.protocol}://${req.get("host")}`;
+    const data = post.toJSON();
+    data.thumbnail = data.thumbnail
+      ? `${host}${data.thumbnail}`
+      : "/default-post.png";
+
+    res.json(data);
+  } catch (err) {
+    console.error("❌ Lỗi getPostBySlug:", err);
+    res.status(500).json({ error: "Không thể lấy chi tiết bài viết" });
   }
 };

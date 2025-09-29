@@ -1,62 +1,74 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Spin, Typography } from "antd";
-import { CalendarOutlined } from "@ant-design/icons";
+import { Card, Spin, Typography } from "antd";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function LatestPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchLatest = async () => {
       try {
         const res = await axios.get(`${API_URL}/api/posts/latest`);
         setPosts(res.data);
       } catch (err) {
-        console.error("❌ Lỗi tải bài viết:", err);
+        console.error("❌ Lỗi lấy bài viết mới:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchPosts();
+    fetchLatest();
   }, []);
 
-  if (loading) return <Spin tip="Đang tải bài viết..." />;
+  if (loading) {
+    return (
+      <Spin
+        tip="Đang tải bài viết..."
+        style={{ display: "block", margin: "20px auto" }}
+      />
+    );
+  }
 
   return (
-    <div style={{ marginTop: 50 }}>
-      <Title level={2}>Các bài viết mới</Title>
-      <Row gutter={[24, 24]}>
-        {posts.map((post) => (
-          <Col xs={24} sm={12} md={8} key={post.id}>
-            <Card
-              hoverable
-              cover={
-                <img
-                  src={post.thumbnail}
-                  alt={post.title}
-                  style={{ width: "100%", borderRadius: 8, marginBottom: 16 }}
-                />
-              }
-              onClick={() => navigate(`/posts/${post.slug}`)}
-            >
-              <div style={{ color: "#888", fontSize: 12 }}>
-                <CalendarOutlined />{" "}
-                {new Date(post.createdAt).toLocaleDateString("vi-VN")}
-              </div>
-              <h3 style={{ fontWeight: 700, color: "#166534" }}>
-                {post.title}
-              </h3>
-              <p style={{ color: "#555" }}>{post.content.slice(0, 100)}...</p>
-            </Card>
-          </Col>
+    <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 16px" }}>
+      <Title level={3} style={{ marginBottom: 16, color: "#166534" }}>
+        📰 Các bài viết mới
+      </Title>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: 20,
+        }}
+      >
+        {posts.map((p) => (
+          <Card
+            key={p.id}
+            hoverable
+            cover={
+              <img
+                alt={p.title}
+                src={p.thumbnail}
+                style={{ height: 180, objectFit: "cover" }}
+              />
+            }
+          >
+            <Link to={`/posts/${p.slug}`}>
+              <Title level={4}>{p.title}</Title>
+            </Link>
+            <Text type="secondary">
+              ✍️ {p.author} | 🗓{" "}
+              {new Date(p.createdAt).toLocaleDateString("vi-VN")}
+              <br />
+              🔄 Cập nhật: {new Date(p.updatedAt).toLocaleDateString("vi-VN")}
+            </Text>
+          </Card>
         ))}
-      </Row>
+      </div>
     </div>
   );
 }
