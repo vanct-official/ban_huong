@@ -273,10 +273,10 @@ export default function MainHeader() {
           onClick: () => (window.location.href = "/profile"),
         },
         {
-          key: "orders",
-          label: t("myOrders"),
+          key: "orders-hstory",
+          label: "Lịch sử mua hàng",
           icon: <ShoppingOutlined />,
-          onClick: () => (window.location.href = "/orders"),
+          onClick: () => (window.location.href = "/orders/history"),
         },
         {
           key: "wishlist",
@@ -395,11 +395,12 @@ export default function MainHeader() {
               block
               onClick={() => {
                 setDrawerOpen(false);
-                window.location.href = "/orders";
+                window.location.href = "/orders/history";
               }}
             >
-              {t("myOrders")}
+              Lịch sử mua hàng
             </Button>
+
             <Button
               icon={<HeartOutlined />}
               block

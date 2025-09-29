@@ -1,3 +1,4 @@
+// models/index.js
 import Product from "./product.model.js";
 import ProductImage from "./productimage.model.js";
 
@@ -93,19 +94,21 @@ Wishlist.belongsTo(Product, { foreignKey: "productId", as: "product" });
 Product.hasMany(Feedback, { foreignKey: "productId", as: "feedbacks" });
 Feedback.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
-// User ↔ Feedback
 User.hasMany(Feedback, { foreignKey: "userId", as: "feedbacks" });
 Feedback.belongsTo(User, { foreignKey: "userId", as: "user" });
 
 // =======================
 // Order ↔ OrderItem ↔ Product
 // =======================
-Product.hasMany(OrderItem, { as: "orderItems", foreignKey: "productId" });
-OrderItem.belongsTo(Product, { as: "product", foreignKey: "productId" });
-
 Order.hasMany(OrderItem, { as: "items", foreignKey: "orderId" });
 OrderItem.belongsTo(Order, { as: "order", foreignKey: "orderId" });
 
+Product.hasMany(OrderItem, { as: "orderItems", foreignKey: "productId" });
+OrderItem.belongsTo(Product, { as: "product", foreignKey: "productId" });
+
+// =======================
+// Export all models
+// =======================
 export {
   Product,
   ProductImage,

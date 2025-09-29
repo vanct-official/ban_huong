@@ -1,7 +1,5 @@
-// App.js
 import { Routes, Route } from "react-router-dom";
 import AdminRoute from "./AdminRoute";
-
 import HomePage from "./pages/public/HomePage";
 import ProvincesList from "./pages/ProvinceList";
 import TextArea from "./pages/TextArea";
@@ -20,10 +18,10 @@ import UpdateProduct from "./pages/private/admin/UpdateProduct";
 import UserManagement from "./pages/private/admin/UserManagement";
 import AdminAnalytics from "./pages/private/admin/AdminAnalytics";
 import AdminOrders from "./pages/private/admin/AdminOrders";
-import AdminMarketing from "./pages/private/admin/AdminMarketing";
 import AdminSettings from "./pages/private/admin/AdminSettings";
 import AdminFeedback from "./pages/private/admin/AdminFeedback";
 import AdminPromotion from "./pages/private/admin/AdminPromotion";
+import OrderHistory from "./pages/user/OrderHistory";
 
 function App() {
   return (
@@ -43,6 +41,7 @@ function App() {
         {/* User profile routes */}
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/profile/edit" element={<EditUserProfile />} />
+        <Route path="/orders/history" element={<OrderHistory />} />
 
         {/* Admin routes */}
         <Route
