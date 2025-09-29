@@ -27,6 +27,7 @@ import adminUserRoutes from "./routes/adminUser.route.js";
 import promotionRoutes from "./routes/promotion.route.js";
 import orderRoutes from "./routes/order.routes.js";
 import adminOrderRoutes from "./routes/adminOrder.routes.js";
+import postRoutes from "./routes/post.routes.js";
 
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -84,6 +85,9 @@ app.use("/api/wishlists", wishlistRoutes);
 // Phục vụ ảnh tĩnh từ thư mục uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Cho phép truy cập thư mục uploads
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads/posts")));
+
 app.use("/api/cart", cartRoutes);
 app.use("/api/feedback", feedbackRoutes);
 
@@ -92,6 +96,8 @@ app.use("/api/promotions", promotionRoutes);
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+
+app.use("/api/posts", postRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

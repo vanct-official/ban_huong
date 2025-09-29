@@ -17,6 +17,8 @@ import {
 import TopRatedProducts from "./product/TopRatedProducts";
 import BestSellerProducts from "./product/BestSellerProducts";
 import PopularSearches from "./product/PopularSearches";
+import LatestPosts from "./post/LatestPosts";
+import PostDetail from "./post/PostDetail";
 
 const { Title, Paragraph } = Typography;
 
@@ -244,7 +246,17 @@ export default function HomePage() {
       <TopRatedProducts />
       <PopularSearches />
       <BestSellerProducts />
-
+      {/* Latest Posts + Post Detail */}
+      <div
+        style={{
+          maxWidth: "75vw",
+          margin: "0 auto",
+          padding: "0 16px",
+        }}
+      >
+        <LatestPosts />
+        <PostDetail />
+      </div>
       {/* Features Section */}
       <div
         style={{

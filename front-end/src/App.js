@@ -22,6 +22,7 @@ import AdminSettings from "./pages/private/admin/AdminSettings";
 import AdminFeedback from "./pages/private/admin/AdminFeedback";
 import AdminPromotion from "./pages/private/admin/AdminPromotion";
 import OrderHistory from "./pages/user/OrderHistory";
+import PostDetail from "./pages/public/post/PostDetail";
 
 function App() {
   return (
@@ -42,7 +43,7 @@ function App() {
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/profile/edit" element={<EditUserProfile />} />
         <Route path="/orders/history" element={<OrderHistory />} />
-
+        <Route path="/posts/:slug" element={<PostDetail />} />
         {/* Admin routes */}
         <Route
           path="/admin"
