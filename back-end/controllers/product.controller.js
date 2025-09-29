@@ -260,104 +260,6 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-// export const getAllProducts = async (req, res) => {
-//   try {
-//     const products = await Product.findAll({
-//       include: [
-//         {
-//           model: Feedback,
-//           attributes: [],
-//         },
-//       ],
-//       attributes: {
-//         include: [[fn("AVG", col("Feedback.rate")), "avgRating"]],
-//       },
-//       group: ["Product.id"],
-//     });
-
-//     res.json(products);
-//   } catch (err) {
-//     console.error("❌ Lỗi lấy products:", err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-// ✅ Top 5 sản phẩm theo rating
-export const getTopRatedProducts = async (req, res) => {
-  try {
-    const products = await Product.findAll({
-      attributes: [
-        "id",
-        "productName",
-        "unitPrice",
-        [sequelize.fn("AVG", sequelize.col("feedbacks.rate")), "avgRating"],
-        [sequelize.fn("COUNT", sequelize.col("feedbacks.id")), "feedbackCount"],
-      ],
-      include: [
-        {
-          model: Feedback,
-          as: "feedbacks", // 👈 phải khớp với alias ở association
-          attributes: [],
-        },
-        {
-          model: ProductImage,
-          as: "images",
-          attributes: ["productImg"],
-          limit: 1,
-        },
-      ],
-      group: ["Product.id"],
-      order: [[sequelize.literal("avgRating"), "DESC"]],
-      limit: 5,
-      subQuery: false,
-    });
-
-    res.json(products);
-  } catch (error) {
-    console.error("❌ Lỗi getTopRatedProducts:", error);
-    res.status(500).json({ error: "Không thể lấy sản phẩm top rating" });
-  }
-};
-
-// ✅ Top 5 sản phẩm bán chạy nhất
-export const getBestSellers = async (req, res) => {
-  try {
-    const bestSellers = await Product.findAll({
-      attributes: [
-        "id",
-        "productName",
-        "unitPrice",
-        // tính tổng quantity từ bảng orderitems
-        [
-          sequelize.fn("SUM", sequelize.col("orderItems.quantity")),
-          "totalSold",
-        ],
-      ],
-      include: [
-        {
-          model: OrderItem,
-          as: "orderItems", // phải khớp alias trong index.js
-          attributes: [], // không cần lấy field từ OrderItem
-        },
-        {
-          model: ProductImage,
-          as: "images",
-          attributes: ["productImg"],
-          limit: 1,
-        },
-      ],
-      group: ["Product.id"],
-      order: [[sequelize.literal("totalSold"), "DESC"]],
-      limit: 5,
-      subQuery: false,
-    });
-
-    res.json(bestSellers);
-  } catch (err) {
-    console.error("❌ Lỗi getBestSellers:", err);
-    res.status(500).json({ message: "Lỗi khi lấy sản phẩm bán chạy" });
-  }
-};
 // ✅ Lấy tất cả sản phẩm kèm rating trung bình và ảnh đại diện
 export const getAllProducts = async (req, res) => {
   try {
@@ -403,5 +305,103 @@ export const getAllProducts = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi getAllProducts:", err);
     res.status(500).json({ error: "Không thể lấy sản phẩm" });
+  }
+};
+
+export const getTopRatedProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      attributes: [
+        "id",
+        "productName",
+        "unitPrice",
+        [sequelize.fn("AVG", sequelize.col("feedbacks.rate")), "avgRating"],
+        [sequelize.fn("COUNT", sequelize.col("feedbacks.id")), "feedbackCount"],
+      ],
+      include: [
+        {
+          model: Feedback,
+          as: "feedbacks", // alias phải khớp với association
+          attributes: [],
+        },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          limit: 1, // chỉ lấy 1 ảnh đại diện
+        },
+      ],
+      group: ["Product.id"],
+      order: [[sequelize.literal("avgRating"), "DESC"]],
+      limit: 5,
+      subQuery: false,
+    });
+
+    // Build full URL cho ảnh
+    const host = `${req.protocol}://${req.get("host")}`;
+    const result = products.map((p) => {
+      const data = p.toJSON();
+      data.productImg =
+        data.images && data.images.length > 0
+          ? `${host}/${data.images[0].productImg}`
+          : "/default-product.png";
+      delete data.images; // bỏ field images cho gọn JSON
+      return data;
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error("❌ Lỗi getTopRatedProducts:", error);
+    res.status(500).json({ error: "Không thể lấy sản phẩm top rating" });
+  }
+};
+
+export const getBestSellers = async (req, res) => {
+  try {
+    const bestSellers = await Product.findAll({
+      attributes: [
+        "id",
+        "productName",
+        "unitPrice",
+        [
+          sequelize.fn("SUM", sequelize.col("orderItems.quantity")),
+          "totalSold",
+        ],
+      ],
+      include: [
+        {
+          model: OrderItem,
+          as: "orderItems", // alias phải khớp với association trong index.js
+          attributes: [],
+        },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          limit: 1,
+        },
+      ],
+      group: ["Product.id"],
+      order: [[sequelize.literal("totalSold"), "DESC"]],
+      limit: 5,
+      subQuery: false,
+    });
+
+    // Build full URL cho ảnh
+    const host = `${req.protocol}://${req.get("host")}`;
+    const result = bestSellers.map((p) => {
+      const data = p.toJSON();
+      data.productImg =
+        data.images && data.images.length > 0
+          ? `${host}/${data.images[0].productImg}`
+          : "/default-product.png";
+      delete data.images;
+      return data;
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error("❌ Lỗi getBestSellers:", err);
+    res.status(500).json({ message: "Lỗi khi lấy sản phẩm bán chạy" });
   }
 };

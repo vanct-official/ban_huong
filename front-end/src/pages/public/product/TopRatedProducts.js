@@ -72,7 +72,13 @@ export default function TopRatedProducts() {
               hoverable
               cover={
                 <img
-                  src={p.productImg || "/default-product.png"}
+                  src={
+                    p.productImg
+                      ? p.productImg
+                      : p.images && p.images.length > 0
+                      ? `http://localhost:5000/${p.images[0].productImg}`
+                      : "/default-product.png"
+                  }
                   alt={p.productName}
                   style={{
                     height: 220,

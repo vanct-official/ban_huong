@@ -4,7 +4,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
-
 const { Title } = Typography;
 
 export default function BestSellerProducts() {
@@ -15,7 +14,7 @@ export default function BestSellerProducts() {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-         const res = await axios.get(`${API_URL}/api/products/best-sellers`);
+        const res = await axios.get(`${API_URL}/api/products/best-sellers`);
         setProducts(res.data);
       } catch (err) {
         console.error("❌ Lỗi tải sản phẩm bán chạy:", err);
@@ -26,13 +25,14 @@ export default function BestSellerProducts() {
     fetchBestSellers();
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <Spin
         tip="Đang tải sản phẩm bán chạy..."
         style={{ display: "block", margin: "20px auto" }}
       />
     );
+  }
 
   return (
     <div style={{ marginTop: 60, maxWidth: 1200, margin: "0 auto" }}>
@@ -47,27 +47,53 @@ export default function BestSellerProducts() {
       >
         Sản phẩm bán chạy nhất
       </Title>
-      <Carousel autoplay autoplaySpeed={4000} dots slidesToShow={3}>
+
+      <Carousel
+        dots
+        autoplay
+        autoplaySpeed={4000}
+        slidesToShow={3}
+        responsive={[
+          { breakpoint: 1024, settings: { slidesToShow: 2 } },
+          { breakpoint: 768, settings: { slidesToShow: 1 } },
+        ]}
+      >
         {products.map((p) => (
-          <div key={p.id} style={{ padding: "0 12px" }}>
+          <div key={p.id} style={{ padding: "0 10px" }}>
             <Card
               hoverable
               cover={
                 <img
-                  src={p.images?.[0]?.productImg || "/default-product.png"}
+                  src={p.productImg || "/default-product.png"}
                   alt={p.productName}
-                  style={{ height: 220, objectFit: "cover" }}
+                  style={{
+                    height: 220,
+                    objectFit: "cover",
+                    borderTopLeftRadius: "8px",
+                    borderTopRightRadius: "8px",
+                  }}
                 />
               }
               onClick={() => navigate(`/products/${p.id}`)}
+              style={{ maxWidth: 300, margin: "0 auto" }}
             >
-              <h3 style={{ fontWeight: 600 }}>{p.productName}</h3>
-              <p style={{ color: "#ea580c", fontWeight: 700 }}>
+              <h3 style={{ fontWeight: 600, textAlign: "center" }}>
+                {p.productName}
+              </h3>
+              <p
+                style={{
+                  color: "#ea580c",
+                  fontWeight: 700,
+                  textAlign: "center",
+                }}
+              >
                 {Number(p.unitPrice).toLocaleString()} đ
               </p>
-              <p style={{ fontSize: 13, color: "#666" }}>
-                Đã bán: {p.totalSold || 0}
-              </p>
+              <div style={{ textAlign: "center", marginTop: 8 }}>
+                <p style={{ fontSize: 13, color: "#666" }}>
+                  Đã bán: {p.totalSold || 0}
+                </p>
+              </div>
             </Card>
           </div>
         ))}
