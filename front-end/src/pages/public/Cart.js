@@ -13,10 +13,10 @@ import {
   Empty,
   Alert,
 } from "antd";
+import { useNavigate } from "react-router-dom";
 import { DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
-import { Navigate, useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -25,9 +25,11 @@ const Cart = () => {
   const [appliedPromoCode, setAppliedPromoCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [promoLoading, setPromoLoading] = useState(false);
-  const [promoError, setPromoError] = useState(""); // State để hiện lỗi trực tiếp trên UI
+  const [promoError, setPromoError] = useState(""); // State hiển thị lỗi trực tiếp trên UI
 
-  // Lấy giỏ hàng từ server
+  const navigate = useNavigate();
+
+  // ====== Fetch giỏ hàng từ server ======
   const fetchCart = async () => {
     try {
       setLoading(true);
@@ -47,13 +49,14 @@ const Cart = () => {
     }
   };
 
-  // Cập nhật số lượng
+  // ====== Cập nhật số lượng sản phẩm ======
   const handleUpdateQty = async (productId, qty) => {
-    if (qty < 1) {
+    if (!qty || qty < 1) {
       message.warning("Số lượng phải lớn hơn 0");
       return;
     }
 
+    // Update UI trước
     setCart((prev) =>
       prev.map((item) =>
         item.productId === productId ? { ...item, quantity: qty } : item
@@ -75,11 +78,11 @@ const Cart = () => {
       message.success("Đã cập nhật số lượng");
     } catch (err) {
       message.error(err.message);
-      fetchCart();
+      fetchCart(); // chỉ reload lại khi có lỗi
     }
   };
 
-  // Xóa sản phẩm
+  // ====== Xóa sản phẩm khỏi giỏ hàng ======
   const handleRemove = async (productId) => {
     try {
       const token = localStorage.getItem("token");
@@ -96,19 +99,16 @@ const Cart = () => {
     }
   };
 
-  // Áp dụng mã khuyến mãi
+  // ====== Áp dụng mã khuyến mãi ======
   const handleApplyPromo = async () => {
-    // Reset error trước
     setPromoError("");
 
-    // Validation
     if (!promoCode.trim()) {
       setPromoError("⚠️ Vui lòng nhập mã khuyến mãi");
       message.warning("Vui lòng nhập mã khuyến mãi");
       return;
     }
 
-    // Kiểm tra nếu mã đã được áp dụng
     if (appliedPromoCode === promoCode.trim()) {
       setPromoError("ℹ️ Mã này đã được áp dụng rồi!");
       message.info("Mã này đã được áp dụng rồi!");
@@ -118,75 +118,53 @@ const Cart = () => {
     setPromoLoading(true);
 
     try {
-      console.log("Applying promo code:", promoCode.trim()); // Debug
-
       const res = await fetch("http://localhost:5000/api/promotions/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: promoCode.trim() }),
       });
 
-      console.log("Response status:", res.status); // Debug
-
       const data = await res.json();
-      console.log("Response data:", data); // Debug
 
       if (!res.ok) {
-        // Xử lý các trường hợp lỗi
         let errorMsg = "";
-
-        if (res.status === 404) {
-          errorMsg = "❌ Mã khuyến mãi không tồn tại";
-        } else if (res.status === 400) {
+        if (res.status === 404) errorMsg = "❌ Mã khuyến mãi không tồn tại";
+        else if (res.status === 400)
           errorMsg = "❌ " + (data.message || "Mã khuyến mãi không hợp lệ");
-        } else if (res.status === 410) {
-          errorMsg = "❌ Mã khuyến mãi đã hết hạn";
-        } else {
-          errorMsg = "❌ " + (data.message || "Mã khuyến mãi không hợp lệ");
-        }
+        else if (res.status === 410) errorMsg = "❌ Mã khuyến mãi đã hết hạn";
+        else errorMsg = "❌ " + (data.message || "Mã khuyến mãi không hợp lệ");
 
-        // Hiển thị lỗi trên UI
         setPromoError(errorMsg);
-
-        // Hiển thị message notification
         message.error({
           content: errorMsg,
           duration: 4,
-          style: {
-            marginTop: "20vh",
-          },
+          style: { marginTop: "20vh" },
         });
 
-        // Reset discount
         setDiscountPercent(0);
         setAppliedPromoCode("");
         return;
       }
 
-      // Áp dụng thành công
+      // Thành công
       setDiscountPercent(data.discountPercent || 0);
       setAppliedPromoCode(promoCode.trim());
-      setPromoError(""); // Clear error
+      setPromoError("");
 
       message.success({
         content: `✅ ${data.message || "Áp dụng mã thành công!"} - Giảm ${
           data.discountPercent
         }%`,
         duration: 4,
-        style: {
-          marginTop: "20vh",
-        },
+        style: { marginTop: "20vh" },
       });
     } catch (err) {
-      console.error("Error applying promo:", err);
       const errorMsg = "❌ Có lỗi xảy ra khi áp dụng mã khuyến mãi";
       setPromoError(errorMsg);
       message.error({
         content: errorMsg,
         duration: 4,
-        style: {
-          marginTop: "20vh",
-        },
+        style: { marginTop: "20vh" },
       });
       setDiscountPercent(0);
       setAppliedPromoCode("");
@@ -195,7 +173,7 @@ const Cart = () => {
     }
   };
 
-  // Xóa mã khuyến mãi
+  // ====== Xóa mã khuyến mãi ======
   const handleRemovePromo = () => {
     setPromoCode("");
     setAppliedPromoCode("");
@@ -204,19 +182,12 @@ const Cart = () => {
     message.info("Đã xóa mã khuyến mãi");
   };
 
-  // Helper function để lấy đường dẫn ảnh đúng
+  // ====== Helper lấy ảnh sản phẩm ======
   const getImageUrl = (productImg) => {
     if (!productImg) return "/default-product.png";
-
-    // Nếu đã có http/https thì return luôn
     if (productImg.startsWith("http")) return productImg;
-
-    // Nếu bắt đầu bằng /uploads thì thêm domain
-    if (productImg.startsWith("/uploads")) {
+    if (productImg.startsWith("/uploads"))
       return `http://localhost:5000${productImg}`;
-    }
-
-    // Nếu chỉ có tên file
     return `http://localhost:5000/uploads/${productImg}`;
   };
 
@@ -224,6 +195,7 @@ const Cart = () => {
     fetchCart();
   }, []);
 
+  // ====== Loading giỏ hàng ======
   if (loading) {
     return (
       <>
@@ -236,6 +208,7 @@ const Cart = () => {
     );
   }
 
+  // ====== Giỏ hàng trống ======
   if (cart.length === 0) {
     return (
       <>
@@ -245,10 +218,7 @@ const Cart = () => {
             description="Giỏ hàng của bạn đang trống"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           >
-            <Button
-              type="primary"
-              onClick={() => (window.location.href = "/products")}
-            >
+            <Button type="primary" onClick={() => navigate("/products")}>
               Tiếp tục mua sắm
             </Button>
           </Empty>
@@ -258,6 +228,7 @@ const Cart = () => {
     );
   }
 
+  // ====== Tính toán tổng tiền ======
   const total = cart.reduce(
     (sum, item) => sum + item.quantity * Number(item.product?.unitPrice || 0),
     0
@@ -276,100 +247,107 @@ const Cart = () => {
         </h2>
 
         <Row gutter={[16, 16]}>
-          {cart.map((item) => {
-            console.log("Product image path:", item.product?.productImg); // Debug
-
-            return (
-              <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
-                <Card
-                  hoverable
-                  cover={
-                    <div
+          {cart.map((item) => (
+            <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
+              <Card
+                hoverable
+                cover={
+                  <div
+                    style={{
+                      height: 200,
+                      overflow: "hidden",
+                      background: "#f5f5f5",
+                    }}
+                  >
+                    <img
+                      alt={item.product?.productName || "Product"}
+                      src={getImageUrl(item.product?.productImg)}
                       style={{
-                        height: 200,
-                        overflow: "hidden",
-                        background: "#f5f5f5",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
                       }}
-                    >
-                      <img
-                        alt={item.product?.productName || "Product"}
-                        src={getImageUrl(item.product?.productImg)}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                        onError={(e) => {
-                          console.error(
-                            "Image load error for:",
-                            item.product?.productImg
-                          );
-                          e.target.onerror = null;
-                          e.target.src = "/default-product.png";
-                        }}
-                      />
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/default-product.png";
+                      }}
+                    />
+                  </div>
+                }
+                actions={[
+                  <Button
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleRemove(item.productId)}
+                    size="small"
+                  >
+                    Xóa
+                  </Button>,
+                ]}
+              >
+                <Card.Meta
+                  title={
+                    <div style={{ fontSize: 14, fontWeight: 600 }}>
+                      {item.product?.productName || "Sản phẩm"}
                     </div>
                   }
-                  actions={[
-                    <Button
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleRemove(item.productId)}
-                      size="small"
-                    >
-                      Xóa
-                    </Button>,
-                  ]}
-                >
-                  <Card.Meta
-                    title={
-                      <div style={{ fontSize: 14, fontWeight: 600 }}>
-                        {item.product?.productName || "Sản phẩm"}
+                  description={
+                    <>
+                      <div style={{ color: "#ff4d4f", fontWeight: 600 }}>
+                        {Number(item.product?.unitPrice || 0).toLocaleString(
+                          "vi-VN"
+                        )}{" "}
+                        đ
                       </div>
-                    }
-                    description={
-                      <>
-                        <div style={{ color: "#ff4d4f", fontWeight: 600 }}>
-                          {Number(item.product?.unitPrice || 0).toLocaleString(
-                            "vi-VN"
-                          )}{" "}
-                          đ
-                        </div>
-                        <div
-                          style={{
-                            marginTop: 8,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
+                      <div
+                        style={{
+                          marginTop: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span style={{ fontSize: 12 }}>Số lượng:</span>
+                        <InputNumber
+                          min={1}
+                          max={item.product?.quantity || 99}
+                          value={item.quantity}
+                          onChange={(val) => {
+                            // Chỉ update local state, chưa gửi API
+                            setCart((prev) =>
+                              prev.map((p) =>
+                                p.productId === item.productId
+                                  ? { ...p, quantity: val }
+                                  : p
+                              )
+                            );
                           }}
-                        >
-                          <span style={{ fontSize: 12 }}>Số lượng:</span>
-                          <InputNumber
-                            min={1}
-                            max={item.product?.quantity || 99}
-                            value={item.quantity}
-                            onChange={(val) =>
-                              handleUpdateQty(item.productId, val)
+                          onBlur={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            if (!isNaN(val) && val > 0) {
+                              handleUpdateQty(item.productId, val);
+                            } else {
+                              message.warning("Số lượng phải lớn hơn 0");
                             }
-                            size="small"
-                          />
-                        </div>
-                        <div
-                          style={{ marginTop: 4, fontSize: 12, color: "#666" }}
-                        >
-                          Tổng:{" "}
-                          {(
-                            item.quantity * Number(item.product?.unitPrice || 0)
-                          ).toLocaleString("vi-VN")}{" "}
-                          đ
-                        </div>
-                      </>
-                    }
-                  />
-                </Card>
-              </Col>
-            );
-          })}
+                          }}
+                          size="small"
+                        />
+                      </div>
+                      <div
+                        style={{ marginTop: 4, fontSize: 12, color: "#666" }}
+                      >
+                        Tổng:{" "}
+                        {(
+                          item.quantity * Number(item.product?.unitPrice || 0)
+                        ).toLocaleString("vi-VN")}{" "}
+                        đ
+                      </div>
+                    </>
+                  }
+                />
+              </Card>
+            </Col>
+          ))}
         </Row>
 
         {/* Tổng tiền + Khuyến mãi */}
@@ -382,7 +360,6 @@ const Cart = () => {
             border: "1px solid #e8e8e8",
           }}
         >
-          {/* Hiển thị mã đã áp dụng */}
           {appliedPromoCode && (
             <div style={{ marginBottom: 16 }}>
               <Tag
@@ -398,7 +375,6 @@ const Cart = () => {
             </div>
           )}
 
-          {/* Thống kê giá */}
           <div style={{ textAlign: "right" }}>
             <div
               style={{
@@ -457,7 +433,6 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Ô nhập mã khuyến mãi */}
           {!appliedPromoCode && (
             <div
               style={{
@@ -470,7 +445,6 @@ const Cart = () => {
                 Mã khuyến mãi:
               </div>
 
-              {/* Hiển thị lỗi trực tiếp trên UI */}
               {promoError && (
                 <Alert
                   message={promoError}
@@ -488,7 +462,7 @@ const Cart = () => {
                   value={promoCode}
                   onChange={(e) => {
                     setPromoCode(e.target.value.toUpperCase());
-                    setPromoError(""); // Clear error khi user gõ
+                    setPromoError("");
                   }}
                   onPressEnter={handleApplyPromo}
                   disabled={promoLoading}
@@ -508,7 +482,6 @@ const Cart = () => {
             </div>
           )}
 
-          {/* Nút hành động */}
           <div
             style={{
               display: "flex",
@@ -519,7 +492,7 @@ const Cart = () => {
             }}
           >
             <Button
-              onClick={() => (window.location.href = "/products")}
+              onClick={() => navigate("/products")}
               style={{
                 borderRadius: 8,
                 fontWeight: 600,
@@ -532,7 +505,7 @@ const Cart = () => {
             </Button>
             <Button
               type="primary"
-              onClick={() => (window.location.href = "/checkout")}
+              onClick={() => navigate("/checkout")}
               disabled={cart.length === 0}
               style={{
                 borderRadius: 8,
