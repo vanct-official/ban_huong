@@ -16,6 +16,7 @@ import {
 import { DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);

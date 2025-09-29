@@ -260,27 +260,27 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-export const getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.findAll({
-      include: [
-        {
-          model: Feedback,
-          attributes: [],
-        },
-      ],
-      attributes: {
-        include: [[fn("AVG", col("Feedback.rate")), "avgRating"]],
-      },
-      group: ["Product.id"],
-    });
+// export const getAllProducts = async (req, res) => {
+//   try {
+//     const products = await Product.findAll({
+//       include: [
+//         {
+//           model: Feedback,
+//           attributes: [],
+//         },
+//       ],
+//       attributes: {
+//         include: [[fn("AVG", col("Feedback.rate")), "avgRating"]],
+//       },
+//       group: ["Product.id"],
+//     });
 
-    res.json(products);
-  } catch (err) {
-    console.error("❌ Lỗi lấy products:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
+//     res.json(products);
+//   } catch (err) {
+//     console.error("❌ Lỗi lấy products:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 
 // ✅ Top 5 sản phẩm theo rating
 export const getTopRatedProducts = async (req, res) => {
@@ -356,5 +356,52 @@ export const getBestSellers = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi getBestSellers:", err);
     res.status(500).json({ message: "Lỗi khi lấy sản phẩm bán chạy" });
+  }
+};
+// ✅ Lấy tất cả sản phẩm kèm rating trung bình và ảnh đại diện
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      attributes: [
+        "id",
+        "productName",
+        "unitPrice",
+        [sequelize.fn("AVG", sequelize.col("feedbacks.rate")), "avgRating"],
+        [sequelize.fn("COUNT", sequelize.col("feedbacks.id")), "feedbackCount"],
+      ],
+      include: [
+        {
+          model: Feedback,
+          as: "feedbacks",
+          attributes: [],
+        },
+        {
+          model: ProductImage,
+          as: "images",
+          attributes: ["productImg"],
+          limit: 1,
+        },
+      ],
+      group: ["Product.id"],
+      subQuery: false,
+    });
+
+    const formatted = products.map((p) => {
+      const data = p.get({ plain: true });
+      return {
+        ...data,
+        avgRating: parseFloat(data.avgRating) || 0,
+        feedbackCount: parseInt(data.feedbackCount) || 0,
+        productImg:
+          data.images && data.images.length > 0
+            ? data.images[0].productImg
+            : null,
+      };
+    });
+
+    res.json(formatted);
+  } catch (err) {
+    console.error("❌ Lỗi getAllProducts:", err);
+    res.status(500).json({ error: "Không thể lấy sản phẩm" });
   }
 };

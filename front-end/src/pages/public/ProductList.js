@@ -264,6 +264,7 @@ function ProductList() {
                           {p.avgRating ? p.avgRating.toFixed(1) : "0.0"} / 5
                         </span>
                       </div>
+
                       <div
                         style={{
                           display: "flex",
