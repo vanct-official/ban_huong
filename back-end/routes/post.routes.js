@@ -5,6 +5,7 @@ import {
   createPost,
   deletePost,
   getLatestPosts,
+  getRelatedPosts,
 } from "../controllers/post.controller.js";
 import upload from "../middleware/upload.middleware.js";
 
@@ -24,5 +25,8 @@ router.post("/", upload.single("thumbnail"), createPost);
 
 // ✅ Xóa bài viết
 router.delete("/:id", deletePost);
+
+// ✅ Lấy các bài viết liên quan (cùng tác giả, không bao gồm bài hiện tại)
+router.get("/:slug/related", getRelatedPosts);
 
 export default router;
