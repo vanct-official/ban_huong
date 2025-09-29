@@ -253,7 +253,7 @@ function ProductList() {
                         {Number(p.unitPrice).toLocaleString("vi-VN")} đ
                       </div>
                       {/* ✅ Rating trung bình */}
-                      {/* <div style={{ marginTop: 4 }}>
+                      <div style={{ marginTop: 4 }}>
                         <Rate
                           disabled
                           value={p.avgRating || 0}
@@ -263,7 +263,7 @@ function ProductList() {
                         <span style={{ marginLeft: 6, color: "#666" }}>
                           {p.avgRating ? p.avgRating.toFixed(1) : "0.0"} / 5
                         </span>
-                      </div> */}
+                      </div>
                       <div
                         style={{
                           display: "flex",
