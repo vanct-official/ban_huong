@@ -7,6 +7,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import RichTextEditor from "../../../components/RichTextEditor/RichTextEditor";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const AddProduct = () => {
   const [files, setFiles] = useState([]);
   const [description, setDescription] = useState("");
@@ -38,7 +40,7 @@ const AddProduct = () => {
         formData.append("images", file);
       });
 
-      const res = await axios.post("http://localhost:5000/api/products", formData, {
+      const res = await axios.post(`${API_URL}/api/products`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

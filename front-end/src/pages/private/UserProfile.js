@@ -25,6 +25,8 @@ import { useTranslation } from "react-i18next";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { Title, Text } = Typography;
 
 const UserProfile = () => {
@@ -48,7 +50,7 @@ const UserProfile = () => {
           return;
         }
 
-        const res = await fetch("http://localhost:5000/api/auth/me", {
+        const res = await fetch(`${API_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -75,7 +77,7 @@ const UserProfile = () => {
       try {
         if (!user?.id) return;
         const res = await fetch(
-          `http://localhost:5000/api/addresses/user/${user.id}`
+          `${API_URL}/api/addresses/user/${user.id}`
         );
         const data = await res.json();
 

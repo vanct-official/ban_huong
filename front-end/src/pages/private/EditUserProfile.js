@@ -28,6 +28,8 @@ import { useTranslation } from "react-i18next";
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const EditUserProfile = () => {
   const [form] = Form.useForm();
   const [user, setUser] = useState(null);
@@ -59,7 +61,7 @@ const EditUserProfile = () => {
           return;
         }
 
-        const res = await fetch("http://localhost:5000/api/auth/me", {
+        const res = await fetch(`${API_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -80,7 +82,7 @@ const EditUserProfile = () => {
     const fetchAddresses = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/addresses/me", {
+        const res = await fetch(`${API_URL}/api/addresses/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -95,7 +97,7 @@ const EditUserProfile = () => {
 
     const fetchProvinces = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/provinces");
+        const res = await fetch(`${API_URL}/api/provinces`);
         const data = await res.json();
         setProvinces(data.data || data); // tuỳ API
       } catch (err) {
@@ -112,7 +114,7 @@ const EditUserProfile = () => {
   const handleUpdate = async (values) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/auth/me", {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +138,7 @@ const EditUserProfile = () => {
   const fetchWards = async (provinceCode) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/wards/province/${provinceCode}`
+        `${API_URL}/api/wards/province/${provinceCode}`
       );
       const data = await res.json();
       setWards(data.data || data);
@@ -149,7 +151,7 @@ const EditUserProfile = () => {
   const handleAddAddress = async (values) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/addresses", {
+      const res = await fetch(`${API_URL}/api/addresses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +165,7 @@ const EditUserProfile = () => {
       addressForm.resetFields();
       // Reload addresses
       setAddrLoading(true);
-      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+      const addrRes = await fetch(`${API_URL}/api/addresses/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const addrData = await addrRes.json();
@@ -178,7 +180,7 @@ const EditUserProfile = () => {
   const handleDeleteAddress = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/addresses/${id}`, {
+      const res = await fetch(`${API_URL}/api/addresses/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -186,7 +188,7 @@ const EditUserProfile = () => {
       message.success("Đã xóa địa chỉ!");
       // Reload addresses
       setAddrLoading(true);
-      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+      const addrRes = await fetch(`${API_URL}/api/addresses/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const addrData = await addrRes.json();
@@ -202,7 +204,7 @@ const EditUserProfile = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `http://localhost:5000/api/addresses/${id}/default`,
+        `${API_URL}/api/addresses/${id}/default`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },
@@ -212,7 +214,7 @@ const EditUserProfile = () => {
       message.success("Đã đặt địa chỉ mặc định!");
       // Reload addresses
       setAddrLoading(true);
-      const addrRes = await fetch("http://localhost:5000/api/addresses/me", {
+      const addrRes = await fetch(`${API_URL}/api/addresses/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const addrData = await addrRes.json();

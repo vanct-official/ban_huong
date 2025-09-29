@@ -27,6 +27,8 @@ import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
 import ProductFeedback from "../../components/ProductFeedback";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { Title, Paragraph, Text } = Typography;
 
 export default function ProductDetail() {
@@ -44,7 +46,7 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await axios.get(`${API_URL}/api/products/${id}`);
         setProduct(res.data);
         if (
           Array.isArray(res.data.productImgs) &&

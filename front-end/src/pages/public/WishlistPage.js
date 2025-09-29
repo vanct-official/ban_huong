@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"; // <-- import
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +16,7 @@ const Wishlist = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/wishlists/me", {
+      const res = await fetch(`${API_URL}/api/wishlists/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Lấy wishlist thất bại");
@@ -32,7 +34,7 @@ const Wishlist = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `http://localhost:5000/api/wishlists/${productId}`,
+        `${API_URL}/api/wishlists/${productId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },

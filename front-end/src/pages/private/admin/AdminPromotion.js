@@ -5,6 +5,8 @@ import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
 import dayjs from "dayjs";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export default function AdminPromotion() {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +27,7 @@ export default function AdminPromotion() {
   const fetchPromotions = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/promotions");
+      const res = await axios.get(`${API_URL}/api/promotions`);
       setPromotions(res.data);
     } catch {
       message.error("Không thể tải danh sách khuyến mãi");
@@ -43,12 +45,12 @@ export default function AdminPromotion() {
       const values = await form.validateFields();
       if (editingPromo) {
         await axios.put(
-          `http://localhost:5000/api/promotions/${editingPromo.id}`,
+          `${API_URL}/api/promotions/${editingPromo.id}`,
           values
         );
         message.success("Cập nhật thành công");
       } else {
-        await axios.post("http://localhost:5000/api/promotions", values);
+        await axios.post(`${API_URL}/api/promotions`, values);
         message.success("Thêm mới thành công");
       }
 
@@ -63,7 +65,7 @@ export default function AdminPromotion() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/promotions/${id}`);
+      await axios.delete(`${API_URL}/api/promotions/${id}`);
       message.success("Xóa thành công");
       fetchPromotions();
     } catch {

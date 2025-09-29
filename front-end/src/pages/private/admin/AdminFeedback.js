@@ -17,6 +17,8 @@ import {
 import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { Option } = Select;
 
 export default function AdminFeedback() {
@@ -38,7 +40,7 @@ export default function AdminFeedback() {
   const fetchFeedbacks = async (productId = null) => {
     setLoading(true);
     try {
-      let url = "http://localhost:5000/api/feedback";
+      let url = `${API_URL}/api/feedback`;
       if (productId) url += `/product/${productId}`;
       const res = await axios.get(url);
       setFeedbacks(res.data);
@@ -52,7 +54,7 @@ export default function AdminFeedback() {
   // Fetch products for dropdown
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get(`${API_URL}/api/products`);
       setProducts(res.data);
     } catch (err) {
       console.error("❌ Lỗi lấy sản phẩm:", err);
@@ -67,7 +69,7 @@ export default function AdminFeedback() {
   // Delete feedback
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/feedback/${id}`);
+      await axios.delete(`${API_URL}/api/feedback/${id}`);
       message.success("Đã xoá feedback");
       fetchFeedbacks(selectedProduct);
     } catch (err) {

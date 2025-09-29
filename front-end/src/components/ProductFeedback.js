@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { List, Avatar, Rate, Input, Button, message } from "antd";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { TextArea } = Input;
 
 export default function ProductFeedback({ productId }) {
@@ -14,7 +16,7 @@ export default function ProductFeedback({ productId }) {
   const fetchFeedbacks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/feedback/product/${productId}`
+        `${API_URL}/api/feedback/product/${productId}`
       );
       setFeedbacks(res.data);
     } catch (err) {
@@ -41,7 +43,7 @@ export default function ProductFeedback({ productId }) {
 
       setLoading(true);
       await axios.post(
-        "http://localhost:5000/api/feedback",
+        `${API_URL}/api/feedback`,
         {
           productId,
           rate,

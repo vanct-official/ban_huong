@@ -8,6 +8,8 @@ import { Form, Input, InputNumber, Button, message, Card } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import RichTextEditor from "../../../components/RichTextEditor/RichTextEditor";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const UpdateProduct = () => {
   const { id } = useParams(); // lấy productId từ URL
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const UpdateProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await axios.get(`${API_URL}/api/products/${id}`);
         const product = res.data;
 
         // set vào form
@@ -79,7 +81,7 @@ const UpdateProduct = () => {
         }
       });
 
-      await axios.put(`http://localhost:5000/api/products/${id}`, formData, {
+      await axios.put(`${API_URL}/api/products/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

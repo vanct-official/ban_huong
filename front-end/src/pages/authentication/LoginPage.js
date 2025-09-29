@@ -25,6 +25,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const { Title, Text, Paragraph } = Typography;
 
 export default function LoginPage() {
@@ -107,16 +109,11 @@ export default function LoginPage() {
       const decoded = jwtDecode(credentialResponse.credential);
 
       try {
-        const response = await fetch(
-          `${
-            process.env.REACT_APP_API_URL || "http://localhost:5000"
-          }/api/auth/google`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idToken: credentialResponse.credential }),
-          }
-        );
+        const response = await fetch(`${API_URL}/api/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken: credentialResponse.credential }),
+        });
 
         const data = await response.json().catch(() => ({})); // luôn parse JSON
 
@@ -197,18 +194,13 @@ export default function LoginPage() {
       if (token) {
         try {
           // Gửi request logout lên Backend nếu có API
-          await fetch(
-            `${
-              process.env.REACT_APP_API_URL || "http://localhost:5000"
-            }/api/auth/logout`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          await fetch(`${API_URL}/api/auth/logout`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
         } catch (error) {
           console.log("Logout API not available, proceeding with local logout");
         }
