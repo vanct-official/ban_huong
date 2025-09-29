@@ -122,28 +122,20 @@ export const getLatestPosts = async (req, res) => {
   }
 };
 
-// ✅ Lấy các bài viết liên quan (cùng tác giả, không bao gồm bài hiện tại)
+// Lấy bài viết liên quan (cùng tác giả, khác id)
 export const getRelatedPosts = async (req, res) => {
   try {
     const { slug } = req.params;
+    const post = await Post.findOne({ where: { slug } });
 
-    // tìm bài viết hiện tại
-    const currentPost = await Post.findOne({ where: { slug } });
-    if (!currentPost) {
-      return res.status(404).json({ error: "Không tìm thấy bài viết" });
-    }
+    if (!post) return res.status(404).json({ error: "Post not found" });
 
-    // Lấy từ khóa chính từ title (ví dụ: lấy chữ đầu tiên hoặc 1 cụm)
-    const keyword = currentPost.title.split(" ")[0]; // 👈 tạm lấy từ đầu tiên
-
-    // tìm bài viết khác có chứa keyword trong title
     const related = await Post.findAll({
       where: {
-        slug: { [Op.ne]: slug },
-        title: { [Op.like]: `%${keyword}%` },
+        id: { [Op.ne]: post.id }, // khác id hiện tại
       },
-      limit: 4,
       order: [["createdAt", "DESC"]],
+      limit: 3,
     });
 
     res.json(related);
@@ -152,21 +144,21 @@ export const getRelatedPosts = async (req, res) => {
     res.status(500).json({ error: "Không thể lấy bài viết liên quan" });
   }
 };
-// ✅ Lấy chi tiết bài viết theo slug
+
 export const getPostBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const post = await Post.findOne({ where: { slug } });
 
-    if (!post) return res.status(404).json({ error: "Post không tồn tại" });
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
     const host = `${req.protocol}://${req.get("host")}`;
-    const data = post.toJSON();
-    data.thumbnail = data.thumbnail
-      ? `${host}${data.thumbnail}`
-      : "/default-post.png";
+    const formatted = {
+      ...post.toJSON(),
+      image: post.thumbnail ? `${host}${post.thumbnail}` : null,
+    };
 
-    res.json(data);
+    res.json(formatted);
   } catch (err) {
     console.error("❌ Lỗi getPostBySlug:", err);
     res.status(500).json({ error: "Không thể lấy bài viết" });

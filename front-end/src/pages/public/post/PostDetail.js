@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Spin, Typography, Card } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
+import { Card, Spin, Typography, Row, Col } from "antd";
 import axios from "axios";
 import MainHeader from "../../../components/MainHeader";
 import Footer from "../../../components/Footer";
@@ -10,11 +10,10 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export default function PostDetail() {
   const { slug } = useParams();
-  const navigate = useNavigate();
-
   const [post, setPost] = useState(null);
-  const [related, setRelated] = useState([]); // 👈 khai báo state để lưu bài viết liên quan
+  const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!slug) return;
@@ -24,69 +23,117 @@ export default function PostDetail() {
         const res = await axios.get(`${API_URL}/api/posts/${slug}`);
         setPost(res.data);
 
-        // gọi API bài viết liên quan
+        // 👉 lấy bài viết liên quan
         const relatedRes = await axios.get(
           `${API_URL}/api/posts/${slug}/related`
         );
-        setRelated(relatedRes.data); // 👈 cập nhật state
+        setRelated(relatedRes.data);
       } catch (err) {
         console.error("❌ Lỗi tải post:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [slug]);
 
-  if (loading) return <Spin tip="Đang tải..." />;
+  if (loading) {
+    return (
+      <Spin
+        tip="Đang tải bài viết..."
+        style={{ display: "block", margin: "40px auto" }}
+      />
+    );
+  }
+
+  if (!post) {
+    return (
+      <p style={{ textAlign: "center", marginTop: 50 }}>
+        ❌ Bài viết không tồn tại
+      </p>
+    );
+  }
 
   return (
     <>
       <MainHeader />
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: 20 }}>
-        {post && (
-          <>
-            <Title>{post.title}</Title>
-            <img
-              src={post.thumbnail}
-              alt={post.title}
-              style={{ width: "50%", borderRadius: 8 }}
-            />
-            <p dangerouslySetInnerHTML={{ __html: post.content }} />
 
-            {/* ✅ Hiển thị bài viết liên quan */}
-            {related.length > 0 && (
-              <div style={{ marginTop: 40 }}>
-                <Title level={3}>📌 Bài viết liên quan</Title>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-                  {related.map((r) => (
-                    <Card
-                      key={r.id}
-                      hoverable
-                      cover={
+      <div style={{ maxWidth: 900, margin: "40px auto", padding: "0 16px" }}>
+        {/* --- Title --- */}
+        <Title level={2} style={{ color: "#166534" }}>
+          {post.title}
+        </Title>
+
+        {/* --- Meta info --- */}
+        <p style={{ color: "#666", fontSize: 14 }}>
+          ✍️ {post.author || "Admin"} • 📅{" "}
+          {new Date(post.createdAt).toLocaleDateString("vi-VN")}
+          {post.updatedAt && (
+            <>
+              {" "}
+              • 🔄 Cập nhật:{" "}
+              {new Date(post.updatedAt).toLocaleDateString("vi-VN")}
+            </>
+          )}
+        </p>
+
+        {/* --- Ảnh đại diện --- */}
+        {post.image && (
+          <img
+            src={post.image}
+            alt={post.title}
+            style={{
+              width: "100%",
+              maxHeight: 400,
+              objectFit: "cover",
+              borderRadius: 8,
+              margin: "20px 0",
+            }}
+          />
+        )}
+
+        {/* --- Nội dung --- */}
+        <div
+          style={{ fontSize: 16, lineHeight: 1.8 }}
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
+
+        {/* --- Related Posts --- */}
+        {related.length > 0 && (
+          <div style={{ marginTop: 60 }}>
+            <Title level={3} style={{ color: "#166534" }}>
+              📌 Bài viết liên quan
+            </Title>
+            <Row gutter={[24, 24]}>
+              {related.map((rp) => (
+                <Col xs={24} sm={12} md={8} key={rp.id}>
+                  <Card
+                    hoverable
+                    cover={
+                      rp.image && (
                         <img
-                          src={
-                            r.thumbnail
-                              ? `${API_URL}${r.thumbnail}`
-                              : "/default-post.png"
-                          }
-                          alt={r.title}
-                          style={{ height: 150, objectFit: "cover" }}
+                          src={`${API_URL}/uploads/${rp.image}`}
+                          alt={rp.title}
+                          style={{ height: 180, objectFit: "cover" }}
                         />
+                      )
+                    }
+                    onClick={() => navigate(`/posts/${rp.slug}`)}
+                  >
+                    <Card.Meta
+                      title={rp.title}
+                      description={
+                        rp.excerpt || rp.content?.substring(0, 80) + "..."
                       }
-                      style={{ width: 220 }}
-                      onClick={() => navigate(`/posts/${r.slug}`)}
-                    >
-                      <h4>{r.title}</h4>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+                    />
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </div>
         )}
       </div>
+
       <Footer />
     </>
   );
