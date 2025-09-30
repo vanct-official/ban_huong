@@ -100,7 +100,7 @@ CREATE TABLE `carts` (
   KEY `productId` (`productId`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +109,7 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (17,3,1,1,'2025-09-29 17:16:09','2025-09-29 17:16:09');
+INSERT INTO `carts` VALUES (17,10,1,1,'2025-09-29 17:16:09','2025-09-30 02:26:54'),(19,10,10,3,'2025-09-30 02:26:54','2025-09-30 02:26:54'),(20,10,8,2,'2025-09-30 02:26:54','2025-09-30 02:26:54');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +141,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (1,2,3,'f','2025-09-28 08:29:40','2025-09-28 08:29:40',9),(2,2,5,'con cac','2025-09-28 11:13:26','2025-09-28 11:13:26',9),(3,2,5,'d','2025-09-28 11:13:54','2025-09-28 11:13:54',9),(4,2,5,'cc','2025-09-28 11:14:32','2025-09-28 11:14:32',10),(5,1,5,'d','2025-09-29 11:46:54','2025-09-29 11:46:54',10),(6,9,5,'Tinh dầu này đậm mùi quế nên rất thích, thanks','2025-09-29 17:42:59','2025-09-29 17:42:59',3);
+INSERT INTO `feedback` VALUES (1,2,3,'Rất tốt','2025-09-28 08:29:40','2025-09-30 09:28:24',9),(2,2,5,'Hàng dùng được','2025-09-28 11:13:26','2025-09-30 09:28:24',9),(3,2,5,'Nên mua','2025-09-28 11:13:54','2025-09-30 09:28:24',9),(4,2,5,'Sẽ ủng hộ','2025-09-28 11:14:32','2025-09-30 09:28:24',10),(5,1,5,'Đáng tiền','2025-09-29 11:46:54','2025-09-30 09:28:24',10),(6,9,5,'Tinh dầu này đậm mùi quế nên rất thích, thanks','2025-09-29 17:42:59','2025-09-29 17:42:59',3);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +174,7 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
-INSERT INTO `orderitems` VALUES (1,1,1,2,55000.00,0.00,110000.00),(2,1,3,1,45000.00,0.00,45000.00),(3,2,5,3,70000.00,0.00,189000.00),(4,3,12,1,95000.00,0.00,95000.00);
+INSERT INTO `orderitems` VALUES (1,1,1,2,55000.00,0.00,110000.00),(2,1,3,1,45000.00,0.00,45000.00),(4,3,5,1,95000.00,0.00,95000.00);
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +211,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,10,1,'2025-03-03 10:00:00','completed',155000.00,NULL,0.00,155000.00),(2,10,3,'2025-11-01 14:30:00','pending',215000.00,NULL,0.00,215000.00),(3,10,7,'2025-06-23 08:45:00','cancelled',95000.00,NULL,0.00,95000.00);
+INSERT INTO `orders` VALUES (1,10,1,'2025-03-03 10:00:00','completed',155000.00,NULL,0.00,155000.00),(3,10,7,'2025-06-23 08:45:00','cancelled',95000.00,NULL,0.00,95000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,7 +230,7 @@ CREATE TABLE `popular_searches` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword` (`keyword`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -239,7 +239,7 @@ CREATE TABLE `popular_searches` (
 
 LOCK TABLES `popular_searches` WRITE;
 /*!40000 ALTER TABLE `popular_searches` DISABLE KEYS */;
-INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',10,'2025-09-30 02:04:46','2025-09-30 00:54:55'),(14,'Tuan',4,'2025-09-29 19:51:06','2025-09-29 20:04:00'),(15,'Tuant',1,'2025-09-29 19:51:07','2025-09-29 19:51:07'),(16,'Tuantv',2,'2025-09-29 19:51:08','2025-09-29 19:51:09'),(17,'4',1,'2025-09-29 19:51:39','2025-09-29 19:51:39'),(18,'4ml',3,'2025-09-29 19:51:40','2025-09-29 20:04:46'),(19,'van',3,'2025-09-29 20:03:50','2025-09-29 22:01:48');
+INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',12,'2025-09-30 02:04:46','2025-09-30 02:36:03'),(20,'Tinh dầu Hoa Hồi 25ml',6,'2025-09-30 09:29:08','2025-09-30 02:39:11'),(21,'4',1,'2025-09-30 02:36:10','2025-09-30 02:36:10'),(22,'4ml',2,'2025-09-30 02:36:12','2025-09-30 02:36:20');
 /*!40000 ALTER TABLE `popular_searches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -270,7 +270,7 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'Báo cáo kết quả kinh doanh 2024','bao-cao-ket-qua-kinh-doanh-2024','Nội dung chi tiết về kết quả kinh doanh năm 2024...','/uploads/posts/1759192517328.jpg','Admin','2025-09-30 03:55:02','2025-09-30 00:35:17'),(2,'Hướng dẫn sử dụng tinh dầu hoa hồi','huong-dan-su-dung-tinh-dau-hoa-hoi','Bài viết hướng dẫn chi tiết cách sử dụng tinh dầu hoa hồi hiệu quả nhất...','/uploads/posts/b.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(3,'Kế hoạch phát triển sản phẩm mới 2025','ke-hoach-phat-trien-san-pham-2025','Nội dung mô tả chi tiết kế hoạch phát triển sản phẩm mới trong năm 2025...','/uploads/posts/c.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:45:16'),(4,'10 lợi ích của tinh dầu thiên nhiên','10-loi-ich-tinh-dau-thien-nhien','Tinh dầu thiên nhiên mang lại nhiều lợi ích cho sức khỏe và tinh thần...','/uploads/posts/d.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(5,'Báo cáo doanh thu quý 3 năm 2025','bao-cao-doanh-thu-q3-2025','Dữ liệu thống kê chi tiết doanh thu quý 3 năm 2025...','/uploads/posts/e.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:45:16'),(6,'Cách bảo quản tinh dầu đúng cách','cach-bao-quan-tinh-dau','Hướng dẫn bảo quản tinh dầu để giữ được mùi hương lâu nhất...','/uploads/posts/f.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(7,'Xu hướng thị trường tinh dầu 2025','xu-huong-thi-truong-tinh-dau-2025','Phân tích xu hướng thị trường tinh dầu trong năm 2025...','/uploads/posts/g.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:45:16'),(8,'Bí quyết thư giãn với tinh dầu hoa hồi','bi-quyet-thu-gian-tinh-dau-hoa-hoi','Một số cách thư giãn với tinh dầu hoa hồi sau một ngày dài mệt mỏi...','/uploads/posts/h.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(9,'Top 5 loại tinh dầu phổ biến hiện nay','top-5-tinh-dau-pho-bien','Danh sách 5 loại tinh dầu phổ biến và công dụng của chúng...','/uploads/posts/a.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:07:57'),(10,'Lợi ích của tinh dầu trong thiền định','loi-ich-tinh-dau-trong-thien-dinh','Tinh dầu giúp nâng cao trải nghiệm trong thiền định và yoga...','/uploads/posts/b.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(12,'Sinh vien','sinh-vien','Nam','/uploads/posts/1759192440364.jpg','Admin','2025-09-29 23:35:53','2025-09-30 00:34:00'),(13,'a de cung chiu','a-de-cung-chiu','admin','/uploads/posts/1759192672272.jpg','Admin','2025-09-30 00:33:40','2025-09-30 00:37:52'),(14,'Con voi có cái vòi','con-voi-co-cai-voi','Bởi vì nó to ','/uploads/posts/1759193809627.jpg','Admin','2025-09-30 00:56:49','2025-09-30 00:56:49');
+INSERT INTO `posts` VALUES (1,'Báo cáo kết quả kinh doanh 2024','bao-cao-ket-qua-kinh-doanh-2024','Nội dung chi tiết về kết quả kinh doanh năm 2024...','/uploads/posts/1.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(2,'Hướng dẫn sử dụng tinh dầu hoa hồi','huong-dan-su-dung-tinh-dau-hoa-hoi','Bài viết hướng dẫn chi tiết cách sử dụng tinh dầu hoa hồi hiệu quả nhất...','/uploads/posts/2.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(3,'Kế hoạch phát triển sản phẩm mới 2025','ke-hoach-phat-trien-san-pham-2025','Nội dung mô tả chi tiết kế hoạch phát triển sản phẩm mới trong năm 2025...','/uploads/posts/3.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(4,'10 lợi ích của tinh dầu thiên nhiên','10-loi-ich-tinh-dau-thien-nhien','Tinh dầu thiên nhiên mang lại nhiều lợi ích cho sức khỏe và tinh thần...','/uploads/posts/4.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(5,'Báo cáo doanh thu quý 3 năm 2025','bao-cao-doanh-thu-q3-2025','Dữ liệu thống kê chi tiết doanh thu quý 3 năm 2025...','/uploads/posts/5.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(6,'Cách bảo quản tinh dầu đúng cách','cach-bao-quan-tinh-dau','Hướng dẫn bảo quản tinh dầu để giữ được mùi hương lâu nhất...','/uploads/posts/6.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(7,'Xu hướng thị trường tinh dầu 2025','xu-huong-thi-truong-tinh-dau-2025','Phân tích xu hướng thị trường tinh dầu trong năm 2025...','/uploads/posts/7.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(8,'Bí quyết thư giãn với tinh dầu hoa hồi','bi-quyet-thu-gian-tinh-dau-hoa-hoi','Một số cách thư giãn với tinh dầu hoa hồi sau một ngày dài mệt mỏi...','/uploads/posts/8.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(9,'Top 5 loại tinh dầu phổ biến hiện nay','top-5-tinh-dau-pho-bien','Danh sách 5 loại tinh dầu phổ biến và công dụng của chúng...','/uploads/posts/9.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(10,'Lợi ích của tinh dầu trong thiền định','loi-ich-tinh-dau-trong-thien-dinh','Tinh dầu giúp nâng cao trải nghiệm trong thiền định và yoga...','/uploads/posts/10.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(12,'Công dụng tinh dầu Hoa Hồi','cong-dung-tinh-dau-hoa-hoi','Bài viết giới thiệu công dụng của tinh dầu Hoa Hồi trong đời sống hằng ngày.','/uploads/posts/11.jpg','Admin','2025-09-29 23:35:53','2025-09-30 09:25:47'),(13,'Tinh dầu Hoa Hồi và giấc ngủ','tinh-dau-hoa-hoi-va-giac-ngu','Sử dụng tinh dầu Hoa Hồi hỗ trợ giấc ngủ sâu và ngon hơn.','/uploads/posts/12.jpg','Admin','2025-09-30 00:33:40','2025-09-30 09:25:47');
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -358,7 +358,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'Back fai day','Giảm sâu nha sea',21.00,'2025-09-28 11:51:16','2025-09-28 12:30:11'),(2,'Tết duong lịch','Giảm ít nhé boi fpt uni',11.00,'2025-09-28 11:52:12','2025-09-28 12:06:53'),(3,'v','Giảm sâu nha',5.00,'2025-09-28 12:05:48','2025-09-29 11:47:43');
+INSERT INTO `promotion` VALUES (1,'sale1','sale1',21.00,'2025-09-28 11:51:16','2025-09-30 09:27:40'),(2,'sale2','sale2',11.00,'2025-09-28 11:52:12','2025-09-30 09:27:40'),(3,'vanct','sale3',5.00,'2025-09-28 12:05:48','2025-09-30 09:27:40');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -428,7 +428,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,'116603201577927477280',0),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,NULL,0),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,'115787374426474178678',0),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1,NULL,0),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,NULL,0),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,NULL,0),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 11:46:08',1,NULL,0),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-29 16:25:07',1,'113176155543186944643',0),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-28 11:46:08',1,NULL,0);
+INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,'116603201577927477280',0),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,NULL,0),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,'115787374426474178678',0),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1,NULL,0),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,NULL,0),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,NULL,0),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 11:46:08',1,NULL,0),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-29 16:25:07',1,'113176155543186944643',0),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-30 02:34:58',1,'106848181745691041838',0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -504,4 +504,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-30  8:33:21
+-- Dump completed on 2025-09-30  9:41:06
