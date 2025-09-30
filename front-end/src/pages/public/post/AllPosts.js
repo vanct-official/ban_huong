@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Spin, Typography } from "antd";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import MainHeader from "../../../components/MainHeader";
+import Footer from "../../../components/Footer";
 
 const { Title, Text } = Typography;
 const API_URL = process.env.REACT_APP_API_URL;
@@ -34,41 +36,45 @@ export default function AllPosts() {
   }
 
   return (
-    <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 16px" }}>
-      <Title level={3} style={{ marginBottom: 16, color: "#166534" }}>
-        📚 Tất cả bài viết
-      </Title>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: 20,
-        }}
-      >
-        {posts.map((p) => (
-          <Card
-            key={p.id}
-            hoverable
-            cover={
-              p.thumbnail && (
-                <img
-                  alt={p.title}
-                  src={p.thumbnail}
-                  style={{ height: 180, objectFit: "cover" }}
-                />
-              )
-            }
-          >
-            <Link to={`/posts/${p.slug}`}>
-              <Title level={4}>{p.title}</Title>
-            </Link>
-            <Text type="secondary">
-              ✍️ {p.author || "Admin"} | 📅{" "}
-              {new Date(p.createdAt).toLocaleDateString("vi-VN")}
-            </Text>
-          </Card>
-        ))}
+    <>
+      <MainHeader />
+      <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 16px" }}>
+        <Title level={3} style={{ marginBottom: 16, color: "#166534" }}>
+          📚 Tất cả bài viết
+        </Title>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: 20,
+          }}
+        >
+          {posts.map((p) => (
+            <Card
+              key={p.id}
+              hoverable
+              cover={
+                p.thumbnail && (
+                  <img
+                    alt={p.title}
+                    src={p.thumbnail}
+                    style={{ height: 180, objectFit: "cover" }}
+                  />
+                )
+              }
+            >
+              <Link to={`/posts/${p.slug}`}>
+                <Title level={4}>{p.title}</Title>
+              </Link>
+              <Text type="secondary">
+                ✍️ {p.author || "Admin"} | 📅{" "}
+                {new Date(p.createdAt).toLocaleDateString("vi-VN")}
+              </Text>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
