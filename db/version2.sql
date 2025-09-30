@@ -100,7 +100,7 @@ CREATE TABLE `carts` (
   KEY `productId` (`productId`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +109,7 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (17,10,1,1,'2025-09-29 17:16:09','2025-09-30 02:26:54'),(19,10,10,3,'2025-09-30 02:26:54','2025-09-30 02:26:54'),(20,10,8,2,'2025-09-30 02:26:54','2025-09-30 02:26:54');
+INSERT INTO `carts` VALUES (21,10,15,6,'2025-09-30 18:30:22','2025-09-30 20:43:35'),(22,10,20,6,'2025-09-30 18:30:27','2025-09-30 20:43:51'),(23,10,14,1,'2025-09-30 20:43:30','2025-09-30 20:43:30');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +141,6 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (1,2,3,'Rất tốt','2025-09-28 08:29:40','2025-09-30 09:28:24',9),(2,2,5,'Hàng dùng được','2025-09-28 11:13:26','2025-09-30 09:28:24',9),(3,2,5,'Nên mua','2025-09-28 11:13:54','2025-09-30 09:28:24',9),(4,2,5,'Sẽ ủng hộ','2025-09-28 11:14:32','2025-09-30 09:28:24',10),(5,1,5,'Đáng tiền','2025-09-29 11:46:54','2025-09-30 09:28:24',10),(6,9,5,'Tinh dầu này đậm mùi quế nên rất thích, thanks','2025-09-29 17:42:59','2025-09-29 17:42:59',3);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +173,6 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
-INSERT INTO `orderitems` VALUES (1,1,1,2,55000.00,0.00,110000.00),(2,1,3,1,45000.00,0.00,45000.00),(4,3,5,1,95000.00,0.00,95000.00);
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +209,6 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,10,1,'2025-03-03 10:00:00','completed',155000.00,NULL,0.00,155000.00),(3,10,7,'2025-06-23 08:45:00','cancelled',95000.00,NULL,0.00,95000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +236,7 @@ CREATE TABLE `popular_searches` (
 
 LOCK TABLES `popular_searches` WRITE;
 /*!40000 ALTER TABLE `popular_searches` DISABLE KEYS */;
-INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',12,'2025-09-30 02:04:46','2025-09-30 02:36:03'),(20,'Tinh dầu Hoa Hồi 25ml',6,'2025-09-30 09:29:08','2025-09-30 02:39:11'),(21,'4',1,'2025-09-30 02:36:10','2025-09-30 02:36:10'),(22,'4ml',2,'2025-09-30 02:36:12','2025-09-30 02:36:20');
+INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',13,'2025-09-30 02:04:46','2025-09-30 18:06:16'),(20,'Tinh dầu Hoa Hồi 25ml',6,'2025-09-30 09:29:08','2025-09-30 02:39:11'),(21,'4',1,'2025-09-30 02:36:10','2025-09-30 02:36:10'),(22,'4ml',2,'2025-09-30 02:36:12','2025-09-30 02:36:20');
 /*!40000 ALTER TABLE `popular_searches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -261,7 +258,7 @@ CREATE TABLE `posts` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `slug` (`slug`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,7 +267,7 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'Báo cáo kết quả kinh doanh 2024','bao-cao-ket-qua-kinh-doanh-2024','Nội dung chi tiết về kết quả kinh doanh năm 2024...','/uploads/posts/1.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(2,'Hướng dẫn sử dụng tinh dầu hoa hồi','huong-dan-su-dung-tinh-dau-hoa-hoi','Bài viết hướng dẫn chi tiết cách sử dụng tinh dầu hoa hồi hiệu quả nhất...','/uploads/posts/2.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(3,'Kế hoạch phát triển sản phẩm mới 2025','ke-hoach-phat-trien-san-pham-2025','Nội dung mô tả chi tiết kế hoạch phát triển sản phẩm mới trong năm 2025...','/uploads/posts/3.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(4,'10 lợi ích của tinh dầu thiên nhiên','10-loi-ich-tinh-dau-thien-nhien','Tinh dầu thiên nhiên mang lại nhiều lợi ích cho sức khỏe và tinh thần...','/uploads/posts/4.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(5,'Báo cáo doanh thu quý 3 năm 2025','bao-cao-doanh-thu-q3-2025','Dữ liệu thống kê chi tiết doanh thu quý 3 năm 2025...','/uploads/posts/5.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(6,'Cách bảo quản tinh dầu đúng cách','cach-bao-quan-tinh-dau','Hướng dẫn bảo quản tinh dầu để giữ được mùi hương lâu nhất...','/uploads/posts/6.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(7,'Xu hướng thị trường tinh dầu 2025','xu-huong-thi-truong-tinh-dau-2025','Phân tích xu hướng thị trường tinh dầu trong năm 2025...','/uploads/posts/7.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(8,'Bí quyết thư giãn với tinh dầu hoa hồi','bi-quyet-thu-gian-tinh-dau-hoa-hoi','Một số cách thư giãn với tinh dầu hoa hồi sau một ngày dài mệt mỏi...','/uploads/posts/8.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(9,'Top 5 loại tinh dầu phổ biến hiện nay','top-5-tinh-dau-pho-bien','Danh sách 5 loại tinh dầu phổ biến và công dụng của chúng...','/uploads/posts/9.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(10,'Lợi ích của tinh dầu trong thiền định','loi-ich-tinh-dau-trong-thien-dinh','Tinh dầu giúp nâng cao trải nghiệm trong thiền định và yoga...','/uploads/posts/10.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(12,'Công dụng tinh dầu Hoa Hồi','cong-dung-tinh-dau-hoa-hoi','Bài viết giới thiệu công dụng của tinh dầu Hoa Hồi trong đời sống hằng ngày.','/uploads/posts/11.jpg','Admin','2025-09-29 23:35:53','2025-09-30 09:25:47'),(13,'Tinh dầu Hoa Hồi và giấc ngủ','tinh-dau-hoa-hoi-va-giac-ngu','Sử dụng tinh dầu Hoa Hồi hỗ trợ giấc ngủ sâu và ngon hơn.','/uploads/posts/12.jpg','Admin','2025-09-30 00:33:40','2025-09-30 09:25:47');
+INSERT INTO `posts` VALUES (1,'Báo cáo kết quả kinh doanh 2024','bao-cao-ket-qua-kinh-doanh-2024','Nội dung chi tiết về kết quả kinh doanh năm 2024...','/uploads/posts/1.jpg','Admin','2024-09-30 03:55:02','2024-11-03 09:25:47'),(2,'Hướng dẫn sử dụng tinh dầu hoa hồi','huong-dan-su-dung-tinh-dau-hoa-hoi','Bài viết hướng dẫn chi tiết cách sử dụng tinh dầu hoa hồi hiệu quả nhất...','/uploads/posts/2.jpg','Admin','2025-09-30 03:55:02','2025-09-30 09:25:47'),(3,'Kế hoạch phát triển sản phẩm mới 2025','ke-hoach-phat-trien-san-pham-2025','Nội dung mô tả chi tiết kế hoạch phát triển sản phẩm mới trong năm 2025...','/uploads/posts/3.jpg','Admin','2025-01-11 03:55:02','2025-01-22 09:25:47'),(4,'10 lợi ích của tinh dầu thiên nhiên','10-loi-ich-tinh-dau-thien-nhien','Tinh dầu thiên nhiên mang lại nhiều lợi ích cho sức khỏe và tinh thần...','/uploads/posts/4.jpg','Admin','2023-07-03 03:55:02','2023-12-13 09:25:47'),(5,'Báo cáo doanh thu quý 3 năm 2025','bao-cao-doanh-thu-q3-2025','Dữ liệu thống kê chi tiết doanh thu quý 3 năm 2025...','/uploads/posts/5.jpg','Admin','2025-02-23 03:55:02','2025-03-28 09:25:47'),(6,'Cách bảo quản tinh dầu đúng cách','cach-bao-quan-tinh-dau','Hướng dẫn bảo quản tinh dầu để giữ được mùi hương lâu nhất...','/uploads/posts/6.jpg','Admin','2025-06-22 03:55:02','2025-06-28 09:25:47'),(7,'Xu hướng thị trường tinh dầu 2025','xu-huong-thi-truong-tinh-dau-2025','Phân tích xu hướng thị trường tinh dầu trong năm 2025...','/uploads/posts/7.jpg','Admin','2024-09-09 03:55:02','2024-09-30 09:25:47'),(8,'Bí quyết thư giãn với tinh dầu hoa hồi','bi-quyet-thu-gian-tinh-dau-hoa-hoi','Một số cách thư giãn với tinh dầu hoa hồi sau một ngày dài mệt mỏi...','/uploads/posts/8.jpg','Admin','2025-10-05 03:55:02','2025-10-10 09:25:47'),(9,'Top 5 loại tinh dầu phổ biến hiện nay','top-5-tinh-dau-pho-bien','Danh sách 5 loại tinh dầu phổ biến và công dụng của chúng...','/uploads/posts/9.jpg','Admin','2022-09-30 03:55:02','2022-10-22 09:25:47'),(10,'Lợi ích của tinh dầu trong thiền định','loi-ich-tinh-dau-trong-thien-dinh','Tinh dầu giúp nâng cao trải nghiệm trong thiền định và yoga...','/uploads/posts/10.jpg','Admin','2020-09-30 03:55:02','2020-09-30 09:25:47'),(12,'Công dụng tinh dầu Hoa Hồi','cong-dung-tinh-dau-hoa-hoi','Bài viết giới thiệu công dụng của tinh dầu Hoa Hồi trong đời sống hằng ngày.','/uploads/posts/11.jpg','Admin','2025-10-01 23:35:53','2025-10-10 09:25:47'),(13,'Tinh dầu Hoa Hồi và giấc ngủ','tinh-dau-hoa-hoi-va-giac-ngu','Sử dụng tinh dầu Hoa Hồi hỗ trợ giấc ngủ sâu và ngon hơn.','/uploads/posts/12.jpg','Admin','2025-04-15 00:33:40','2025-05-22 09:25:47'),(15,'Cách sử dụng tinh dầu trong xe ô tô','cach-su-dung-tinh-dau-trong-xe-o-to','Sử dụng cẩn thận nha mn','/uploads/posts/1759242520152.jpg','Admin','2019-09-30 14:28:40','2019-09-30 14:28:40'),(16,'Tinh dầu hoa hồi và sức khỏe 2017','tinh-dau-hoa-hoi-suc-khoe-2017','Bài viết phân tích công dụng của tinh dầu hoa hồi đối với sức khỏe năm 2017...','/uploads/posts/1.jpg','Admin','2017-03-15 10:20:00','2025-10-01 00:49:53'),(17,'Thị trường tinh dầu hoa hồi 2018','thi-truong-tinh-dau-hoa-hoi-2018','Thống kê và xu hướng thị trường tinh dầu hoa hồi trong năm 2018...','/uploads/posts/2.jpg','Admin','2018-06-10 09:00:00','2025-10-01 00:49:53'),(18,'Cách sử dụng tinh dầu hoa hồi 2019','cach-su-dung-tinh-dau-hoa-hoi-2019','Hướng dẫn chi tiết cách sử dụng tinh dầu hoa hồi trong đời sống...','/uploads/posts/3.jpg','Admin','2019-01-22 14:30:00','2025-10-01 00:49:53'),(19,'Bí quyết làm đẹp từ tinh dầu hoa hồi','bi-quyet-lam-dep-tinh-dau-hoa-hoi','Tinh dầu hoa hồi được ứng dụng trong chăm sóc da và làm đẹp...','/uploads/posts/4.jpg','Admin','2019-11-05 08:15:00','2025-10-01 00:49:53'),(20,'Báo cáo nghiên cứu tinh dầu hoa hồi 2020','bao-cao-nghien-cuu-tinh-dau-hoa-hoi-2020','Bản nghiên cứu chi tiết về tinh dầu hoa hồi trong năm 2020...','/uploads/posts/5.jpg','Admin','2020-04-18 13:45:00','2025-10-01 00:49:53'),(21,'Xu hướng sử dụng tinh dầu hoa hồi 2021','xu-huong-su-dung-tinh-dau-hoa-hoi-2021','Phân tích xu hướng sử dụng tinh dầu hoa hồi trong đời sống hiện đại...','/uploads/posts/6.jpg','Admin','2021-02-12 11:25:00','2025-10-01 00:49:53'),(22,'Top 5 lợi ích tinh dầu hoa hồi 2021','top-5-loi-ich-tinh-dau-hoa-hoi-2021','Danh sách 5 lợi ích chính của tinh dầu hoa hồi trong sức khỏe và tinh thần...','/uploads/posts/7.jpg','Admin','2021-08-30 16:10:00','2025-10-01 00:49:53'),(23,'Tinh dầu hoa hồi trong y học cổ truyền','tinh-dau-hoa-hoi-y-hoc-co-truyen','Ứng dụng tinh dầu hoa hồi trong các bài thuốc y học cổ truyền...','/uploads/posts/8.jpg','Admin','2021-12-01 09:40:00','2025-10-01 00:49:53'),(24,'Nghiên cứu thị trường tinh dầu hoa hồi 2022','nghien-cuu-thi-truong-tinh-dau-hoa-hoi-2022','Phân tích dữ liệu và tiềm năng thị trường tinh dầu hoa hồi 2022...','/uploads/posts/9.jpg','Admin','2022-03-08 15:55:00','2025-10-01 00:49:53'),(25,'Tinh dầu hoa hồi và giấc ngủ','tinh-dau-hoa-hoi-giac-ngu','Tinh dầu hoa hồi giúp cải thiện chất lượng giấc ngủ như thế nào...','/uploads/posts/10.jpg','Admin','2022-07-14 07:20:00','2025-10-01 00:49:53'),(26,'Lợi ích tinh dầu hoa hồi trong thiền','loi-ich-tinh-dau-hoa-hoi-trong-thien','Ứng dụng tinh dầu hoa hồi trong thiền định và yoga...','/uploads/posts/11.jpg','Admin','2022-10-29 18:05:00','2025-10-01 00:49:53'),(27,'Xu hướng tinh dầu hoa hồi 2023','xu-huong-tinh-dau-hoa-hoi-2023','Dự báo xu hướng và sản phẩm tinh dầu hoa hồi trong năm 2023...','/uploads/posts/12.jpg','Admin','2023-01-20 12:35:00','2025-10-01 00:49:53'),(28,'Cách bảo quản tinh dầu hoa hồi','cach-bao-quan-tinh-dau-hoa-hoi','Hướng dẫn bảo quản tinh dầu hoa hồi để giữ mùi hương lâu dài...','/uploads/posts/13.jpg','Admin','2023-05-06 14:15:00','2025-10-01 00:49:53'),(29,'Tinh dầu hoa hồi trong ẩm thực','tinh-dau-hoa-hoi-trong-am-thuc','Ứng dụng tinh dầu hoa hồi trong các món ăn truyền thống...','/uploads/posts/14.jpg','Admin','2023-09-10 10:50:00','2025-10-01 00:49:53'),(30,'Báo cáo doanh thu tinh dầu hoa hồi 2023','bao-cao-doanh-thu-tinh-dau-hoa-hoi-2023','Doanh thu và kết quả kinh doanh tinh dầu hoa hồi năm 2023...','/uploads/posts/15.jpg','Admin','2023-12-31 20:00:00','2025-10-01 00:49:53'),(31,'Xu hướng tinh dầu hoa hồi 2024','xu-huong-tinh-dau-hoa-hoi-2024','Xu hướng tiêu dùng và sản xuất tinh dầu hoa hồi trong năm 2024...','/uploads/posts/16.jpg','Admin','2024-04-21 09:10:00','2025-10-01 00:49:53'),(90,'Tinh dầu hoa hồi và công dụng trong y học cổ truyền','tinh-dau-hoa-hoi-va-cong-dung-trong-y-hoc-co-truyen','Bài viết phân tích vai trò của tinh dầu hoa hồi trong y học cổ truyền, ứng dụng từ năm 2017...','/uploads/posts/17.jpg','Admin','2017-03-12 09:15:00','2025-10-01 00:49:53'),(91,'Xu hướng tinh dầu hoa hồi trên thị trường 2019','xu-huong-tinh-dau-hoa-hoi-tren-thi-truong-2019','Bài viết phân tích xu hướng thị trường tinh dầu hoa hồi năm 2019...','/uploads/posts/18.jpg','Admin','2019-02-18 10:45:00','2025-10-01 00:49:53'),(92,'Tinh dầu hoa hồi và chăm sóc sắc đẹp','tinh-dau-hoa-hoi-va-cham-soc-sac-dep','Cách tinh dầu hoa hồi được ứng dụng trong các sản phẩm làm đẹp...','/uploads/posts/19.jpg','Admin','2019-10-05 16:20:00','2025-10-01 00:49:53'),(93,'Bí quyết thư giãn với tinh dầu hoa hồi','bi-quyet-thu-gian-voi-tinh-dau-hoa-hoi','Một số cách thư giãn bằng tinh dầu hoa hồi sau ngày làm việc căng thẳng...','/uploads/posts/20.jpg','Admin','2020-01-12 08:30:00','2025-10-01 00:49:53'),(94,'Tinh dầu hoa hồi và phong thủy','tinh-dau-hoa-hoi-va-phong-thuy','Ứng dụng tinh dầu hoa hồi trong phong thủy và đời sống...','/uploads/posts/2.jpg','Admin','2020-08-14 11:10:00','2025-10-01 00:49:53'),(95,'Top 5 lợi ích của tinh dầu hoa hồi','top-5-loi-ich-cua-tinh-dau-hoa-hoi','Danh sách 5 lợi ích hàng đầu khi sử dụng tinh dầu hoa hồi...','/uploads/posts/1.jpg','Admin','2021-03-10 13:15:00','2025-10-01 00:49:53'),(96,'Kinh nghiệm chọn tinh dầu hoa hồi chất lượng','kinh-nghiem-chon-tinh-dau-hoa-hoi-chat-luong','Cách nhận biết tinh dầu hoa hồi thật và giả...','/uploads/posts/3.jpg','Admin','2021-12-01 09:40:00','2025-10-01 00:49:53'),(97,'Tinh dầu hoa hồi và sức khỏe hô hấp','tinh-dau-hoa-hoi-va-suc-khoe-ho-hap','Bài viết nói về lợi ích tinh dầu hoa hồi trong việc hỗ trợ đường hô hấp...','/uploads/posts/4.jpg','Admin','2022-04-22 10:25:00','2025-10-01 00:49:53'),(98,'Tinh dầu hoa hồi trong thiền định','tinh-dau-hoa-hoi-trong-thien-dinh','Tinh dầu hoa hồi giúp nâng cao trải nghiệm thiền và yoga...','/uploads/posts/5.jpg','Admin','2022-09-15 17:50:00','2025-10-01 00:49:53'),(99,'Xu hướng sử dụng tinh dầu hoa hồi 2023','xu-huong-su-dung-tinh-dau-hoa-hoi-2023','Phân tích xu hướng tiêu thụ tinh dầu hoa hồi trong năm 2023...','/uploads/posts/6.jpg','Admin','2023-02-08 08:10:00','2025-10-01 00:49:53'),(100,'Ứng dụng tinh dầu hoa hồi trong spa','ung-dung-tinh-dau-hoa-hoi-trong-spa','Spa hiện đại sử dụng tinh dầu hoa hồi trong liệu pháp chăm sóc khách hàng...','/uploads/posts/7.jpg','Admin','2024-01-25 15:15:00','2025-10-01 00:49:53'),(101,'Tinh dầu hoa hồi và sức khỏe tinh thần','tinh-dau-hoa-hoi-va-suc-khoe-tinh-than','Tinh dầu hoa hồi giúp cải thiện tinh thần, giảm stress...','/uploads/posts/8.jpg','Admin','2024-05-12 14:40:00','2025-10-01 00:49:53'),(102,'Bảo quản tinh dầu hoa hồi đúng cách','bao-quan-tinh-dau-hoa-hoi-dung-cach','Cách bảo quản tinh dầu hoa hồi để giữ mùi hương lâu...','/uploads/posts/9.jpg','Admin','2024-09-07 09:55:00','2025-10-01 00:49:53'),(103,'Tinh dầu hoa hồi và chăm sóc trẻ nhỏ','tinh-dau-hoa-hoi-va-cham-soc-tre-nho','Lưu ý khi sử dụng tinh dầu hoa hồi cho trẻ em...','/uploads/posts/10.jpg','Admin','2025-02-15 20:10:00','2025-10-01 00:49:53'),(104,'Xu hướng thị trường tinh dầu hoa hồi 2025','xu-huong-thi-truong-tinh-dau-hoa-hoi-2025','Phân tích thị trường tinh dầu hoa hồi năm 2025...','/uploads/posts/11.jpg','Admin','2025-03-10 10:35:00','2025-10-01 00:49:53'),(105,'Tinh dầu hoa hồi và chăm sóc da','tinh-dau-hoa-hoi-va-cham-soc-da','Tinh dầu hoa hồi giúp dưỡng da tự nhiên, ngăn ngừa lão hóa...','/uploads/posts/12.jpg','Admin','2025-08-22 09:30:00','2025-10-01 00:49:53'),(106,'Báo cáo nghiên cứu tinh dầu hoa hồi tháng 10/2025','bao-cao-nghien-cuu-tinh-dau-hoa-hoi-thang-10-2025','Bài báo cáo mới nhất về các nghiên cứu tinh dầu hoa hồi...','/uploads/posts/14.jpg','Admin','2025-10-01 11:15:00','2025-10-01 00:49:53');
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +290,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`id`),
   KEY `fk_product_promotion` (`promotionId`),
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,7 +299,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Tinh dầu Hoa Hồi (4ml)',10,55000.00,'','2025-09-26 07:39:33','2025-09-29 11:46:19',NULL),(2,'Tinh dầu Hoa Hồi (10ml)',10,80000.00,NULL,'2025-09-26 07:39:33','2025-09-26 07:39:33',NULL),(3,'Tinh dầu Hoa Hồi 10ml',20,55000.00,'Làm thơm phòng, thư giãn tinh thần','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(4,'Tinh dầu Hoa Hồi 15ml',18,65000.00,'<p>Dung tích vừa, tiện dụng</p>','2025-09-26 07:53:15','2025-09-28 08:42:20',NULL),(5,'Tinh dầu Hoa Hồi 20ml',15,70000.00,'Phù hợp dùng gia đình','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(6,'Tinh dầu Hoa Hồi 25ml',12,75000.00,'<p>Hương thơm nhẹ, bền lâu</p>','2025-09-26 07:53:15','2025-09-28 08:42:52',NULL),(7,'Tinh dầu Hoa Hồi nguyên chất',25,80000.00,'Chiết xuất 100% thiên nhiên','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(8,'Tinh dầu Hoa Hồi mix cam',22,60000.00,'Hương thơm tươi mát, dễ chịu','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(9,'Tinh dầu Hoa Hồi mix quế',16,72000.00,'Kết hợp ấm áp, thư giãn','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(10,'Tinh dầu Hoa Hồi mix sả',14,68000.00,'Khử mùi, đuổi muỗi hiệu quả','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(11,'Tinh dầu Hoa Hồi mix oải hương',10,90000.00,'Tạo giấc ngủ ngon, thư thái','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(12,'Tinh dầu Hoa Hồi cao cấp',8,95000.00,'Chất lượng cao, hương thơm sang trọng','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(13,'Van ct',12,12000.00,'<p>Duoc cua no</p>','2025-09-29 11:46:00','2025-09-29 11:46:00',NULL);
+INSERT INTO `product` VALUES (14,'Tinh dầu hoa hồi 10ml',100,12000.00,'Chai tinh dầu hoa hồi nguyên chất 10ml, dùng trong xông phòng và massage.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(15,'Tinh dầu hoa hồi 30ml',80,32000.00,'Sản phẩm tinh dầu hoa hồi 30ml, chiết xuất 100% tự nhiên.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(16,'Tinh dầu hoa hồi 50ml',60,48000.00,'Tinh dầu hoa hồi dung tích 50ml, thích hợp dùng trong spa.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(17,'Tinh dầu hoa hồi 100ml',40,90000.00,'Chai tinh dầu hoa hồi 100ml, tiết kiệm cho gia đình và cửa hàng.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(18,'Combo tinh dầu hoa hồi + sả chanh 10ml',50,22000.00,'Bộ đôi tinh dầu hoa hồi và sả chanh giúp thư giãn, kháng khuẩn.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(19,'Combo tinh dầu hoa hồi + oải hương 30ml',35,60000.00,'Sự kết hợp giữa tinh dầu hoa hồi và oải hương, mang lại cảm giác thư thái.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(20,'Tinh dầu hoa hồi nguyên chất loại đặc biệt 20ml',25,45000.00,'Loại tinh dầu hoa hồi được chiết xuất kỹ lưỡng, giữ mùi lâu hơn.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(21,'Tinh dầu hoa hồi đựng lọ gỗ 15ml',70,18000.00,'Tinh dầu hoa hồi được bảo quản trong lọ gỗ truyền thống.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(22,'Tinh dầu hoa hồi thiên nhiên 5ml',120,80000.00,'Tinh dầu hoa hồi nguyên chất dung tích nhỏ tiện lợi.','2025-10-01 01:04:21','2025-10-01 01:04:21',NULL),(23,'Tinh dầu hoa hồi massage 50ml',30,52000.00,'Dầu massage chứa tinh dầu hoa hồi giúp thư giãn cơ thể.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(24,'Tinh dầu hoa hồi xông hơi 20ml',55,20000.00,'Tinh dầu hoa hồi dành cho phòng xông hơi và spa.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(25,'Tinh dầu hoa hồi đèn xông 15ml',90,15000.00,'Tinh dầu hoa hồi phù hợp cho đèn xông tinh dầu trong phòng ngủ.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(26,'Tinh dầu hoa hồi cao cấp 100ml',20,98000.00,'Sản phẩm cao cấp, chất lượng xuất khẩu.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(27,'Tinh dầu hoa hồi dưỡng tóc 30ml',40,35000.00,'Tinh dầu hoa hồi giúp tóc chắc khỏe, bóng mượt.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(28,'Tinh dầu hoa hồi khử mùi ô tô 10ml',75,16000.00,'Tinh dầu hoa hồi khử mùi hiệu quả cho xe hơi.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(29,'Tinh dầu hoa hồi và bạc hà 20ml',45,28000.00,'Sản phẩm kết hợp giữa hoa hồi và bạc hà tạo cảm giác mát lạnh.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(30,'Tinh dầu hoa hồi chai bi lăn 10ml',110,14000.00,'Tinh dầu hoa hồi đóng chai bi lăn tiện dụng.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(31,'Tinh dầu hoa hồi nguyên chất 200ml',15,180000.00,'Chai lớn tinh dầu hoa hồi 200ml cho spa và cửa hàng lớn.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(32,'Tinh dầu hoa hồi trị liệu 30ml',30,40000.00,'Dùng trong liệu pháp trị liệu tự nhiên.','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL),(33,'Tinh dầu hoa hồi handmade 25ml',20,30000.00,'<p>Sản phẩm tinh dầu hoa hồi làm thủ công, giữ nguyên hương vị đặc trưng.</p>','2025-10-01 01:04:21','2025-10-01 01:28:19',NULL);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -320,7 +317,7 @@ CREATE TABLE `productimage` (
   PRIMARY KEY (`id`),
   KEY `productId` (`productId`),
   CONSTRAINT `productimage_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,7 +326,7 @@ CREATE TABLE `productimage` (
 
 LOCK TABLES `productimage` WRITE;
 /*!40000 ALTER TABLE `productimage` DISABLE KEYS */;
-INSERT INTO `productimage` VALUES (1,1,'uploads/1.png'),(2,2,'uploads/2.png'),(3,3,'uploads/3.png'),(4,4,'uploads/2.png'),(5,5,'uploads/3.png'),(6,6,'uploads/3.png'),(7,7,'uploads/3.png'),(8,8,'uploads/3.png'),(9,9,'uploads/2.png'),(10,10,'uploads/3.png'),(11,11,'uploads/3.png'),(12,12,'uploads/2.png'),(13,6,'uploads/1759048960861.jpg'),(14,13,'uploads/1759146360322.jpg'),(15,1,'uploads/1759146379927.png');
+INSERT INTO `productimage` VALUES (17,14,'uploads/1.png'),(18,15,'uploads/2.png'),(19,16,'uploads/3.png'),(20,17,'uploads/4.png'),(21,18,'uploads/5.png'),(22,19,'uploads/6.png'),(23,20,'uploads/7.png'),(24,21,'uploads/8.png'),(25,22,'uploads/9.png'),(26,23,'uploads/10.png'),(27,24,'uploads/11.png'),(28,25,'uploads/12.png'),(29,26,'uploads/13.png'),(30,27,'uploads/14.png'),(31,28,'uploads/15.png'),(32,29,'uploads/16.png'),(33,30,'uploads/17.png'),(34,31,'uploads/18.png'),(35,32,'uploads/19.png'),(36,33,'uploads/20.png'),(37,33,'uploads/1.png');
 /*!40000 ALTER TABLE `productimage` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -345,11 +342,12 @@ CREATE TABLE `promotion` (
   `promotionName` varchar(255) NOT NULL,
   `description` text,
   `discountPercent` decimal(5,2) NOT NULL,
+  `minOrderValue` int NOT NULL DEFAULT '0',
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `promotion_chk_1` CHECK (((`discountPercent` >= 0) and (`discountPercent` <= 100)))
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -358,7 +356,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'sale1','sale1',21.00,'2025-09-28 11:51:16','2025-09-30 09:27:40'),(2,'sale2','sale2',11.00,'2025-09-28 11:52:12','2025-09-30 09:27:40'),(3,'vanct','sale3',5.00,'2025-09-28 12:05:48','2025-09-30 09:27:40');
+INSERT INTO `promotion` VALUES (1,'sale1','Giảm 5% cho đơn hàng từ 200k',5.00,200000,'2025-09-28 11:51:16','2025-10-01 01:41:27'),(2,'sale2','Giảm 10 cho đơn hàng từ 400k',10.00,400000,'2025-09-28 11:52:12','2025-10-01 01:41:27'),(6,'sale3','Đơn hàng có giá trị 600k nha',15.00,600000,'2025-09-30 19:28:27','2025-09-30 19:39:44');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -391,6 +389,33 @@ LOCK TABLES `provinces` WRITE;
 /*!40000 ALTER TABLE `provinces` DISABLE KEYS */;
 INSERT INTO `provinces` VALUES ('01','Hà Nội','Ha Noi','Thành phố Hà Nội','Ha Noi City','ha_noi',1),('04','Cao Bằng','Cao Bang','Tỉnh Cao Bằng','Cao Bang Province','cao_bang',2),('08','Tuyên Quang','Tuyen Quang','Tỉnh Tuyên Quang','Tuyen Quang Province','tuyen_quang',2),('11','Điện Biên','Dien Bien','Tỉnh Điện Biên','Dien Bien Province','dien_bien',2),('12','Lai Châu','Lai Chau','Tỉnh Lai Châu','Lai Chau Province','lai_chau',2),('14','Sơn La','Son La','Tỉnh Sơn La','Son La Province','son_la',2),('15','Lào Cai','Lao Cai','Tỉnh Lào Cai','Lao Cai Province','lao_cai',2),('19','Thái Nguyên','Thai Nguyen','Tỉnh Thái Nguyên','Thai Nguyen Province','thai_nguyen',2),('20','Lạng Sơn','Lang Son','Tỉnh Lạng Sơn','Lang Son Province','lang_son',2),('22','Quảng Ninh','Quang Ninh','Tỉnh Quảng Ninh','Quang Ninh Province','quang_ninh',2),('24','Bắc Ninh','Bac Ninh','Tỉnh Bắc Ninh','Bac Ninh Province','bac_ninh',2),('25','Phú Thọ','Phu Tho','Tỉnh Phú Thọ','Phu Tho Province','phu_tho',2),('31','Hải Phòng','Hai Phong','Thành phố Hải Phòng','Hai Phong City','hai_phong',1),('33','Hưng Yên','Hung Yen','Tỉnh Hưng Yên','Hung Yen Province','hung_yen',2),('37','Ninh Bình','Ninh Binh','Tỉnh Ninh Bình','Ninh Binh Province','ninh_binh',2),('38','Thanh Hóa','Thanh Hoa','Tỉnh Thanh Hóa','Thanh Hoa Province','thanh_hoa',2),('40','Nghệ An','Nghe An','Tỉnh Nghệ An','Nghe An Province','nghe_an',2),('42','Hà Tĩnh','Ha Tinh','Tỉnh Hà Tĩnh','Ha Tinh Province','ha_tinh',2),('44','Quảng Trị','Quang Tri','Tỉnh Quảng Trị','Quang Tri Province','quang_tri',2),('46','Huế','Hue','Thành phố Huế','Hue City','hue',1),('48','Đà Nẵng','Da Nang','Thành phố Đà Nẵng','Da Nang City','da_nang',1),('51','Quảng Ngãi','Quang Ngai','Tỉnh Quảng Ngãi','Quang Ngai Province','quang_ngai',2),('52','Gia Lai','Gia Lai','Tỉnh Gia Lai','Gia Lai Province','gia_lai',2),('56','Khánh Hòa','Khanh Hoa','Tỉnh Khánh Hòa','Khanh Hoa Province','khanh_hoa',2),('66','Đắk Lắk','Dak Lak','Tỉnh Đắk Lắk','Dak Lak Province','dak_lak',2),('68','Lâm Đồng','Lam Dong','Tỉnh Lâm Đồng','Lam Dong Province','lam_dong',2),('75','Đồng Nai','Dong Nai','Tỉnh Đồng Nai','Dong Nai Province','dong_nai',2),('79','Hồ Chí Minh','Ho Chi Minh','Thành phố Hồ Chí Minh','Ho Chi Minh City','ho_chi_minh',1),('80','Tây Ninh','Tay Ninh','Tỉnh Tây Ninh','Tay Ninh Province','tay_ninh',2),('82','Đồng Tháp','Dong Thap','Tỉnh Đồng Tháp','Dong Thap Province','dong_thap',2),('86','Vĩnh Long','Vinh Long','Tỉnh Vĩnh Long','Vinh Long Province','vinh_long',2),('91','An Giang','An Giang','Tỉnh An Giang','An Giang Province','an_giang',2),('92','Cần Thơ','Can Tho','Thành phố Cần Thơ','Can Tho City','can_tho',1),('96','Cà Mau','Ca Mau','Tỉnh Cà Mau','Ca Mau Province','ca_mau',2);
 /*!40000 ALTER TABLE `provinces` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `subscribers`
+--
+
+DROP TABLE IF EXISTS `subscribers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `subscribers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `subscribers`
+--
+
+LOCK TABLES `subscribers` WRITE;
+/*!40000 ALTER TABLE `subscribers` DISABLE KEYS */;
+INSERT INTO `subscribers` VALUES (2,'david.msartinez@gmail.com','2025-09-30 20:22:06','2025-09-30 20:22:06'),(3,'he173048tddranvantuan@gmail.com','2025-09-30 20:28:11','2025-09-30 20:28:11'),(4,'tddranvantuan@gmail.com','2025-09-30 20:29:51','2025-09-30 20:29:51'),(9,'jane.smsith@gmail.com','2025-09-30 20:36:08','2025-09-30 20:36:08'),(10,'vanctquantrivien@gmail.com','2025-09-30 20:36:22','2025-09-30 20:36:22'),(11,'david.martinez@gmail.com','2025-09-30 20:37:03','2025-09-30 20:37:03');
+/*!40000 ALTER TABLE `subscribers` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -482,7 +507,7 @@ CREATE TABLE `wishlists` (
   KEY `productId` (`productId`),
   CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `wishlists_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -491,7 +516,7 @@ CREATE TABLE `wishlists` (
 
 LOCK TABLES `wishlists` WRITE;
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
-INSERT INTO `wishlists` VALUES (1,3,1),(2,3,5),(4,9,2),(5,9,3),(17,10,2);
+INSERT INTO `wishlists` VALUES (19,10,14);
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -504,4 +529,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-30  9:41:06
+-- Dump completed on 2025-10-01  4:11:28
