@@ -23,6 +23,9 @@ import AdminFeedback from "./pages/private/admin/AdminFeedback";
 import AdminPromotion from "./pages/private/admin/AdminPromotion";
 import OrderHistory from "./pages/user/OrderHistory";
 import PostDetail from "./pages/public/post/PostDetail";
+import AdminPosts from "./pages/private/admin/AdminPosts";
+import AdminPostAdd from "./pages/private/admin/AdminPostAdd";
+import AdminPostEdit from "./pages/private/admin/AdminPostEdit";
 
 function App() {
   return (
@@ -44,6 +47,7 @@ function App() {
         <Route path="/profile/edit" element={<EditUserProfile />} />
         <Route path="/orders/history" element={<OrderHistory />} />
         <Route path="/posts/:slug" element={<PostDetail />} />
+
         {/* Admin routes */}
         <Route
           path="/admin"
@@ -125,6 +129,9 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route path="/admin/posts" element={<AdminPosts />} />
+        <Route path="/admin/posts/add" element={<AdminPostAdd />} />
+        <Route path="/admin/posts/edit/:id" element={<AdminPostEdit />} />
       </Routes>
     </main>
   );

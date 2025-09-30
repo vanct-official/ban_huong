@@ -28,7 +28,7 @@ import promotionRoutes from "./routes/promotion.route.js";
 import orderRoutes from "./routes/order.routes.js";
 import adminOrderRoutes from "./routes/adminOrder.routes.js";
 import postRoutes from "./routes/post.routes.js";
-
+import adminPostRoutes from "./routes/adminPost.routes.js";
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,6 +99,7 @@ app.use("/api/admin/orders", adminOrderRoutes);
 
 app.use("/api/posts", postRoutes);
 
+app.use("/api/admin/posts", adminPostRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

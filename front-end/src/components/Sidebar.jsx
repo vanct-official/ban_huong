@@ -75,6 +75,12 @@ const menuItems = [
     path: "/admin/marketing",
   },
   {
+    key: "posts",
+    icon: <GiftOutlined />,
+    label: "Bài viết",
+    path: "/admin/posts",
+  },
+  {
     key: "settings",
     icon: <SettingOutlined />,
     label: "Cài đặt",
