@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `banhuong` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `banhuong`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: localhost    Database: banhuong
@@ -98,7 +100,7 @@ CREATE TABLE `carts` (
   KEY `productId` (`productId`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +109,7 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (1,10,2,1,'2025-09-28 08:32:32','2025-09-28 08:32:32'),(2,10,3,3,'2025-09-28 08:38:44','2025-09-28 08:43:42');
+INSERT INTO `carts` VALUES (17,3,1,1,'2025-09-29 17:16:09','2025-09-29 17:16:09');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,7 +132,7 @@ CREATE TABLE `feedback` (
   KEY `productId` (`productId`),
   CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE,
   CONSTRAINT `feedback_chk_1` CHECK ((`rate` between 1 and 5))
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +141,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (1,2,3,'f','2025-09-28 08:29:40','2025-09-28 08:29:40',9),(2,2,5,'con cac','2025-09-28 11:13:26','2025-09-28 11:13:26',9),(3,2,5,'d','2025-09-28 11:13:54','2025-09-28 11:13:54',9),(4,2,5,'cc','2025-09-28 11:14:32','2025-09-28 11:14:32',10);
+INSERT INTO `feedback` VALUES (1,2,3,'f','2025-09-28 08:29:40','2025-09-28 08:29:40',9),(2,2,5,'con cac','2025-09-28 11:13:26','2025-09-28 11:13:26',9),(3,2,5,'d','2025-09-28 11:13:54','2025-09-28 11:13:54',9),(4,2,5,'cc','2025-09-28 11:14:32','2025-09-28 11:14:32',10),(5,1,5,'d','2025-09-29 11:46:54','2025-09-29 11:46:54',10),(6,9,5,'Tinh dầu này đậm mùi quế nên rất thích, thanks','2025-09-29 17:42:59','2025-09-29 17:42:59',3);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,7 +165,7 @@ CREATE TABLE `orderitems` (
   KEY `productId` (`productId`),
   CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,6 +174,7 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
+INSERT INTO `orderitems` VALUES (1,1,1,2,55000.00,0.00,110000.00),(2,1,3,1,45000.00,0.00,45000.00),(3,2,5,3,70000.00,0.00,189000.00),(4,3,12,1,95000.00,0.00,95000.00);
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,7 +202,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`) ON DELETE SET NULL,
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`addressId`) REFERENCES `address` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +211,67 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,10,1,'2025-03-03 10:00:00','completed',155000.00,NULL,0.00,155000.00),(2,10,3,'2025-11-01 14:30:00','pending',215000.00,NULL,0.00,215000.00),(3,10,7,'2025-06-23 08:45:00','cancelled',95000.00,NULL,0.00,95000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `popular_searches`
+--
+
+DROP TABLE IF EXISTS `popular_searches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `popular_searches` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `keyword` varchar(255) NOT NULL,
+  `count` int NOT NULL DEFAULT '1',
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `keyword` (`keyword`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `popular_searches`
+--
+
+LOCK TABLES `popular_searches` WRITE;
+/*!40000 ALTER TABLE `popular_searches` DISABLE KEYS */;
+INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',10,'2025-09-30 02:04:46','2025-09-30 00:54:55'),(14,'Tuan',4,'2025-09-29 19:51:06','2025-09-29 20:04:00'),(15,'Tuant',1,'2025-09-29 19:51:07','2025-09-29 19:51:07'),(16,'Tuantv',2,'2025-09-29 19:51:08','2025-09-29 19:51:09'),(17,'4',1,'2025-09-29 19:51:39','2025-09-29 19:51:39'),(18,'4ml',3,'2025-09-29 19:51:40','2025-09-29 20:04:46'),(19,'van',3,'2025-09-29 20:03:50','2025-09-29 22:01:48');
+/*!40000 ALTER TABLE `popular_searches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `posts`
+--
+
+DROP TABLE IF EXISTS `posts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `posts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `thumbnail` varchar(255) DEFAULT NULL,
+  `author` varchar(100) DEFAULT 'Admin',
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `posts`
+--
+
+LOCK TABLES `posts` WRITE;
+/*!40000 ALTER TABLE `posts` DISABLE KEYS */;
+INSERT INTO `posts` VALUES (1,'Báo cáo kết quả kinh doanh 2024','bao-cao-ket-qua-kinh-doanh-2024','Nội dung chi tiết về kết quả kinh doanh năm 2024...','/uploads/posts/1759192517328.jpg','Admin','2025-09-30 03:55:02','2025-09-30 00:35:17'),(2,'Hướng dẫn sử dụng tinh dầu hoa hồi','huong-dan-su-dung-tinh-dau-hoa-hoi','Bài viết hướng dẫn chi tiết cách sử dụng tinh dầu hoa hồi hiệu quả nhất...','/uploads/posts/b.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(3,'Kế hoạch phát triển sản phẩm mới 2025','ke-hoach-phat-trien-san-pham-2025','Nội dung mô tả chi tiết kế hoạch phát triển sản phẩm mới trong năm 2025...','/uploads/posts/c.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:45:16'),(4,'10 lợi ích của tinh dầu thiên nhiên','10-loi-ich-tinh-dau-thien-nhien','Tinh dầu thiên nhiên mang lại nhiều lợi ích cho sức khỏe và tinh thần...','/uploads/posts/d.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(5,'Báo cáo doanh thu quý 3 năm 2025','bao-cao-doanh-thu-q3-2025','Dữ liệu thống kê chi tiết doanh thu quý 3 năm 2025...','/uploads/posts/e.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:45:16'),(6,'Cách bảo quản tinh dầu đúng cách','cach-bao-quan-tinh-dau','Hướng dẫn bảo quản tinh dầu để giữ được mùi hương lâu nhất...','/uploads/posts/f.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(7,'Xu hướng thị trường tinh dầu 2025','xu-huong-thi-truong-tinh-dau-2025','Phân tích xu hướng thị trường tinh dầu trong năm 2025...','/uploads/posts/g.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:45:16'),(8,'Bí quyết thư giãn với tinh dầu hoa hồi','bi-quyet-thu-gian-tinh-dau-hoa-hoi','Một số cách thư giãn với tinh dầu hoa hồi sau một ngày dài mệt mỏi...','/uploads/posts/h.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(9,'Top 5 loại tinh dầu phổ biến hiện nay','top-5-tinh-dau-pho-bien','Danh sách 5 loại tinh dầu phổ biến và công dụng của chúng...','/uploads/posts/a.jpg','Admin','2025-09-30 03:55:02','2025-09-30 04:07:57'),(10,'Lợi ích của tinh dầu trong thiền định','loi-ich-tinh-dau-trong-thien-dinh','Tinh dầu giúp nâng cao trải nghiệm trong thiền định và yoga...','/uploads/posts/b.jpg','Admin','2025-09-30 03:55:02','2025-09-30 05:01:06'),(12,'Sinh vien','sinh-vien','Nam','/uploads/posts/1759192440364.jpg','Admin','2025-09-29 23:35:53','2025-09-30 00:34:00'),(13,'a de cung chiu','a-de-cung-chiu','admin','/uploads/posts/1759192672272.jpg','Admin','2025-09-30 00:33:40','2025-09-30 00:37:52'),(14,'Con voi có cái vòi','con-voi-co-cai-voi','Bởi vì nó to ','/uploads/posts/1759193809627.jpg','Admin','2025-09-30 00:56:49','2025-09-30 00:56:49');
+/*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -230,7 +293,7 @@ CREATE TABLE `product` (
   PRIMARY KEY (`id`),
   KEY `fk_product_promotion` (`promotionId`),
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -239,7 +302,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Tinh dầu Hoa Hồi (4ml)',10,55000.00,NULL,'2025-09-26 07:39:33','2025-09-26 07:39:33',NULL),(2,'Tinh dầu Hoa Hồi (10ml)',10,80000.00,NULL,'2025-09-26 07:39:33','2025-09-26 07:39:33',NULL),(3,'Tinh dầu Hoa Hồi 10ml',20,55000.00,'Làm thơm phòng, thư giãn tinh thần','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(4,'Tinh dầu Hoa Hồi 15ml',18,65000.00,'<p>Dung tích vừa, tiện dụng</p>','2025-09-26 07:53:15','2025-09-28 08:42:20',NULL),(5,'Tinh dầu Hoa Hồi 20ml',15,70000.00,'Phù hợp dùng gia đình','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(6,'Tinh dầu Hoa Hồi 25ml',12,75000.00,'<p>Hương thơm nhẹ, bền lâu</p>','2025-09-26 07:53:15','2025-09-28 08:42:52',NULL),(7,'Tinh dầu Hoa Hồi nguyên chất',25,80000.00,'Chiết xuất 100% thiên nhiên','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(8,'Tinh dầu Hoa Hồi mix cam',22,60000.00,'Hương thơm tươi mát, dễ chịu','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(9,'Tinh dầu Hoa Hồi mix quế',16,72000.00,'Kết hợp ấm áp, thư giãn','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(10,'Tinh dầu Hoa Hồi mix sả',14,68000.00,'Khử mùi, đuổi muỗi hiệu quả','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(11,'Tinh dầu Hoa Hồi mix oải hương',10,90000.00,'Tạo giấc ngủ ngon, thư thái','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(12,'Tinh dầu Hoa Hồi cao cấp',8,95000.00,'Chất lượng cao, hương thơm sang trọng','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL);
+INSERT INTO `product` VALUES (1,'Tinh dầu Hoa Hồi (4ml)',10,55000.00,'','2025-09-26 07:39:33','2025-09-29 11:46:19',NULL),(2,'Tinh dầu Hoa Hồi (10ml)',10,80000.00,NULL,'2025-09-26 07:39:33','2025-09-26 07:39:33',NULL),(3,'Tinh dầu Hoa Hồi 10ml',20,55000.00,'Làm thơm phòng, thư giãn tinh thần','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(4,'Tinh dầu Hoa Hồi 15ml',18,65000.00,'<p>Dung tích vừa, tiện dụng</p>','2025-09-26 07:53:15','2025-09-28 08:42:20',NULL),(5,'Tinh dầu Hoa Hồi 20ml',15,70000.00,'Phù hợp dùng gia đình','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(6,'Tinh dầu Hoa Hồi 25ml',12,75000.00,'<p>Hương thơm nhẹ, bền lâu</p>','2025-09-26 07:53:15','2025-09-28 08:42:52',NULL),(7,'Tinh dầu Hoa Hồi nguyên chất',25,80000.00,'Chiết xuất 100% thiên nhiên','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(8,'Tinh dầu Hoa Hồi mix cam',22,60000.00,'Hương thơm tươi mát, dễ chịu','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(9,'Tinh dầu Hoa Hồi mix quế',16,72000.00,'Kết hợp ấm áp, thư giãn','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(10,'Tinh dầu Hoa Hồi mix sả',14,68000.00,'Khử mùi, đuổi muỗi hiệu quả','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(11,'Tinh dầu Hoa Hồi mix oải hương',10,90000.00,'Tạo giấc ngủ ngon, thư thái','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(12,'Tinh dầu Hoa Hồi cao cấp',8,95000.00,'Chất lượng cao, hương thơm sang trọng','2025-09-26 07:53:15','2025-09-26 07:53:15',NULL),(13,'Van ct',12,12000.00,'<p>Duoc cua no</p>','2025-09-29 11:46:00','2025-09-29 11:46:00',NULL);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,7 +320,7 @@ CREATE TABLE `productimage` (
   PRIMARY KEY (`id`),
   KEY `productId` (`productId`),
   CONSTRAINT `productimage_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,7 +329,7 @@ CREATE TABLE `productimage` (
 
 LOCK TABLES `productimage` WRITE;
 /*!40000 ALTER TABLE `productimage` DISABLE KEYS */;
-INSERT INTO `productimage` VALUES (1,1,'uploads/1.png'),(2,2,'uploads/2.png'),(3,3,'uploads/3.png'),(4,4,'uploads/2.png'),(5,5,'uploads/3.png'),(6,6,'uploads/3.png'),(7,7,'uploads/3.png'),(8,8,'uploads/3.png'),(9,9,'uploads/2.png'),(10,10,'uploads/3.png'),(11,11,'uploads/3.png'),(12,12,'uploads/2.png'),(13,6,'uploads/1759048960861.jpg');
+INSERT INTO `productimage` VALUES (1,1,'uploads/1.png'),(2,2,'uploads/2.png'),(3,3,'uploads/3.png'),(4,4,'uploads/2.png'),(5,5,'uploads/3.png'),(6,6,'uploads/3.png'),(7,7,'uploads/3.png'),(8,8,'uploads/3.png'),(9,9,'uploads/2.png'),(10,10,'uploads/3.png'),(11,11,'uploads/3.png'),(12,12,'uploads/2.png'),(13,6,'uploads/1759048960861.jpg'),(14,13,'uploads/1759146360322.jpg'),(15,1,'uploads/1759146379927.png');
 /*!40000 ALTER TABLE `productimage` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,7 +358,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'Back fai day','Giảm sâu nha sea',21.00,'2025-09-28 11:51:16','2025-09-28 12:30:11'),(2,'Tết duong lịch','Giảm ít nhé boi fpt uni',11.00,'2025-09-28 11:52:12','2025-09-28 12:06:53'),(3,'Tung hoa mi','Giảm sâu nha',45.00,'2025-09-28 12:05:48','2025-09-28 12:06:27');
+INSERT INTO `promotion` VALUES (1,'Back fai day','Giảm sâu nha sea',21.00,'2025-09-28 11:51:16','2025-09-28 12:30:11'),(2,'Tết duong lịch','Giảm ít nhé boi fpt uni',11.00,'2025-09-28 11:52:12','2025-09-28 12:06:53'),(3,'v','Giảm sâu nha',5.00,'2025-09-28 12:05:48','2025-09-29 11:47:43');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -350,9 +413,12 @@ CREATE TABLE `users` (
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `isActive` tinyint(1) DEFAULT '1',
+  `googleId` varchar(255) DEFAULT NULL,
+  `isNewUser` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `googleId` (`googleId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -362,7 +428,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-08-14 15:13:13',1),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-26 00:56:56',1),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 11:46:08',1),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-28 08:18:58',1),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-28 11:46:08',1);
+INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,'116603201577927477280',0),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,NULL,0),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,'115787374426474178678',0),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1,NULL,0),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,NULL,0),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,NULL,0),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 11:46:08',1,NULL,0),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-29 16:25:07',1,'113176155543186944643',0),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-28 11:46:08',1,NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -416,7 +482,7 @@ CREATE TABLE `wishlists` (
   KEY `productId` (`productId`),
   CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `wishlists_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -425,7 +491,7 @@ CREATE TABLE `wishlists` (
 
 LOCK TABLES `wishlists` WRITE;
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
-INSERT INTO `wishlists` VALUES (1,3,1),(2,3,5),(4,9,2),(5,9,3),(6,10,1);
+INSERT INTO `wishlists` VALUES (1,3,1),(2,3,5),(4,9,2),(5,9,3),(17,10,2);
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -438,4 +504,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-28 19:33:45
+-- Dump completed on 2025-09-30  8:33:21
