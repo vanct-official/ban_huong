@@ -183,7 +183,9 @@ export default function AdminAnalytics() {
                     title="Doanh thu"
                     value={stats.revenue}
                     prefix={<DollarOutlined />}
-                    suffix="đ"
+                    formatter={(value) =>
+                      `${Number(value).toLocaleString("vi-VN")} đ`
+                    }
                   />
                 </Card>
               </Col>
