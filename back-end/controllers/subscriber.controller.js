@@ -36,14 +36,16 @@ export const getSubscribers = async (req, res) => {
 export const deleteSubscriber = async (req, res) => {
   try {
     const { id } = req.params;
-    const sub = await Subscriber.findByPk(id);
-    if (!sub)
-      return res.status(404).json({ message: "Không tìm thấy subscriber" });
+    const subscriber = await Subscriber.findByPk(id);
 
-    await sub.destroy();
+    if (!subscriber) {
+      return res.status(404).json({ message: "Subscriber không tồn tại" });
+    }
+
+    await subscriber.destroy();
     res.json({ message: "Xóa subscriber thành công" });
   } catch (err) {
     console.error("❌ Lỗi deleteSubscriber:", err);
-    res.status(500).json({ message: "Lỗi server" });
+    res.status(500).json({ message: "Lỗi server khi xóa subscriber" });
   }
 };
