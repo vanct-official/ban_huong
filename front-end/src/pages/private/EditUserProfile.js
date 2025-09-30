@@ -137,9 +137,7 @@ const EditUserProfile = () => {
 
   const fetchWards = async (provinceCode) => {
     try {
-      const res = await fetch(
-        `${API_URL}/api/wards/province/${provinceCode}`
-      );
+      const res = await fetch(`${API_URL}/api/wards/province/${provinceCode}`);
       const data = await res.json();
       setWards(data.data || data);
     } catch (err) {
@@ -203,13 +201,10 @@ const EditUserProfile = () => {
   const handleSetDefault = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${API_URL}/api/addresses/${id}/default`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/addresses/${id}/default`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) throw new Error("Đặt mặc định thất bại");
       message.success("Đã đặt địa chỉ mặc định!");
       // Reload addresses
@@ -348,9 +343,9 @@ const EditUserProfile = () => {
             <Form.Item name="phone" label={t("phone")}>
               <Input />
             </Form.Item>
-            <Form.Item name="avatarImg" label={t("avatar")}>
+            {/* <Form.Item name="avatarImg" label={t("avatar")}>
               <Input placeholder={t("avatarUrl")} />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item>
               <Button
                 type="primary"
