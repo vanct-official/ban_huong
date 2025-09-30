@@ -27,6 +27,7 @@ import AdminPosts from "./pages/private/admin/AdminPosts";
 import AdminPostAdd from "./pages/private/admin/AdminPostAdd";
 import AdminPostEdit from "./pages/private/admin/AdminPostEdit";
 import AllPosts from "./pages/public/post/AllPosts";
+import ManageSubscribers from "./pages/private/admin/ManageSubscribers";
 
 function App() {
   return (
@@ -134,6 +135,10 @@ function App() {
         <Route path="/admin/posts" element={<AdminPosts />} />
         <Route path="/admin/posts/add" element={<AdminPostAdd />} />
         <Route path="/admin/posts/edit/:id" element={<AdminPostEdit />} />
+        <Route
+          path="/admin/email-subscribers"
+          element={<ManageSubscribers />}
+        />
       </Routes>
     </main>
   );

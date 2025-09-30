@@ -26,6 +26,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   RedoOutlined,
+  FormOutlined,
+  HighlightOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -76,9 +78,15 @@ const menuItems = [
   },
   {
     key: "posts",
-    icon: <GiftOutlined />,
+    icon: <HighlightOutlined />,
     label: "Bài viết",
     path: "/admin/posts",
+  },
+  {
+    key: "email-subscribers",
+    icon: <FormOutlined />,
+    label: "Email đăng kí uu đãi",
+    path: "/admin/email-subscribers",
   },
   {
     key: "settings",
