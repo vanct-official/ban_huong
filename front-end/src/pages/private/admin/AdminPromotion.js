@@ -44,10 +44,7 @@ export default function AdminPromotion() {
     try {
       const values = await form.validateFields();
       if (editingPromo) {
-        await axios.put(
-          `${API_URL}/api/promotions/${editingPromo.id}`,
-          values
-        );
+        await axios.put(`${API_URL}/api/promotions/${editingPromo.id}`, values);
         message.success("Cập nhật thành công");
       } else {
         await axios.post(`${API_URL}/api/promotions`, values);
@@ -58,7 +55,8 @@ export default function AdminPromotion() {
       form.resetFields();
       setEditingPromo(null);
       fetchPromotions();
-    } catch {
+    } catch (err) {
+      console.error(err);
       message.error("Có lỗi xảy ra");
     }
   };
@@ -76,6 +74,12 @@ export default function AdminPromotion() {
   const columns = [
     { title: "Tên khuyến mãi", dataIndex: "promotionName" },
     { title: "Giảm (%)", dataIndex: "discountPercent" },
+    {
+      title: "Số tiền tối thiểu (₫)",
+      dataIndex: "minOrderValue",
+      render: (value) =>
+        value?.toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
+    }, // ✅ thêm cột
     { title: "Mô tả", dataIndex: "description" },
     {
       title: "Ngày tạo",
@@ -170,7 +174,14 @@ export default function AdminPromotion() {
               🎉 Quản lý khuyến mãi
             </h2>
           </div>
-          <Button type="primary" onClick={() => setIsModalOpen(true)}>
+          <Button
+            type="primary"
+            onClick={() => {
+              form.resetFields();
+              setEditingPromo(null);
+              setIsModalOpen(true);
+            }}
+          >
             + Thêm khuyến mãi
           </Button>
         </div>
@@ -220,7 +231,16 @@ export default function AdminPromotion() {
             label="Giảm (%)"
             rules={[{ required: true, message: "Vui lòng nhập phần trăm" }]}
           >
-            <Input type="number" />
+            <Input type="number" min={0} max={100} />
+          </Form.Item>
+          <Form.Item
+            name="minOrderValue"
+            label="Giá trị tối thiểu (₫)"
+            rules={[
+              { required: true, message: "Vui lòng nhập giá trị tối thiểu" },
+            ]}
+          >
+            <Input type="number" min={0} />
           </Form.Item>
           <Form.Item name="description" label="Mô tả">
             <Input.TextArea rows={3} />

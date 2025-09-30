@@ -7,27 +7,29 @@ import {
   message,
   Button,
   InputNumber,
-  Input,
   Tag,
   Space,
   Empty,
   Alert,
+  Select,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Footer from "../../components/Footer";
 import MainHeader from "../../components/MainHeader";
 
+const { Option } = Select;
 const API_URL = process.env.REACT_APP_API_URL;
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [promotions, setPromotions] = useState([]);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromoCode, setAppliedPromoCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [promoLoading, setPromoLoading] = useState(false);
-  const [promoError, setPromoError] = useState(""); // State hiển thị lỗi trực tiếp trên UI
+  const [promoError, setPromoError] = useState("");
 
   const navigate = useNavigate();
 
@@ -41,7 +43,6 @@ const Cart = () => {
       });
       if (!res.ok) throw new Error("Lấy giỏ hàng thất bại");
       const data = await res.json();
-      console.log("Cart data:", data); // Debug
       setCart(data);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -58,7 +59,6 @@ const Cart = () => {
       return;
     }
 
-    // Update UI trước
     setCart((prev) =>
       prev.map((item) =>
         item.productId === productId ? { ...item, quantity: qty } : item
@@ -80,7 +80,7 @@ const Cart = () => {
       message.success("Đã cập nhật số lượng");
     } catch (err) {
       message.error(err.message);
-      fetchCart(); // chỉ reload lại khi có lỗi
+      fetchCart();
     }
   };
 
@@ -101,19 +101,30 @@ const Cart = () => {
     }
   };
 
+  // ====== Lấy danh sách khuyến mãi khả dụng ======
+  const fetchPromotions = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/promotions/available`);
+      if (!res.ok) throw new Error("Không tải được mã khuyến mãi");
+      const data = await res.json();
+      setPromotions(data);
+    } catch (err) {
+      console.error(err);
+      message.error(err.message);
+    }
+  };
+
   // ====== Áp dụng mã khuyến mãi ======
   const handleApplyPromo = async () => {
     setPromoError("");
 
     if (!promoCode.trim()) {
-      setPromoError("⚠️ Vui lòng nhập mã khuyến mãi");
-      message.warning("Vui lòng nhập mã khuyến mãi");
+      setPromoError("⚠️ Vui lòng chọn mã khuyến mãi");
       return;
     }
 
     if (appliedPromoCode === promoCode.trim()) {
       setPromoError("ℹ️ Mã này đã được áp dụng rồi!");
-      message.info("Mã này đã được áp dụng rồi!");
       return;
     }
 
@@ -123,51 +134,24 @@ const Cart = () => {
       const res = await fetch(`${API_URL}/api/promotions/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: promoCode.trim() }),
+        body: JSON.stringify({ code: promoCode.trim(), total }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        let errorMsg = "";
-        if (res.status === 404) errorMsg = "❌ Mã khuyến mãi không tồn tại";
-        else if (res.status === 400)
-          errorMsg = "❌ " + (data.message || "Mã khuyến mãi không hợp lệ");
-        else if (res.status === 410) errorMsg = "❌ Mã khuyến mãi đã hết hạn";
-        else errorMsg = "❌ " + (data.message || "Mã khuyến mãi không hợp lệ");
-
-        setPromoError(errorMsg);
-        message.error({
-          content: errorMsg,
-          duration: 4,
-          style: { marginTop: "20vh" },
-        });
-
+        setPromoError(data.message || "Mã khuyến mãi không hợp lệ");
         setDiscountPercent(0);
         setAppliedPromoCode("");
         return;
       }
 
-      // Thành công
       setDiscountPercent(data.discountPercent || 0);
       setAppliedPromoCode(promoCode.trim());
       setPromoError("");
-
-      message.success({
-        content: `✅ ${data.message || "Áp dụng mã thành công!"} - Giảm ${
-          data.discountPercent
-        }%`,
-        duration: 4,
-        style: { marginTop: "20vh" },
-      });
+      message.success(`✅ ${data.message} - Giảm ${data.discountPercent}%`);
     } catch (err) {
-      const errorMsg = "❌ Có lỗi xảy ra khi áp dụng mã khuyến mãi";
-      setPromoError(errorMsg);
-      message.error({
-        content: errorMsg,
-        duration: 4,
-        style: { marginTop: "20vh" },
-      });
+      setPromoError("❌ Có lỗi xảy ra khi áp dụng mã khuyến mãi");
       setDiscountPercent(0);
       setAppliedPromoCode("");
     } finally {
@@ -189,14 +173,14 @@ const Cart = () => {
     if (!productImg) return "/default-product.png";
     if (productImg.startsWith("http")) return productImg;
     if (productImg.startsWith("/uploads"))
-    return `${API_URL}/uploads/${productImg}`;
+      return `${API_URL}/uploads/${productImg}`;
   };
 
   useEffect(() => {
     fetchCart();
+    fetchPromotions();
   }, []);
 
-  // ====== Loading giỏ hàng ======
   if (loading) {
     return (
       <>
@@ -209,7 +193,6 @@ const Cart = () => {
     );
   }
 
-  // ====== Giỏ hàng trống ======
   if (cart.length === 0) {
     return (
       <>
@@ -234,7 +217,6 @@ const Cart = () => {
     (sum, item) => sum + item.quantity * Number(item.product?.unitPrice || 0),
     0
   );
-
   const discountAmount = Math.round((total * discountPercent) / 100);
   const finalTotal = total - discountAmount;
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -314,7 +296,6 @@ const Cart = () => {
                           max={item.product?.quantity || 99}
                           value={item.quantity}
                           onChange={(val) => {
-                            // Chỉ update local state, chưa gửi API
                             setCart((prev) =>
                               prev.map((p) =>
                                 p.productId === item.productId
@@ -443,13 +424,13 @@ const Cart = () => {
               }}
             >
               <div style={{ marginBottom: 8, fontWeight: 500 }}>
-                Mã khuyến mãi:
+                Chọn mã khuyến mãi:
               </div>
 
               {promoError && (
                 <Alert
                   message={promoError}
-                  type={promoError.includes("✅") ? "success" : "error"}
+                  type="error"
                   showIcon
                   closable
                   onClose={() => setPromoError("")}
@@ -458,23 +439,26 @@ const Cart = () => {
               )}
 
               <Space.Compact style={{ width: "100%" }}>
-                <Input
-                  placeholder="Nhập mã khuyến mãi (VD: SALE20)"
-                  value={promoCode}
-                  onChange={(e) => {
-                    setPromoCode(e.target.value.toUpperCase());
-                    setPromoError("");
-                  }}
-                  onPressEnter={handleApplyPromo}
-                  disabled={promoLoading}
-                  maxLength={20}
+                <Select
+                  placeholder="Chọn mã khuyến mãi"
+                  value={promoCode || undefined}
+                  onChange={(value) => setPromoCode(value)}
+                  style={{ flex: 1 }}
+                  loading={promoLoading}
                   size="large"
-                />
+                >
+                  {promotions.map((p) => (
+                    <Option key={p.id} value={p.promotionName}>
+                      {p.promotionName} - Giảm {p.discountPercent}% (ĐH ≥{" "}
+                      {p.minOrderValue.toLocaleString("vi-VN")}đ)
+                    </Option>
+                  ))}
+                </Select>
                 <Button
                   type="primary"
                   onClick={handleApplyPromo}
                   loading={promoLoading}
-                  disabled={!promoCode.trim()}
+                  disabled={!promoCode}
                   size="large"
                 >
                   {promoLoading ? "Đang kiểm tra..." : "Áp dụng"}

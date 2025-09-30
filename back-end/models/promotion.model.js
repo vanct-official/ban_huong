@@ -1,3 +1,4 @@
+// models/promotion.model.js
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 
@@ -12,6 +13,7 @@ const Promotion = sequelize.define(
     promotionName: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      unique: true,
     },
     description: {
       type: DataTypes.TEXT,
@@ -22,10 +24,15 @@ const Promotion = sequelize.define(
       allowNull: false,
       validate: { min: 0, max: 100 },
     },
+    minOrderValue: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0, // mặc định không yêu cầu
+    },
   },
   {
     tableName: "promotion",
-    timestamps: true, // createdAt, updatedAt
+    timestamps: true,
   }
 );
 

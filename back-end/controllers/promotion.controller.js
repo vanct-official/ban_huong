@@ -25,38 +25,6 @@ export const getPromotionById = async (req, res) => {
   }
 };
 
-// Thêm mới
-export const createPromotion = async (req, res) => {
-  try {
-    const { promotionName, description, discountPercent } = req.body;
-    const promo = await Promotion.create({
-      promotionName,
-      description,
-      discountPercent,
-    });
-    res.status(201).json(promo);
-  } catch (err) {
-    console.error("❌ Lỗi createPromotion:", err);
-    res.status(500).json({ message: "Lỗi server" });
-  }
-};
-
-// Cập nhật
-export const updatePromotion = async (req, res) => {
-  try {
-    const promo = await Promotion.findByPk(req.params.id);
-    if (!promo) return res.status(404).json({ message: "Không tìm thấy" });
-
-    const { promotionName, description, discountPercent } = req.body;
-    await promo.update({ promotionName, description, discountPercent });
-
-    res.json(promo);
-  } catch (err) {
-    console.error("❌ Lỗi updatePromotion:", err);
-    res.status(500).json({ message: "Lỗi server" });
-  }
-};
-
 // Xóa
 export const deletePromotion = async (req, res) => {
   try {
@@ -74,23 +42,86 @@ export const deletePromotion = async (req, res) => {
 // Áp dụng mã khuyến mãi
 export const applyPromotion = async (req, res) => {
   try {
-    const { code } = req.body;
+    const { code, total } = req.body; // nhận thêm tổng tiền từ frontend
 
     const promo = await Promotion.findOne({
-      where: { promotionName: code }, // chỉ check theo tên mã
+      where: { promotionName: code },
     });
 
     if (!promo) {
       return res.status(400).json({ message: "Mã khuyến mãi không hợp lệ" });
     }
 
+    // kiểm tra điều kiện giá trị đơn hàng tối thiểu
+    if (total < promo.minOrderValue) {
+      return res.status(400).json({
+        message: `Đơn hàng phải từ ${promo.minOrderValue.toLocaleString(
+          "vi-VN"
+        )}đ mới dùng được mã này`,
+      });
+    }
+
     res.json({
       id: promo.id,
       promotionName: promo.promotionName,
       discountPercent: promo.discountPercent,
+      message: "Áp dụng mã thành công!",
     });
   } catch (err) {
     console.error("❌ Lỗi applyPromotion:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+// Lấy danh sách mã khuyến mãi
+export const getAvailablePromotions = async (req, res) => {
+  try {
+    const promos = await Promotion.findAll({
+      order: [["discountPercent", "DESC"]],
+    });
+    res.json(promos);
+  } catch (err) {
+    console.error("❌ Lỗi getAvailablePromotions:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+// Thêm mới
+export const createPromotion = async (req, res) => {
+  try {
+    const { promotionName, description, discountPercent, minOrderValue } =
+      req.body;
+    const promo = await Promotion.create({
+      promotionName,
+      description,
+      discountPercent,
+      minOrderValue, // ✅ thêm vào đây
+    });
+    res.status(201).json(promo);
+  } catch (err) {
+    console.error("❌ Lỗi createPromotion:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+// Cập nhật
+export const updatePromotion = async (req, res) => {
+  try {
+    const promo = await Promotion.findByPk(req.params.id);
+    if (!promo) return res.status(404).json({ message: "Không tìm thấy" });
+
+    const { promotionName, description, discountPercent, minOrderValue } =
+      req.body;
+    await promo.update({
+      promotionName,
+      description,
+      discountPercent,
+      minOrderValue, // ✅ thêm vào đây
+    });
+
+    res.json(promo);
+  } catch (err) {
+    console.error("❌ Lỗi updatePromotion:", err);
     res.status(500).json({ message: "Lỗi server" });
   }
 };
