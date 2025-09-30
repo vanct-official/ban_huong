@@ -19,6 +19,7 @@ import BestSellerProducts from "./product/BestSellerProducts";
 import PopularSearches from "./product/PopularSearches";
 import LatestPosts from "./post/LatestPosts";
 import PostDetail from "./post/PostDetail";
+import ChatWidget from "../../components/ChatWidget";
 
 const { Title, Paragraph } = Typography;
 
@@ -260,6 +261,7 @@ export default function HomePage() {
         <LatestPosts />
         <PostDetail />
       </div>
+      <ChatWidget />
       {/* Features Section */}
       <div
         style={{
