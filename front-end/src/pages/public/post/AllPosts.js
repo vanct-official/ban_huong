@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Card, Spin, Typography, Button } from "antd";
+import { Card, Spin, Typography } from "antd";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const { Title, Text } = Typography;
 const API_URL = process.env.REACT_APP_API_URL;
 
-export default function LatestPosts() {
+export default function AllPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchLatest = async () => {
+    const fetchPosts = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/posts/latest`);
+        const res = await axios.get(`${API_URL}/api/posts`);
         setPosts(res.data);
       } catch (err) {
-        console.error("❌ Lỗi lấy bài viết mới:", err);
+        console.error("❌ Lỗi lấy tất cả bài viết:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchLatest();
+    fetchPosts();
   }, []);
 
   if (loading) {
@@ -36,22 +35,9 @@ export default function LatestPosts() {
 
   return (
     <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 16px" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-        }}
-      >
-        <Title level={3} style={{ color: "#166534", margin: 0 }}>
-          📰 Các bài viết mới
-        </Title>
-        <Button type="link" onClick={() => navigate("/posts")}>
-          Xem tất cả →
-        </Button>
-      </div>
-
+      <Title level={3} style={{ marginBottom: 16, color: "#166534" }}>
+        📚 Tất cả bài viết
+      </Title>
       <div
         style={{
           display: "grid",
@@ -79,8 +65,6 @@ export default function LatestPosts() {
             <Text type="secondary">
               ✍️ {p.author || "Admin"} | 📅{" "}
               {new Date(p.createdAt).toLocaleDateString("vi-VN")}
-              <br />
-              🔄 Cập nhật: {new Date(p.updatedAt).toLocaleDateString("vi-VN")}
             </Text>
           </Card>
         ))}

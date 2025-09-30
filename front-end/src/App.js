@@ -26,6 +26,7 @@ import PostDetail from "./pages/public/post/PostDetail";
 import AdminPosts from "./pages/private/admin/AdminPosts";
 import AdminPostAdd from "./pages/private/admin/AdminPostAdd";
 import AdminPostEdit from "./pages/private/admin/AdminPostEdit";
+import AllPosts from "./pages/public/post/AllPosts";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
         <Route path="/profile/edit" element={<EditUserProfile />} />
         <Route path="/orders/history" element={<OrderHistory />} />
         <Route path="/posts/:slug" element={<PostDetail />} />
+        <Route path="/posts" element={<AllPosts />} />
 
         {/* Admin routes */}
         <Route
