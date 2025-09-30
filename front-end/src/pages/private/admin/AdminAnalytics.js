@@ -31,17 +31,46 @@ export default function AdminAnalytics() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // const fetchStats = async () => {
+  //   setLoading(true);
+  //   try {
+  //     // 👉 gọi API backend để lấy số liệu thống kê
+  //     const res = await axios.get(`${API_URL}/api/admin/stats`);
+  //     setStats(res.data);
+  //   } catch (err) {
+  //     console.error(err);
+  //     message.error("Không thể tải thống kê!");
+  //   }
+  //   setLoading(false);
+  // };
+
   const fetchStats = async () => {
     setLoading(true);
     try {
-      // 👉 gọi API backend để lấy số liệu thống kê
-      const res = await axios.get(`${API_URL}/api/admin/stats`);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        message.error("⚠️ Bạn cần đăng nhập để xem thống kê");
+        setLoading(false);
+        return;
+      }
+
+      const res = await axios.get(`${API_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       setStats(res.data);
     } catch (err) {
-      console.error(err);
-      message.error("Không thể tải thống kê!");
+      console.error("❌ Lỗi fetchStats:", err);
+      if (err.response?.status === 401) {
+        message.error("⚠️ Phiên đăng nhập hết hạn hoặc không hợp lệ");
+      } else if (err.response?.status === 403) {
+        message.error("🚫 Bạn không có quyền xem thống kê");
+      } else {
+        message.error("Không thể tải thống kê!");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
