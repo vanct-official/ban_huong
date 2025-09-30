@@ -264,7 +264,7 @@ function ProductList() {
                         {Number(p.unitPrice).toLocaleString("vi-VN")} đ
                       </div>
                       {/* ✅ Rating trung bình */}
-                      <div style={{ marginTop: 4 }}>
+                      {/* <div style={{ marginTop: 4 }}>
                         <Rate
                           disabled
                           value={p.avgRating}
@@ -277,7 +277,7 @@ function ProductList() {
                             : "0.0"}{" "}
                           / 5 ({p.feedbackCount} đánh giá)
                         </span>
-                      </div>
+                      </div> */}
 
                       <div
                         style={{
