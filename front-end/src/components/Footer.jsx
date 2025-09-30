@@ -1,8 +1,38 @@
-// front-end/src/components/Footer.jsx
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, Input, Button } from "antd";
 import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import axios from "axios";
+import { useState } from "react";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!email) {
+      alert("⚠️ Vui lòng nhập email");
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.post(`${API_URL}/api/subscribers`, { email });
+      alert(
+        "🎉 Cảm ơn bạn đã quan tâm! Bạn đã đăng ký nhận ưu đãi thành công."
+      );
+      setEmail("");
+    } catch (err) {
+      if (err.response && err.response.status === 400) {
+        alert("❌ Email đã tồn tại, vui lòng dùng email khác.");
+      } else {
+        alert("🚨 Có lỗi xảy ra, vui lòng thử lại sau.");
+      }
+      console.error("❌ Lỗi subscribe:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer
       style={{
@@ -117,7 +147,7 @@ export default function Footer() {
             </div>
           </Col>
 
-          {/* Mạng xã hội & Hỗ trợ */}
+          {/* Đăng ký email */}
           <Col xs={24} md={8}>
             <div
               style={{
@@ -127,53 +157,25 @@ export default function Footer() {
                 fontSize: 17,
               }}
             >
-              Kết nối với chúng tôi
+              Nhận thông tin ưu đãi
             </div>
-            <div style={{ display: "flex", gap: 18, marginBottom: 14 }}>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: "#4267B2",
-                  background: "#e0e7ff",
-                  borderRadius: "50%",
-                  padding: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  boxShadow: "0 2px 8px rgba(66,103,178,0.08)",
-                }}
+            <div style={{ display: "flex", gap: 8 }}>
+              <Input
+                placeholder="Nhập email của bạn"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Button
+                type="primary"
+                loading={loading}
+                onClick={handleSubscribe}
               >
-                <Facebook size={24} />
-              </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: "#E1306C",
-                  background: "#fdf2f8",
-                  borderRadius: "50%",
-                  padding: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  boxShadow: "0 2px 8px rgba(225,48,108,0.08)",
-                }}
-              >
-                <Instagram size={24} />
-              </a>
-            </div>
-            <div style={{ color: "#15803d", fontWeight: 500, fontSize: 15 }}>
-              Hỗ trợ:{" "}
-              <a
-                href="mailto:banhuong@gmail.com"
-                style={{ color: "#15803d", textDecoration: "underline" }}
-              >
-                banhuong@gmail.com
-              </a>
+                Đăng ký
+              </Button>
             </div>
           </Col>
         </Row>
+
         <Divider style={{ margin: "32px 0 12px 0", borderColor: "#a7f3d0" }} />
         <div
           style={{
