@@ -3,6 +3,7 @@ import { Form, Input, Button, Upload, Card, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AdminSidebar from "../../../components/Sidebar";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -42,48 +43,53 @@ export default function AdminPostAdd() {
   };
 
   return (
-    <Card
-      title="➕ Thêm bài viết"
-      style={{ maxWidth: 800, margin: "20px auto" }}
-    >
-      <Form layout="vertical" onFinish={handleSubmit}>
-        <Form.Item
-          name="title"
-          label="Tiêu đề"
-          rules={[{ required: true, message: "Nhập tiêu đề" }]}
+    <div style={{ display: "flex" }}>
+      <AdminSidebar />
+      <div style={{ flex: 1, padding: 24 }}>
+        <Card
+          title="➕ Thêm bài viết mới"
+          style={{ maxWidth: 900, margin: "0 auto" }}
         >
-          <Input />
-        </Form.Item>
+          <Form layout="vertical" onFinish={handleSubmit}>
+            <Form.Item
+              name="title"
+              label="Tiêu đề"
+              rules={[{ required: true, message: "Nhập tiêu đề" }]}
+            >
+              <Input />
+            </Form.Item>
 
-        <Form.Item
-          name="content"
-          label="Nội dung"
-          rules={[{ required: true, message: "Nhập nội dung" }]}
-        >
-          <Input.TextArea rows={8} />
-        </Form.Item>
+            <Form.Item
+              name="content"
+              label="Nội dung"
+              rules={[{ required: true, message: "Nhập nội dung" }]}
+            >
+              <Input.TextArea rows={8} />
+            </Form.Item>
 
-        <Form.Item name="author" label="Tác giả">
-          <Input placeholder="Mặc định: Admin" />
-        </Form.Item>
+            <Form.Item name="author" label="Tác giả">
+              <Input placeholder="Mặc định: Admin" />
+            </Form.Item>
 
-        <Form.Item label="Ảnh thumbnail">
-          <Upload
-            listType="picture"
-            fileList={fileList}
-            beforeUpload={() => false}
-            onChange={({ fileList }) => setFileList(fileList)}
-          >
-            <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-          </Upload>
-        </Form.Item>
+            <Form.Item label="Ảnh thumbnail">
+              <Upload
+                listType="picture"
+                fileList={fileList}
+                beforeUpload={() => false}
+                onChange={({ fileList }) => setFileList(fileList)}
+              >
+                <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+              </Upload>
+            </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Lưu
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Lưu
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
+    </div>
   );
 }
