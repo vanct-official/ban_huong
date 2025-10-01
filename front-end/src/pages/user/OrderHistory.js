@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag, Spin, message, Card } from "antd";
+import { Table, Tag, Spin, message, Card, Button } from "antd"; // 👈 thêm Button
 import MainHeader from "../../components/MainHeader";
 import Footer from "../../components/Footer";
+import { useNavigate } from "react-router-dom";
+
 const API_URL = process.env.REACT_APP_API_URL;
+
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     try {
@@ -29,6 +34,26 @@ export default function OrderHistory() {
     fetchOrders();
   }, []);
 
+  // Mua lại đơn hàng
+  const handleReorder = async (orderId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/api/orders/${orderId}/reorder`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Không thể mua lại đơn này");
+
+      message.success("🎉 Sản phẩm từ đơn cũ đã được thêm vào giỏ hàng!");
+
+      // ✅ Sau khi thêm xong chuyển sang giỏ hàng
+      navigate("/cart");
+    } catch (err) {
+      console.error(err);
+      message.error(err.message);
+    }
+  };
   const columns = [
     {
       title: "Mã đơn hàng",
@@ -61,6 +86,15 @@ export default function OrderHistory() {
       dataIndex: "totalAmount",
       key: "totalAmount",
       render: (val) => `${Number(val).toLocaleString("vi-VN")} đ`,
+    },
+    {
+      title: "Hành động",
+      key: "action",
+      render: (_, record) => (
+        <Button type="link" onClick={() => handleReorder(record.id)}>
+          Mua lại
+        </Button>
+      ),
     },
   ];
 
@@ -112,7 +146,6 @@ export default function OrderHistory() {
                             borderRadius: 8,
                           }}
                         />
-
                         <div>
                           <div style={{ fontWeight: 600 }}>
                             {item.product?.productName}
