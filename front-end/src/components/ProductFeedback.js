@@ -3,7 +3,6 @@ import { List, Avatar, Rate, Input, Button, message } from "antd";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
-
 const { TextArea } = Input;
 
 export default function ProductFeedback({ productId }) {
@@ -32,13 +31,13 @@ export default function ProductFeedback({ productId }) {
   // Gửi feedback
   const handleSubmit = async () => {
     if (!content.trim()) {
-      return message.warning("Vui lòng nhập nội dung nhận xét");
+      return message.warning("⚠️ Vui lòng nhập nội dung nhận xét");
     }
 
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        return message.warning("Bạn cần đăng nhập để gửi nhận xét");
+        return message.warning("⚠️ Bạn cần đăng nhập để gửi nhận xét");
       }
 
       setLoading(true);
@@ -54,13 +53,20 @@ export default function ProductFeedback({ productId }) {
         }
       );
 
-      message.success("Gửi nhận xét thành công!");
+      message.success("🎉 Gửi nhận xét thành công!");
       setContent("");
       setRate(5);
       fetchFeedbacks();
     } catch (err) {
       console.error("Lỗi gửi feedback:", err);
-      message.error("Không thể gửi nhận xét");
+
+      // ✅ Hiển thị message cụ thể từ backend (nếu có)
+      if (err.response && err.response.status === 400) {
+        alert(err.response.data.message);
+        // Ví dụ: "Bạn đã feedback sản phẩm này rồi." hoặc "Bạn chỉ có thể feedback cho sản phẩm đã mua."
+      } else {
+        message.error("❌ Không thể gửi nhận xét, vui lòng thử lại.");
+      }
     } finally {
       setLoading(false);
     }

@@ -80,7 +80,6 @@ const AdminOrders = () => {
           onChange={(val) => handleUpdateStatus(record.id, val)}
         >
           <Select.Option value="pending">Đang chờ</Select.Option>
-          <Select.Option value="paid">Đã thanh toán</Select.Option>
           <Select.Option value="shipped">Đang giao</Select.Option>
           <Select.Option value="completed">Hoàn thành</Select.Option>
           <Select.Option value="cancelled">Hủy</Select.Option>
