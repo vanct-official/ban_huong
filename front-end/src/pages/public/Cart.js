@@ -197,7 +197,14 @@ const Cart = () => {
     return (
       <>
         <MainHeader />
-        <div style={{ maxWidth: 1200, margin: "50px auto", padding: 20 }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "50px auto",
+            padding: 20,
+            minHeight: "380px",
+          }}
+        >
           <Empty
             description="Giỏ hàng của bạn đang trống"
             image={Empty.PRESENTED_IMAGE_SIMPLE}

@@ -78,6 +78,7 @@ const AdminOrders = () => {
           value={status}
           style={{ width: 140 }}
           onChange={(val) => handleUpdateStatus(record.id, val)}
+          disabled={status === "completed"} // 🔒 khóa nếu đã hoàn thành
         >
           <Select.Option value="pending">Đang chờ</Select.Option>
           <Select.Option value="shipped">Đang giao</Select.Option>

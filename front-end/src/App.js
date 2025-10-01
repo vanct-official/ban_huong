@@ -29,6 +29,8 @@ import AdminPostEdit from "./pages/private/admin/AdminPostEdit";
 import AllPosts from "./pages/public/post/AllPosts";
 import ManageSubscribers from "./pages/private/admin/ManageSubscribers";
 import AllFeedbacks from "./pages/public/homefeedback/AllFeedbacks";
+import Footer from "./components/Footer";
+import MainHeader from "./components/MainHeader";
 
 function App() {
   return (

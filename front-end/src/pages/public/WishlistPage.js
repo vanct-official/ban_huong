@@ -33,13 +33,10 @@ const Wishlist = () => {
   const handleRemove = async (productId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${API_URL}/api/wishlists/${productId}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/wishlists/${productId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) throw new Error("Xóa thất bại");
       message.success("Đã xóa khỏi wishlist");
       fetchWishlist();
@@ -67,7 +64,14 @@ const Wishlist = () => {
   return (
     <>
       <MainHeader />
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: 20 }}>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: 20,
+          minHeight: "380px",
+        }}
+      >
         <Row gutter={[16, 16]}>
           {wishlist.map((item) => (
             <Col key={item.id} xs={24} sm={12} md={8} lg={6}>

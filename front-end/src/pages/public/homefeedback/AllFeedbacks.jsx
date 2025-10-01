@@ -26,7 +26,13 @@ export default function AllFeedbacks() {
   return (
     <>
       <MainHeader />
-      <div style={{ maxWidth: 800, margin: "40px auto" }}>
+      <div
+        style={{
+          maxWidth: 800,
+          margin: "40px auto",
+          minHeight: "380px",
+        }}
+      >
         <h2>Tất cả nhận xét từ khách hàng</h2>
         <List
           itemLayout="horizontal"

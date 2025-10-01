@@ -67,7 +67,14 @@ export default function OrderHistory() {
   return (
     <>
       <MainHeader />
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: 20 }}>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: 20,
+          minHeight: "380px",
+        }}
+      >
         <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 20 }}>
           Lịch sử mua hàng
         </h2>
