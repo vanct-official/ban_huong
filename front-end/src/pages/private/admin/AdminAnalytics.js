@@ -1,6 +1,16 @@
 // src/pages/admin/analytics/AdminAnalytics.js
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Statistic, Spin, message, Drawer, Button } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Spin,
+  message,
+  Drawer,
+  Button,
+  Table,
+} from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
@@ -9,12 +19,27 @@ import {
   MenuOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend,
+} from "recharts";
 import AdminSidebar from "../../../components/Sidebar";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function AdminAnalytics() {
+  const [topCustomers, setTopCustomers] = useState([]);
+  const [revenueByMonth, setRevenueByMonth] = useState([]);
+  const [bestSellers, setBestSellers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
     users: 0,
@@ -30,19 +55,6 @@ export default function AdminAnalytics() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // const fetchStats = async () => {
-  //   setLoading(true);
-  //   try {
-  //     // 👉 gọi API backend để lấy số liệu thống kê
-  //     const res = await axios.get(`${API_URL}/api/admin/stats`);
-  //     setStats(res.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //     message.error("Không thể tải thống kê!");
-  //   }
-  //   setLoading(false);
-  // };
 
   const fetchStats = async () => {
     setLoading(true);
@@ -73,8 +85,28 @@ export default function AdminAnalytics() {
     }
   };
 
+  const fetchExtraStats = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const [customersRes, revenueRes, bestRes] = await Promise.all([
+        axios.get(`${API_URL}/api/admin/top-customers`, { headers }),
+        axios.get(`${API_URL}/api/admin/revenue/month`, { headers }),
+        axios.get(`${API_URL}/api/admin/best-sellers`, { headers }),
+      ]);
+
+      setTopCustomers(customersRes.data);
+      setRevenueByMonth(revenueRes.data);
+      setBestSellers(bestRes.data);
+    } catch (err) {
+      console.error("❌ fetchExtraStats:", err);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
+    fetchExtraStats();
   }, []);
 
   const pieData = [
@@ -214,6 +246,69 @@ export default function AdminAnalytics() {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
+            </Card>
+            <Card style={{ marginTop: 24 }}>
+              <h3>Top khách hàng chi tiêu nhiều nhất</h3>
+              <Table
+                dataSource={topCustomers}
+                rowKey={(r) => r.Order.userId}
+                columns={[
+                  {
+                    title: "Khách hàng",
+                    dataIndex: ["Order", "User", "username"],
+                  },
+                  { title: "Email", dataIndex: ["Order", "User", "email"] },
+                  {
+                    title: "Tổng chi tiêu",
+                    dataIndex: "totalSpent",
+                    render: (val) => `${Number(val).toLocaleString()} đ`,
+                  },
+                ]}
+                pagination={false}
+              />
+            </Card>
+            <Card style={{ marginTop: 24 }}>
+              <h3>Doanh thu theo tháng</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={revenueByMonth}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="totalRevenue"
+                    stroke="#166534"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+            <Card style={{ marginTop: 24 }}>
+              <h3>Sản phẩm bán chạy</h3>
+              <Table
+                dataSource={bestSellers}
+                rowKey={(r) => r.productId}
+                columns={[
+                  {
+                    title: "Ảnh",
+                    dataIndex: ["Product", "productImg"],
+                    render: (img) => (
+                      <img
+                        src={img || "/default-product.png"}
+                        alt="product"
+                        style={{ width: 50 }}
+                      />
+                    ),
+                  },
+                  {
+                    title: "Tên sản phẩm",
+                    dataIndex: ["Product", "productName"],
+                  },
+                  { title: "Số lượng bán", dataIndex: "totalSold" },
+                ]}
+                pagination={false}
+              />
             </Card>
           </>
         )}
