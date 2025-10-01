@@ -119,7 +119,7 @@ const AdminOrders = () => {
       <Sidebar />
       <div style={{ flex: 1, padding: 24, marginLeft: 250 }}>
         <Card
-          title="📦 Quản lý đơn hàng"
+          title={<h2 style={{ color: "#166534" }}>📦 Quản lý đơn hàng</h2>}
           bordered
           style={{
             borderRadius: 12,

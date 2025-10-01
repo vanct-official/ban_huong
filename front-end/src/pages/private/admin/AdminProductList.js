@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Image, Popconfirm, message, Space, Tag, Drawer } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, MenuOutlined } from "@ant-design/icons";
+import {
+  Table,
+  Button,
+  Image,
+  Popconfirm,
+  message,
+  Space,
+  Tag,
+  Drawer,
+} from "antd";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  ReloadOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../../components/Sidebar";
@@ -78,9 +93,7 @@ export default function AdminProductList() {
       title: "Tên sản phẩm",
       dataIndex: "productName",
       key: "productName",
-      render: (text) => (
-        <span style={{ fontWeight: 600 }}>{text}</span>
-      ),
+      render: (text) => <span style={{ fontWeight: 600 }}>{text}</span>,
       width: 180,
       ellipsis: true,
       responsive: ["xs", "sm", "md", "lg"],
@@ -103,7 +116,9 @@ export default function AdminProductList() {
       dataIndex: "quantity",
       key: "quantity",
       render: (qty) => (
-        <span style={{ color: qty === 0 ? "#dc2626" : "#166534", fontWeight: 600 }}>
+        <span
+          style={{ color: qty === 0 ? "#dc2626" : "#166534", fontWeight: 600 }}
+        >
           {qty}
         </span>
       ),
@@ -143,11 +158,7 @@ export default function AdminProductList() {
             okText="Xóa"
             cancelText="Hủy"
           >
-            <Button
-              icon={<DeleteOutlined />}
-              danger
-              size="small"
-            >
+            <Button icon={<DeleteOutlined />} danger size="small">
               Xóa
             </Button>
           </Popconfirm>
@@ -163,7 +174,13 @@ export default function AdminProductList() {
     <div style={{ display: "flex", minHeight: "100vh", background: "#f6f8fa" }}>
       {/* Sidebar */}
       {!isMobile && (
-        <div style={{ minWidth: 220, background: "#fff", borderRight: "1px solid #eee" }}>
+        <div
+          style={{
+            minWidth: 220,
+            background: "#fff",
+            borderRight: "1px solid #eee",
+          }}
+        >
           <AdminSidebar collapsed={false} />
         </div>
       )}
@@ -181,15 +198,24 @@ export default function AdminProductList() {
       )}
 
       {/* Main content */}
-      <div style={{ flex: 1, padding: isMobile ? 8 : 24, maxWidth: 1200, margin: "0 auto" }}>
+      <div
+        style={{
+          flex: 1,
+          padding: isMobile ? 8 : 24,
+          maxWidth: 1200,
+          margin: "0 auto",
+        }}
+      >
         {/* Header */}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: isMobile ? 12 : 24,
-          gap: 8,
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: isMobile ? 12 : 24,
+            gap: 8,
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {isMobile && (
               <Button
@@ -198,28 +224,41 @@ export default function AdminProductList() {
                 style={{ borderRadius: 8, marginRight: 8 }}
               />
             )}
-            <h2 style={{ margin: 0, color: "#166534", fontSize: isMobile ? 20 : 26 }}>Quản lý sản phẩm</h2>
+            <h2
+              style={{
+                margin: 0,
+                color: "#166534",
+                fontSize: isMobile ? 20 : 26,
+              }}
+            >
+              🛍️ Quản lý sản phẩm
+            </h2>
           </div>
           <Space>
             <Button
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => navigate("/admin/products/add")}
-              style={{ borderRadius: 8, fontWeight: 600, fontSize: isMobile ? 13 : 16, height: isMobile ? 32 : 40 }}
+              style={{
+                borderRadius: 8,
+                fontWeight: 600,
+                fontSize: isMobile ? 13 : 16,
+                height: isMobile ? 32 : 40,
+              }}
             >
               Thêm sản phẩm
-            </Button>
-            <Button
-              icon={<ReloadOutlined />}
-              onClick={fetchProducts}
-              style={{ borderRadius: 8, fontSize: isMobile ? 13 : 16, height: isMobile ? 32 : 40 }}
-            >
-              Làm mới
             </Button>
           </Space>
         </div>
         {/* Table */}
-        <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 4px 24px rgba(22,101,52,0.08)", padding: isMobile ? 4 : 24 }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
+            padding: isMobile ? 4 : 24,
+          }}
+        >
           <Table
             columns={columns}
             dataSource={products}

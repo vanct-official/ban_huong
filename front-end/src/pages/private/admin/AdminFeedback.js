@@ -213,7 +213,7 @@ export default function AdminFeedback() {
                 fontSize: isMobile ? 20 : 26,
               }}
             >
-              Quản lý Feedback
+              💬 Quản lý Feedback
             </h2>
           </div>
           <Space>

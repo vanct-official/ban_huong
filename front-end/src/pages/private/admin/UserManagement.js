@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Avatar, message, Space, Tag, Drawer, Modal, Radio } from "antd";
+import {
+  Table,
+  Button,
+  Avatar,
+  message,
+  Space,
+  Tag,
+  Drawer,
+  Modal,
+  Radio,
+} from "antd";
 import { ReloadOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
@@ -50,9 +60,13 @@ export default function UserManagement() {
       "make-admin": `${API_URL}/api/admin/users/${selectedUser.id}/make-admin`,
     };
     try {
-      await axios.put(urlMap[actionType], {}, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
+      await axios.put(
+        urlMap[actionType],
+        {},
+        {
+          headers: { Authorization: `Bearer ${getToken()}` },
+        }
+      );
       message.success("Thao tác thành công!");
       setModalVisible(false);
       fetchUsers();
@@ -74,8 +88,14 @@ export default function UserManagement() {
       key: "avatar",
       render: (record) => {
         const img = record.avatar || record.avatarImg || record.picture || null;
-        return img ? <Avatar src={img.startsWith("http") ? img : `${API_URL}/uploads/${img}`} size={40} />
-                   : <Avatar icon={<UserOutlined />} size={40} />;
+        return img ? (
+          <Avatar
+            src={img.startsWith("http") ? img : `${API_URL}/uploads/${img}`}
+            size={40}
+          />
+        ) : (
+          <Avatar icon={<UserOutlined />} size={40} />
+        );
       },
       width: 80,
       align: "center",
@@ -84,21 +104,25 @@ export default function UserManagement() {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      render: text => <strong>{text}</strong>,
+      render: (text) => <strong>{text}</strong>,
       width: 180,
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      render: text => <span style={{ color: "#555" }}>{text}</span>,
+      render: (text) => <span style={{ color: "#555" }}>{text}</span>,
       width: 220,
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: role => <Tag color={role === "admin" ? "red" : "green"}>{role === "admin" ? "Admin" : "User"}</Tag>,
+      render: (role) => (
+        <Tag color={role === "admin" ? "red" : "green"}>
+          {role === "admin" ? "Admin" : "User"}
+        </Tag>
+      ),
       width: 120,
       align: "center",
     },
@@ -106,7 +130,12 @@ export default function UserManagement() {
       title: "Status",
       dataIndex: "isActive",
       key: "isActive",
-      render: active => active ? <Tag color="green">Active</Tag> : <Tag color="volcano">Disabled</Tag>,
+      render: (active) =>
+        active ? (
+          <Tag color="green">Active</Tag>
+        ) : (
+          <Tag color="volcano">Disabled</Tag>
+        ),
       width: 120,
       align: "center",
     },
@@ -115,7 +144,15 @@ export default function UserManagement() {
       key: "action",
       render: (_, record) => {
         if (record.role === "admin") return null;
-        return <Button type="primary" size="small" onClick={() => showActionModal(record)}>Hành động</Button>;
+        return (
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => showActionModal(record)}
+          >
+            Hành động
+          </Button>
+        );
       },
       width: 150,
       align: "center",
@@ -124,24 +161,82 @@ export default function UserManagement() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f6f8fa" }}>
-      {!isMobile && <div style={{ minWidth: 220, background: "#fff", borderRight: "1px solid #eee" }}>
-        <AdminSidebar collapsed={false} />
-      </div>}
+      {!isMobile && (
+        <div
+          style={{
+            minWidth: 220,
+            background: "#fff",
+            borderRight: "1px solid #eee",
+          }}
+        >
+          <AdminSidebar collapsed={false} />
+        </div>
+      )}
 
-      {isMobile && <Drawer placement="left" open={sidebarOpen} onClose={() => setSidebarOpen(false)} bodyStyle={{ padding: 0 }} width={220}>
-        <AdminSidebar collapsed={false} />
-      </Drawer>}
+      {isMobile && (
+        <Drawer
+          placement="left"
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          bodyStyle={{ padding: 0 }}
+          width={220}
+        >
+          <AdminSidebar collapsed={false} />
+        </Drawer>
+      )}
 
-      <div style={{ flex: 1, padding: isMobile ? 8 : 24, maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: isMobile ? 12 : 24, gap: 8 }}>
+      <div
+        style={{
+          flex: 1,
+          padding: isMobile ? 8 : 24,
+          maxWidth: 1200,
+          margin: "0 auto",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: isMobile ? 12 : 24,
+            gap: 8,
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {isMobile && <Button icon={<MenuOutlined />} onClick={() => setSidebarOpen(true)} style={{ borderRadius: 8, marginRight: 8 }} />}
-            <h2 style={{ margin: 0, color: "#166534", fontSize: isMobile ? 20 : 26 }}>Quản lý người dùng</h2>
+            {isMobile && (
+              <Button
+                icon={<MenuOutlined />}
+                onClick={() => setSidebarOpen(true)}
+                style={{ borderRadius: 8, marginRight: 8 }}
+              />
+            )}
+            <h2
+              style={{
+                margin: 0,
+                color: "#166534",
+                fontSize: isMobile ? 20 : 26,
+              }}
+            >
+              👤 Quản lý người dùng
+            </h2>
           </div>
-          <Button icon={<ReloadOutlined />} onClick={fetchUsers} loading={loading}>Làm mới</Button>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchUsers}
+            loading={loading}
+          >
+            Làm mới
+          </Button>
         </div>
 
-        <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 4px 24px rgba(22,101,52,0.08)", padding: isMobile ? 4 : 24 }}>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 4px 24px rgba(22,101,52,0.08)",
+            padding: isMobile ? 4 : 24,
+          }}
+        >
           <Table
             columns={columns}
             dataSource={users}
@@ -163,10 +258,17 @@ export default function UserManagement() {
           okText="Xác nhận"
           cancelText="Hủy"
         >
-          <Radio.Group onChange={e => setActionType(e.target.value)} value={actionType}>
+          <Radio.Group
+            onChange={(e) => setActionType(e.target.value)}
+            value={actionType}
+          >
             {selectedUser?.isActive && <Radio value="suspend">Đình chỉ</Radio>}
-            {!selectedUser?.isActive && <Radio value="activate">Kích hoạt</Radio>}
-            {selectedUser?.role !== "admin" && <Radio value="make-admin">Cấp quyền Admin</Radio>}
+            {!selectedUser?.isActive && (
+              <Radio value="activate">Kích hoạt</Radio>
+            )}
+            {selectedUser?.role !== "admin" && (
+              <Radio value="make-admin">Cấp quyền Admin</Radio>
+            )}
           </Radio.Group>
         </Modal>
       </div>

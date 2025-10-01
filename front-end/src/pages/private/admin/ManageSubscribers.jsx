@@ -85,18 +85,8 @@ const ManageSubscribers = () => {
       <Sidebar />
       <div style={{ maxWidth: 900, margin: "20px auto" }}>
         <Card
-          title="Quản lý Subscribers"
+          title={<h2 style={{ color: "#166534" }}>📧 Quản lý Subscribers</h2>}
           bordered
-          extra={
-            <Button
-              type="default"
-              icon={<ReloadOutlined />}
-              onClick={fetchSubscribers}
-              loading={loading}
-            >
-              Tải lại
-            </Button>
-          }
         >
           <Table
             rowKey="id"

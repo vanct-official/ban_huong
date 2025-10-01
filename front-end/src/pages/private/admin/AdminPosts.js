@@ -87,7 +87,7 @@ export default function AdminPosts() {
     <div style={{ display: "flex" }}>
       <AdminSidebar />
       <div style={{ flex: 1, padding: 24, marginLeft: 240 }}>
-        <h2>📝 Quản lý bài viết</h2>
+        <h2 style={{ color: "#166534" }}>📝 Quản lý bài viết</h2>
         <Button
           type="primary"
           style={{ marginBottom: 16 }}
