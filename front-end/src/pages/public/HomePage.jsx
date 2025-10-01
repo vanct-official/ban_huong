@@ -20,6 +20,7 @@ import PopularSearches from "./product/PopularSearches";
 import LatestPosts from "./post/LatestPosts";
 import PostDetail from "./post/PostDetail";
 import FloatingContact from "../../contact/FloatingContact";
+import HomeFeedback from "./homefeedback/HomeFeedback";
 
 const { Title, Paragraph } = Typography;
 
@@ -245,15 +246,22 @@ export default function HomePage() {
         </section>
       </main>
       <TopRatedProducts />
-      <div style={{ maxWidth: "75vw", margin: "0 auto", padding: "0 16px" }}>
-        <PopularSearches />
-      </div>
-
-      <BestSellerProducts />
-      {/* Latest Posts + Post Detail */}
       <div
         style={{
           maxWidth: "84vw",
+          margin: "0 auto",
+          padding: "0 16px",
+        }}
+      >
+        <HomeFeedback />
+      </div>
+
+      <BestSellerProducts />
+
+      {/* Latest Posts + Post Detail */}
+      <div
+        style={{
+          maxWidth: "76vw",
           margin: "0 auto",
           padding: "0 16px",
         }}

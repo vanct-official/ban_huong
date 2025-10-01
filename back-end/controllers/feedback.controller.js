@@ -105,6 +105,7 @@ export const getAllFeedbacks = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 export const createFeedback = async (req, res) => {
   try {
     const { productId, rate, feedbackContent } = req.body;
@@ -153,6 +154,25 @@ export const createFeedback = async (req, res) => {
     res.status(201).json(feedback);
   } catch (err) {
     console.error("❌ Lỗi createFeedback:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Lấy một số feedback mới nhất (ví dụ: 5 feedback)
+export const getRecentFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.findAll({
+      include: [
+        { model: User, as: "user", attributes: ["username", "avatarImg"] },
+        { model: Product, as: "product", attributes: ["productName"] },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: 5, // chỉ lấy 5 feedback mới nhất
+    });
+
+    res.json(feedbacks);
+  } catch (err) {
+    console.error("❌ Lỗi getRecentFeedbacks:", err);
     res.status(500).json({ message: err.message });
   }
 };

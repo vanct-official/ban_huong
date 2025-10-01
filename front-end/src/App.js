@@ -28,6 +28,7 @@ import AdminPostAdd from "./pages/private/admin/AdminPostAdd";
 import AdminPostEdit from "./pages/private/admin/AdminPostEdit";
 import AllPosts from "./pages/public/post/AllPosts";
 import ManageSubscribers from "./pages/private/admin/ManageSubscribers";
+import AllFeedbacks from "./pages/public/homefeedback/AllFeedbacks";
 
 function App() {
   return (
@@ -139,6 +140,7 @@ function App() {
           path="/admin/email-subscribers"
           element={<ManageSubscribers />}
         />
+        <Route path="/all-feedbacks" element={<AllFeedbacks />} />
       </Routes>
     </main>
   );
