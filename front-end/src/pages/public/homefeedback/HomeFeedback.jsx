@@ -29,7 +29,7 @@ export default function HomeFeedback() {
   return (
     <div
       style={{
-        maxWidth: "75vw",
+        maxWidth: 1100,
         margin: "60px auto",
         padding: "0 16px",
       }}

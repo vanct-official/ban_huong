@@ -39,7 +39,7 @@ export default function PopularSearches() {
   }
 
   return (
-    <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 16px" }}>
+    <div style={{ maxWidth: 1100, margin: "40px auto", padding: "0 16px" }}>
       <Card
         style={{ borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
         bodyStyle={{ padding: 24 }}
