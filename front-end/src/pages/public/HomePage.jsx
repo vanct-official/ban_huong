@@ -256,7 +256,7 @@ export default function HomePage() {
       </div>
 
       <BestSellerProducts />
-
+      <PopularSearches />
       {/* Latest Posts + Post Detail */}
       <div
         style={{
