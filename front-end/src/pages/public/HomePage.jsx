@@ -140,10 +140,9 @@ export default function HomePage() {
         <section
           style={{
             marginTop: 60,
-            maxWidth: 1200,
+            maxWidth: 1100,
             marginLeft: "auto",
             marginRight: "auto",
-            padding: "0 16px",
           }}
         >
           <div
