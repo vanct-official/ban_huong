@@ -4,6 +4,7 @@ import {
   getTopCustomers,
   getRevenueByMonth,
   getBestSellerProducts,
+  getRevenueByQuarter,
 } from "../controllers/adminStats.controller.js";
 import { verifyToken, authorizeAdmin } from "../middleware/auth.middleware.js";
 

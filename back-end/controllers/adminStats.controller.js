@@ -113,3 +113,29 @@ export const getBestSellerProducts = async (req, res) => {
     res.status(500).json({ error: "Không thể lấy sản phẩm bán chạy" });
   }
 };
+
+// Doanh thu theo quý
+export const getRevenueByQuarter = async (req, res) => {
+  try {
+    const data = await OrderItem.findAll({
+      attributes: [
+        [sequelize.fn("QUARTER", sequelize.col("Order.orderDate")), "quarter"],
+        [
+          sequelize.fn("SUM", sequelize.literal("quantity * unitPrice")),
+          "totalRevenue",
+        ],
+      ],
+      include: [{ model: Order, attributes: [] }],
+      group: [sequelize.fn("QUARTER", sequelize.col("Order.orderDate"))],
+      raw: true,
+      order: [
+        [sequelize.fn("QUARTER", sequelize.col("Order.orderDate")), "ASC"],
+      ],
+    });
+
+    res.json(data);
+  } catch (err) {
+    console.error("❌ getRevenueByQuarter:", err);
+    res.status(500).json({ error: "Không thể lấy doanh thu theo quý" });
+  }
+};
