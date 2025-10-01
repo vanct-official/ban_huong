@@ -245,15 +245,7 @@ export default function HomePage() {
         </section>
       </main>
       <TopRatedProducts />
-      <div
-        style={{
-          maxWidth: "84vw",
-          margin: "0 auto",
-          padding: "0 16px",
-        }}
-      >
-        <HomeFeedback />
-      </div>
+      <HomeFeedback />
 
       <BestSellerProducts />
       <PopularSearches />
