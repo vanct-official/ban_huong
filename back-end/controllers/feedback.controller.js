@@ -2,24 +2,8 @@ import Feedback from "../models/feedback.model.js";
 import User from "../models/user.model.js";
 import { fn, col } from "sequelize";
 import Product from "../models/product.model.js";
-
-export const createFeedback = async (req, res) => {
-  try {
-    const { productId, rate, feedbackContent } = req.body;
-    const userId = req.user.id; // lấy từ JWT
-
-    const feedback = await Feedback.create({
-      productId,
-      userId,
-      rate,
-      feedbackContent,
-    });
-
-    res.status(201).json(feedback);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+import Order from "../models/order.model.js";
+import OrderItem from "../models/orderItem.model.js";
 
 export const getFeedbackByProduct = async (req, res) => {
   try {
@@ -67,7 +51,7 @@ export const getFeedbackByProductId = async (req, res) => {
     const feedbacks = await Feedback.findAll({
       where: { productId },
       include: [
-        { model: User, as : "user", attributes: ["username", "avatarImg"] },
+        { model: User, as: "user", attributes: ["username", "avatarImg"] },
         { model: Product, as: "product", attributes: ["productName"] },
       ],
       order: [["createdAt", "DESC"]],
@@ -102,15 +86,15 @@ export const getAllFeedbacks = async (req, res) => {
   try {
     const feedbacks = await Feedback.findAll({
       include: [
-        { 
-          model: User, 
-          as: "user",           // ✅ trùng alias trong model
-          attributes: ["username", "avatarImg"] 
+        {
+          model: User,
+          as: "user", // ✅ trùng alias trong model
+          attributes: ["username", "avatarImg"],
         },
-        { 
-          model: Product, 
-          as: "product",        // ✅ trùng alias trong model
-          attributes: ["productName"] 
+        {
+          model: Product,
+          as: "product", // ✅ trùng alias trong model
+          attributes: ["productName"],
         },
       ],
       order: [["createdAt", "DESC"]],
@@ -118,6 +102,57 @@ export const getAllFeedbacks = async (req, res) => {
     res.json(feedbacks);
   } catch (err) {
     console.error("❌ Lỗi getAllFeedbacks:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+export const createFeedback = async (req, res) => {
+  try {
+    const { productId, rate, feedbackContent } = req.body;
+    const userId = req.user.id; // lấy từ JWT
+
+    // 1. Kiểm tra user đã feedback sản phẩm này chưa
+    const existingFeedback = await Feedback.findOne({
+      where: { userId, productId },
+    });
+
+    if (existingFeedback) {
+      return res.status(400).json({
+        message: "❌ Bạn đã feedback sản phẩm này rồi.",
+      });
+    }
+
+    // 2. Kiểm tra user có đơn hàng hoàn tất chứa sản phẩm này không
+    const purchased = await Order.findOne({
+      where: {
+        userId,
+        status: "completed", // chỉ khi đơn hàng đã hoàn thành
+      },
+      include: [
+        {
+          model: OrderItem,
+          as: "items", // alias cần khớp với association
+          where: { productId },
+        },
+      ],
+    });
+
+    if (!purchased) {
+      return res.status(400).json({
+        message: "❌ Bạn chỉ có thể feedback cho sản phẩm mà bạn đã mua.",
+      });
+    }
+
+    // 3. Tạo feedback mới
+    const feedback = await Feedback.create({
+      productId,
+      userId,
+      rate,
+      feedbackContent,
+    });
+
+    res.status(201).json(feedback);
+  } catch (err) {
+    console.error("❌ Lỗi createFeedback:", err);
     res.status(500).json({ message: err.message });
   }
 };
