@@ -66,53 +66,58 @@ export default function TopRatedProducts() {
           },
         ]}
       >
-        {products.map((p) => (
-          <div key={p.id} style={{ padding: "0 10px" }}>
-            <Card
-              hoverable
-              cover={
-                <img
-                  src={
-                    p.productImg
-                      ? p.productImg
-                      : p.images && p.images.length > 0
-                      ? `http://localhost:5000/${p.images[0].productImg}`
-                      : "/default-product.png"
-                  }
-                  alt={p.productName}
-                  style={{
-                    height: 220,
-                    objectFit: "cover",
-                    borderTopLeftRadius: "8px",
-                    borderTopRightRadius: "8px",
-                  }}
-                />
-              }
-              onClick={() => navigate(`/products/${p.id}`)}
-              style={{ maxWidth: 300, margin: "0 auto" }}
-            >
-              <h3 style={{ fontWeight: 600, textAlign: "center" }}>
-                {p.productName}
-              </h3>
-              <p
-                style={{
-                  color: "#ea580c",
-                  fontWeight: 700,
-                  textAlign: "center",
-                }}
+        {products.map((p) => {
+          const rating = parseFloat(p.avgRating);
+          const safeRating = isNaN(rating) ? 0 : rating; // 👈 nếu NaN thì về 0
+          const feedbackCount = p.feedbackCount || 0;
+
+          return (
+            <div key={p.id} style={{ padding: "0 10px" }}>
+              <Card
+                hoverable
+                cover={
+                  <img
+                    src={
+                      p.productImg
+                        ? p.productImg
+                        : p.images && p.images.length > 0
+                        ? `http://localhost:5000/${p.images[0].productImg}`
+                        : "/default-product.png"
+                    }
+                    alt={p.productName}
+                    style={{
+                      height: 220,
+                      objectFit: "cover",
+                      borderTopLeftRadius: "8px",
+                      borderTopRightRadius: "8px",
+                    }}
+                  />
+                }
+                onClick={() => navigate(`/products/${p.id}`)}
+                style={{ maxWidth: 300, margin: "0 auto" }}
               >
-                {Number(p.unitPrice).toLocaleString()} đ
-              </p>
-              <div style={{ textAlign: "center" }}>
-                <Rate disabled value={parseFloat(p.avgRating)} allowHalf />
-                <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
-                  {parseFloat(p.avgRating).toFixed(1)} ★ ({p.feedbackCount} nhận
-                  xét)
+                <h3 style={{ fontWeight: 600, textAlign: "center" }}>
+                  {p.productName}
+                </h3>
+                <p
+                  style={{
+                    color: "#ea580c",
+                    fontWeight: 700,
+                    textAlign: "center",
+                  }}
+                >
+                  {Number(p.unitPrice).toLocaleString()} đ
                 </p>
-              </div>
-            </Card>
-          </div>
-        ))}
+                <div style={{ textAlign: "center" }}>
+                  <Rate disabled value={safeRating} allowHalf />
+                  <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+                    {safeRating.toFixed(1)} ★ ({feedbackCount} nhận xét)
+                  </p>
+                </div>
+              </Card>
+            </div>
+          );
+        })}
       </Carousel>
     </div>
   );

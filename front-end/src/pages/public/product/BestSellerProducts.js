@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Carousel, Spin, Typography } from "antd";
+import { Card, Carousel, Spin, Typography, Rate } from "antd"; // 👈 thêm Rate
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -89,6 +89,21 @@ export default function BestSellerProducts() {
               >
                 {Number(p.unitPrice).toLocaleString()} đ
               </p>
+
+              {/* ✅ Hiển thị rating hoặc "Không có sao" */}
+              <div style={{ textAlign: "center", marginTop: 8 }}>
+                {p.avgRating && p.avgRating > 0 ? (
+                  <>
+                    <Rate disabled value={p.avgRating} allowHalf />
+                    <p style={{ fontSize: 13, color: "#666" }}>
+                      {p.avgRating.toFixed(1)} / 5
+                    </p>
+                  </>
+                ) : (
+                  <p style={{ fontSize: 13, color: "#999" }}>Không có sao</p>
+                )}
+              </div>
+
               <div style={{ textAlign: "center", marginTop: 8 }}>
                 <p style={{ fontSize: 13, color: "#666" }}>
                   Đã bán: {p.totalSold || 0}
