@@ -93,10 +93,10 @@ function ProductList() {
     fetchProducts(keyword); // gọi API theo keyword
   }, [location.search]); // chạy lại khi query string đổi
 
-  useEffect(() => {
-    document.title = t("productList") + " - Bản Hương";
-    fetchProducts();
-  }, []);
+  // useEffect(() => {
+  //   document.title = t("productList") + " - Bản Hương";
+  //   fetchProducts();
+  // }, []);
 
   // Lọc và sắp xếp
   useEffect(() => {
