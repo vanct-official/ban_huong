@@ -3,6 +3,7 @@ import Product from "../models/product.model.js";
 import Order from "../models/order.model.js";
 import OrderItem from "../models/orderItem.model.js";
 import { sequelize } from "../config/db.js";
+import ProductImage from "../models/productimage.model.js";
 
 export const getAdminStats = async (req, res) => {
   try {
@@ -37,5 +38,139 @@ export const getAdminStats = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi getAdminStats:", err);
     res.status(500).json({ error: "Không thể lấy thống kê" });
+  }
+};
+
+// export const getAdminReports = async (req, res) => {
+//   try {
+//     // Doanh thu theo tháng
+//     const revenueByMonth = await Order.findAll({
+//       attributes: [
+//         [
+//           sequelize.fn(
+//             "DATE_FORMAT",
+//             sequelize.col("Order.orderDate"),
+//             "%Y-%m"
+//           ),
+//           "month",
+//         ],
+//         [
+//           sequelize.fn("SUM", sequelize.col("items.finalPrice")),
+//           "totalRevenue",
+//         ],
+//       ],
+//       include: [{ model: OrderItem, as: "items", attributes: [] }],
+//       group: ["month"],
+//       order: [[sequelize.literal("month"), "ASC"]],
+//       raw: true,
+//     });
+
+//     // Top sản phẩm bán chạy (chỉ lấy productId + tổng quantity)
+//     const topProducts = await OrderItem.findAll({
+//       attributes: [
+//         "productId",
+//         [sequelize.fn("SUM", sequelize.col("OrderItem.quantity")), "totalSold"],
+//       ],
+//       include: [
+//         {
+//           model: Product,
+//           as: "product",
+//           attributes: ["id", "productName"],
+//         },
+//       ],
+//       group: ["OrderItem.productId", "product.id", "product.productName"],
+//       order: [[sequelize.literal("totalSold"), "DESC"]],
+//       limit: 5,
+//       raw: true,
+//       nest: true,
+//     });
+
+//     // ✅ Lấy ảnh cho từng productId (chỉ lấy 1 ảnh đại diện)
+//     for (let p of topProducts) {
+//       const img = await ProductImage.findOne({
+//         where: { productId: p.productId },
+//         attributes: ["productImg"],
+//       });
+//       p.product.image = img ? img.productImg : null;
+//     }
+
+//     res.json({
+//       revenueByMonth,
+//       topProducts,
+//     });
+//   } catch (err) {
+//     console.error("❌ Lỗi getAdminReports:", err);
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
+export const getAdminReports = async (req, res) => {
+  try {
+    // Doanh thu theo tháng
+    const revenueByMonth = await Order.findAll({
+      attributes: [
+        [
+          sequelize.fn(
+            "DATE_FORMAT",
+            sequelize.col("Order.orderDate"),
+            "%Y-%m"
+          ),
+          "month",
+        ],
+        [
+          sequelize.fn("SUM", sequelize.col("items.finalPrice")),
+          "totalRevenue",
+        ],
+      ],
+      include: [{ model: OrderItem, as: "items", attributes: [] }],
+      group: ["month"],
+      order: [[sequelize.literal("month"), "ASC"]],
+      raw: true,
+    });
+
+    // Top sản phẩm bán chạy (chỉ join Product)
+    const topProducts = await OrderItem.findAll({
+      attributes: [
+        "productId",
+        [sequelize.fn("SUM", sequelize.col("OrderItem.quantity")), "totalSold"],
+      ],
+      include: [
+        {
+          model: Product,
+          as: "product",
+          attributes: ["id", "productName"],
+        },
+      ],
+      group: ["OrderItem.productId", "product.id", "product.productName"],
+      order: [[sequelize.literal("totalSold"), "DESC"]],
+      limit: 5,
+      raw: true,
+      nest: true,
+    });
+
+    // ✅ Lấy ảnh riêng cho từng productId
+    for (let p of topProducts) {
+      const img = await ProductImage.findOne({
+        where: { productId: p.productId },
+        attributes: ["productImg"],
+      });
+      p.productImg = img ? img.productImg : null;
+    }
+
+    res.json({
+      revenueByMonth: revenueByMonth.map((r) => ({
+        month: r.month,
+        totalRevenue: Number(r.totalRevenue) || 0,
+      })),
+      topProducts: topProducts.map((p) => ({
+        productId: p.productId,
+        productName: p.product.productName,
+        totalSold: p.totalSold,
+        productImg: p.productImg, // ✅ thêm ảnh vào response
+      })),
+    });
+  } catch (err) {
+    console.error("❌ Lỗi getAdminReports:", err);
+    res.status(500).json({ error: err.message });
   }
 };
