@@ -15,15 +15,32 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // ✅ Hàm highlight từ khóa
+  const highlightKeywords = (text, keywords) => {
+    if (!text || !keywords || keywords.length === 0) return text;
+    let result = text;
+
+    keywords.forEach((kw) => {
+      const regex = new RegExp(`(${kw})`, "gi");
+      result = result.replace(
+        regex,
+        `<mark style="background:yellow; font-weight:bold;">$1</mark>`
+      );
+    });
+
+    return result;
+  };
+
   useEffect(() => {
     if (!slug) return;
 
     const fetchData = async () => {
       try {
+        // lấy bài chính
         const res = await axios.get(`${API_URL}/api/posts/${slug}`);
         setPost(res.data);
 
-        // 👉 lấy bài viết liên quan
+        // lấy bài viết liên quan
         const relatedRes = await axios.get(
           `${API_URL}/api/posts/${slug}/related`
         );
@@ -53,6 +70,9 @@ export default function PostDetail() {
       </p>
     );
   }
+
+  // ✅ lấy keywords từ 3 từ đầu của title bài chính
+  const keywords = post.title.split(" ").slice(0, 3);
 
   return (
     <>
@@ -110,9 +130,9 @@ export default function PostDetail() {
                   <Card
                     hoverable
                     cover={
-                      rp.image && (
+                      rp.thumbnail && (
                         <img
-                          src={`${API_URL}/uploads/${rp.image}`}
+                          src={rp.thumbnail}
                           alt={rp.title}
                           style={{ height: 180, objectFit: "cover" }}
                         />
@@ -121,9 +141,25 @@ export default function PostDetail() {
                     onClick={() => navigate(`/posts/${rp.slug}`)}
                   >
                     <Card.Meta
-                      title={rp.title}
+                      title={
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: highlightKeywords(rp.title, keywords),
+                          }}
+                        />
+                      }
                       description={
-                        rp.excerpt || rp.content?.substring(0, 80) + "..."
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: highlightKeywords(
+                              rp.excerpt ||
+                                rp.content
+                                  ?.replace(/<\/?[^>]+(>|$)/g, "")
+                                  .substring(0, 80) + "...",
+                              keywords
+                            ),
+                          }}
+                        />
                       }
                     />
                   </Card>
