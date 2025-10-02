@@ -230,40 +230,7 @@ export default function AdminAnalytics() {
               <h3 style={{ textAlign: "center", marginBottom: 20 }}>
                 🔥 Top sản phẩm bán chạy
               </h3>
-              {/* <List
-                itemLayout="horizontal"
-                dataSource={reports.topProducts}
-                renderItem={(item, index) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar
-                          shape="square"
-                          size={64}
-                          src={
-                            item.product?.images?.[0]?.productImg
-                              ? `${API_URL}/${item.product.images[0].productImg}`
-                              : "/default-product.png"
-                          }
-                        />
-                      }
-                      title={
-                        <span>
-                          {index + 1}. {item.product?.productName}
-                        </span>
-                      }
-                      description={
-                        <span>
-                          Đã bán:{" "}
-                          <strong style={{ color: "#d97706" }}>
-                            {item.totalSold}
-                          </strong>
-                        </span>
-                      }
-                    />
-                  </List.Item>
-                )}
-              /> */}
+
               <List
                 itemLayout="horizontal"
                 dataSource={reports.topProducts}
