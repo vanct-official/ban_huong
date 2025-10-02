@@ -231,7 +231,14 @@ const Cart = () => {
   return (
     <>
       <MainHeader />
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: 20 }}>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: 20,
+          minHeight: "100vh",
+        }}
+      >
         <h2 style={{ marginBottom: 20, fontSize: 24, fontWeight: 600 }}>
           Giỏ hàng của bạn ({totalItems} sản phẩm)
         </h2>

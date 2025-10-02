@@ -621,7 +621,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* User Stats/Info */}
-                <Row gutter={16} style={{ marginBottom: "32px" }}>
+                {/* <Row gutter={16} style={{ marginBottom: "32px" }}>
                   <Col span={8}>
                     <div
                       style={{
@@ -712,7 +712,7 @@ export default function LoginPage() {
                       </Text>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
 
                 {/* Action Buttons */}
                 <Space

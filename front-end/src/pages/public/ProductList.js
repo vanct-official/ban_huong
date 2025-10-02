@@ -66,10 +66,6 @@ function ProductList() {
       });
   };
 
-  // const debouncedSearch = useCallback(
-  //   debounce((q) => fetchProducts(q), 500),
-  //   []
-  // );
   const debouncedSearch = useCallback(
     debounce((q) => {
       fetchProducts(q);
