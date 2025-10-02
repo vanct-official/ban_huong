@@ -38,7 +38,14 @@ export default function AllPosts() {
   return (
     <>
       <MainHeader />
-      <div style={{ maxWidth: 1200, margin: "40px auto", padding: "0 16px" }}>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "40px auto",
+          padding: "0 16px",
+          minHeight: "100vh",
+        }}
+      >
         <Title level={3} style={{ marginBottom: 16, color: "#166534" }}>
           📚 Tất cả bài viết
         </Title>

@@ -106,7 +106,7 @@ export default function OrderHistory() {
           maxWidth: 1200,
           margin: "0 auto",
           padding: 20,
-          minHeight: "380px",
+          minHeight: "100vh",
         }}
       >
         <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 20 }}>

@@ -10,8 +10,5 @@
 *.log.*
 *.sig
 
-back-end/.env
-front-end/.env.local
-
 pkg/
 node_modules/

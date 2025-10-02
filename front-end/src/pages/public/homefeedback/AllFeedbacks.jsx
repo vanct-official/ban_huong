@@ -30,7 +30,7 @@ export default function AllFeedbacks() {
         style={{
           maxWidth: 800,
           margin: "40px auto",
-          minHeight: "380px",
+          minHeight: "100vh",
         }}
       >
         <h2>Tất cả nhận xét từ khách hàng</h2>
