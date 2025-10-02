@@ -33,6 +33,9 @@ import Footer from "./components/Footer";
 import MainHeader from "./components/MainHeader";
 import AdminFAQ from "./pages/private/admin/AdminFAQ";
 import FAQPage from "./pages/public/faq/FAQPage";
+import RegisterPage from "./pages/authentication/RegisterPage";
+import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/user/ResetPasswordPage";
 
 function App() {
   return (
@@ -154,6 +157,9 @@ function App() {
         />
         <Route path="/all-feedbacks" element={<AllFeedbacks />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Routes>
     </main>
   );
