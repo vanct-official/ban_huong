@@ -715,7 +715,7 @@ export default function LoginPage() {
                 </Row> */}
 
                 {/* Action Buttons */}
-                <Space
+                {/* <Space
                   direction="vertical"
                   size="middle"
                   style={{ width: "100%" }}
@@ -754,6 +754,66 @@ export default function LoginPage() {
                   >
                     Xem hồ sơ
                   </Button>
+
+                  <Button
+                    size="large"
+                    block
+                    icon={<LogoutOutlined />}
+                    onClick={handleLogout}
+                    style={{
+                      height: "48px",
+                      borderRadius: "12px",
+                      borderColor: "#d1d5db",
+                      color: "#6b7280",
+                      fontSize: "16px",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Đăng xuất
+                  </Button>
+                </Space> */}
+                <Space
+                  direction="vertical"
+                  size="middle"
+                  style={{ width: "100%" }}
+                >
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    onClick={handleHome}
+                    style={{
+                      height: "48px",
+                      borderRadius: "12px",
+                      background:
+                        "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+                      border: "none",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      boxShadow: "0 4px 20px rgba(22,101,52,0.3)",
+                    }}
+                  >
+                    {t("returnHome")}
+                  </Button>
+
+                  {/* 👇 Chỉ hiện nếu role KHÔNG phải admin */}
+                  {user.role !== "admin" && (
+                    <Button
+                      size="large"
+                      block
+                      onClick={handleViewProfile}
+                      style={{
+                        height: "48px",
+                        borderRadius: "12px",
+                        borderColor: "#166534",
+                        color: "#166534",
+                        fontSize: "16px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Xem hồ sơ
+                    </Button>
+                  )}
 
                   <Button
                     size="large"
