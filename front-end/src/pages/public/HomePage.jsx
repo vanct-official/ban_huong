@@ -21,6 +21,7 @@ import LatestPosts from "./post/LatestPosts";
 import PostDetail from "./post/PostDetail";
 import FloatingContact from "../../contact/FloatingContact";
 import HomeFeedback from "./homefeedback/HomeFeedback";
+import TrustSignals from "./trust/TrustSignals";
 
 const { Title, Paragraph } = Typography;
 
@@ -244,7 +245,7 @@ export default function HomePage() {
           </Paragraph>
         </section>
       </main>
-      <div style={{ textAlign: "center", margin: "40px auto", width: "100%" }}>
+      <div style={{ textAlign: "center", margin: "60px auto", width: "100%" }}>
         <iframe
           width="100%"
           height="550"
@@ -277,57 +278,8 @@ export default function HomePage() {
         <PostDetail />
       </div>
       <FloatingContact />
-      {/* Features Section */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "75vw",
-          margin: "40px auto",
-          padding: "30px 20px",
-          background: "#fff",
-          borderRadius: 12,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
-        }}
-      >
-        <Row gutter={[32, 24]} justify="center" align="middle">
-          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
-            <ShoppingCartOutlined style={{ fontSize: 36, color: "#166534" }} />
-            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Mua sắm dễ dàng</h3>
-            <p style={{ color: "#555" }}>Dễ dàng tìm kiếm sản phẩm</p>
-          </Col>
 
-          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
-            <SafetyCertificateOutlined
-              style={{ fontSize: 36, color: "#166534" }}
-            />
-            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Tính bảo mật cao</h3>
-            <p style={{ color: "#555" }}>Giữ kín thông tin khách hàng</p>
-          </Col>
-
-          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
-            <ShopOutlined style={{ fontSize: 36, color: "#166534" }} />
-            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Tích hợp</h3>
-            <p style={{ color: "#555" }}>
-              Kiểm soát chất lượng qua từng sản phẩm
-            </p>
-          </Col>
-
-          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
-            <RobotOutlined style={{ fontSize: 36, color: "#166534" }} />
-            <h3 style={{ marginTop: 10, fontWeight: 700 }}>Tích hợp AI</h3>
-            <p style={{ color: "#555" }}>
-              AI giúp bạn trả lời các câu hỏi về sản phẩm
-            </p>
-          </Col>
-
-          <Col xs={24} sm={12} md={8} lg={4} style={{ textAlign: "center" }}>
-            <GiftOutlined style={{ fontSize: 36, color: "#166534" }} />
-            <h3 style={{ marginTop: 10, fontWeight: 700 }}>So sánh sản phẩm</h3>
-            <p style={{ color: "#555" }}>Hỗ trợ so sánh các sản phẩm</p>
-          </Col>
-        </Row>
-      </div>
-
+      <TrustSignals />
       <Footer />
     </div>
   );
