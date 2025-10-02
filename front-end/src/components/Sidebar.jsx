@@ -89,6 +89,12 @@ const menuItems = [
     path: "/admin/email-subscribers",
   },
   {
+    key: "question-answers",
+    icon: <FormOutlined />,
+    label: "Câu hỏi thường gặp",
+    path: "/admin/faqs",
+  },
+  {
     key: "settings",
     icon: <SettingOutlined />,
     label: "Cài đặt",

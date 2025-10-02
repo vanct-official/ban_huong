@@ -22,6 +22,7 @@ import PostDetail from "./post/PostDetail";
 import FloatingContact from "../../contact/FloatingContact";
 import HomeFeedback from "./homefeedback/HomeFeedback";
 import TrustSignals from "./trust/TrustSignals";
+import HomeFAQ from "./faq/HomeFAQ";
 
 const { Title, Paragraph } = Typography;
 
@@ -280,6 +281,7 @@ export default function HomePage() {
       <FloatingContact />
 
       <TrustSignals />
+      <HomeFAQ />
       <Footer />
     </div>
   );

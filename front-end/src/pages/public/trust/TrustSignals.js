@@ -40,7 +40,7 @@ export default function TrustSignals() {
         padding: "50px 20px",
         borderRadius: 12,
         margin: "40px auto",
-        maxWidth: 1000,
+        maxWidth: 1060,
         boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
       }}
     >
