@@ -12,4 +12,5 @@ router.get("/stats", verifyToken, authorizeAdmin, getAdminStats);
 
 // Báo cáo doanh thu theo tháng + sản phẩm bán chạy
 router.get("/reports", verifyToken, authorizeAdmin, getAdminReports);
+
 export default router;

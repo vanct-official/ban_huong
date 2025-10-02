@@ -41,69 +41,6 @@ export const getAdminStats = async (req, res) => {
   }
 };
 
-// export const getAdminReports = async (req, res) => {
-//   try {
-//     // Doanh thu theo tháng
-//     const revenueByMonth = await Order.findAll({
-//       attributes: [
-//         [
-//           sequelize.fn(
-//             "DATE_FORMAT",
-//             sequelize.col("Order.orderDate"),
-//             "%Y-%m"
-//           ),
-//           "month",
-//         ],
-//         [
-//           sequelize.fn("SUM", sequelize.col("items.finalPrice")),
-//           "totalRevenue",
-//         ],
-//       ],
-//       include: [{ model: OrderItem, as: "items", attributes: [] }],
-//       group: ["month"],
-//       order: [[sequelize.literal("month"), "ASC"]],
-//       raw: true,
-//     });
-
-//     // Top sản phẩm bán chạy (chỉ lấy productId + tổng quantity)
-//     const topProducts = await OrderItem.findAll({
-//       attributes: [
-//         "productId",
-//         [sequelize.fn("SUM", sequelize.col("OrderItem.quantity")), "totalSold"],
-//       ],
-//       include: [
-//         {
-//           model: Product,
-//           as: "product",
-//           attributes: ["id", "productName"],
-//         },
-//       ],
-//       group: ["OrderItem.productId", "product.id", "product.productName"],
-//       order: [[sequelize.literal("totalSold"), "DESC"]],
-//       limit: 5,
-//       raw: true,
-//       nest: true,
-//     });
-
-//     // ✅ Lấy ảnh cho từng productId (chỉ lấy 1 ảnh đại diện)
-//     for (let p of topProducts) {
-//       const img = await ProductImage.findOne({
-//         where: { productId: p.productId },
-//         attributes: ["productImg"],
-//       });
-//       p.product.image = img ? img.productImg : null;
-//     }
-
-//     res.json({
-//       revenueByMonth,
-//       topProducts,
-//     });
-//   } catch (err) {
-//     console.error("❌ Lỗi getAdminReports:", err);
-//     res.status(500).json({ error: err.message });
-//   }
-// };
-
 export const getAdminReports = async (req, res) => {
   try {
     // Doanh thu theo tháng

@@ -100,7 +100,7 @@ CREATE TABLE `carts` (
   KEY `productId` (`productId`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +109,6 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (21,10,15,6,'2025-09-30 18:30:22','2025-09-30 20:43:35'),(22,10,20,6,'2025-09-30 18:30:27','2025-09-30 20:43:51'),(23,10,14,1,'2025-09-30 20:43:30','2025-09-30 20:43:30');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,7 +131,7 @@ CREATE TABLE `feedback` (
   KEY `productId` (`productId`),
   CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE,
   CONSTRAINT `feedback_chk_1` CHECK ((`rate` between 1 and 5))
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,7 +140,38 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
+INSERT INTO `feedback` VALUES (7,33,4,'Tạm được','2025-10-01 02:36:45','2025-10-01 02:36:45',10);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `type` varchar(50) DEFAULT 'order',
+  `isRead` tinyint(1) DEFAULT '0',
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_notifications_user` (`userId`),
+  CONSTRAINT `fk_notifications_user` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notifications`
+--
+
+LOCK TABLES `notifications` WRITE;
+/*!40000 ALTER TABLE `notifications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notifications` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -164,7 +194,7 @@ CREATE TABLE `orderitems` (
   KEY `productId` (`productId`),
   CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,6 +203,7 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
+INSERT INTO `orderitems` VALUES (7,5,14,1,12000.00,0.00,12000.00),(8,5,33,2,30000.00,0.00,60000.00);
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +219,7 @@ CREATE TABLE `orders` (
   `userId` int NOT NULL,
   `addressId` int DEFAULT NULL,
   `orderDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('pending','paid','shipped','completed','cancelled') DEFAULT 'pending',
+  `status` enum('pending','shipped','completed','cancelled') DEFAULT 'pending',
   `totalAmount` decimal(10,2) DEFAULT NULL,
   `promotionId` int DEFAULT NULL,
   `discountAmount` decimal(10,2) DEFAULT '0.00',
@@ -200,7 +231,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`) ON DELETE SET NULL,
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`addressId`) REFERENCES `address` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,6 +240,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (5,10,1,'2025-10-01 12:30:56','completed',72000.00,NULL,0.00,72000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -227,7 +259,7 @@ CREATE TABLE `popular_searches` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword` (`keyword`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,7 +268,7 @@ CREATE TABLE `popular_searches` (
 
 LOCK TABLES `popular_searches` WRITE;
 /*!40000 ALTER TABLE `popular_searches` DISABLE KEYS */;
-INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',13,'2025-09-30 02:04:46','2025-09-30 18:06:16'),(20,'Tinh dầu Hoa Hồi 25ml',6,'2025-09-30 09:29:08','2025-09-30 02:39:11'),(21,'4',1,'2025-09-30 02:36:10','2025-09-30 02:36:10'),(22,'4ml',2,'2025-09-30 02:36:12','2025-09-30 02:36:20');
+INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',23,'2025-09-30 02:04:46','2025-10-02 01:56:56'),(20,'Tinh dầu Hoa Hồi 25ml',12,'2025-09-30 09:29:08','2025-10-01 06:57:06'),(21,'4',6,'2025-09-30 02:36:10','2025-10-02 02:05:06'),(22,'4ml',9,'2025-09-30 02:36:12','2025-10-01 12:32:49'),(23,'Tinh dầu hoa hồi handmade 25ml',7,'2025-10-01 06:32:08','2025-10-01 12:31:21'),(24,'Tinh dầu hoa hồi đựng lọ gỗ 15ml',10,'2025-10-01 06:53:42','2025-10-02 02:19:03'),(25,'Tinh dầu hoa hồi cao cấp 100ml',10,'2025-10-01 12:23:08','2025-10-02 02:04:59'),(26,'5m',1,'2025-10-01 14:17:21','2025-10-01 14:17:21'),(27,'1',1,'2025-10-01 18:00:09','2025-10-01 18:00:09'),(28,'100',1,'2025-10-01 18:00:10','2025-10-01 18:00:10'),(29,'100ml',4,'2025-10-01 18:00:12','2025-10-01 18:00:25');
 /*!40000 ALTER TABLE `popular_searches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -405,7 +437,7 @@ CREATE TABLE `subscribers` (
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -414,7 +446,7 @@ CREATE TABLE `subscribers` (
 
 LOCK TABLES `subscribers` WRITE;
 /*!40000 ALTER TABLE `subscribers` DISABLE KEYS */;
-INSERT INTO `subscribers` VALUES (2,'david.msartinez@gmail.com','2025-09-30 20:22:06','2025-09-30 20:22:06'),(3,'he173048tddranvantuan@gmail.com','2025-09-30 20:28:11','2025-09-30 20:28:11'),(4,'tddranvantuan@gmail.com','2025-09-30 20:29:51','2025-09-30 20:29:51'),(9,'jane.smsith@gmail.com','2025-09-30 20:36:08','2025-09-30 20:36:08'),(10,'vanctquantrivien@gmail.com','2025-09-30 20:36:22','2025-09-30 20:36:22'),(11,'david.martinez@gmail.com','2025-09-30 20:37:03','2025-09-30 20:37:03');
+INSERT INTO `subscribers` VALUES (2,'david.msartinez@gmail.com','2025-09-30 20:22:06','2025-09-30 20:22:06'),(3,'he173048tddranvantuan@gmail.com','2025-09-30 20:28:11','2025-09-30 20:28:11'),(4,'tddranvantuan@gmail.com','2025-09-30 20:29:51','2025-09-30 20:29:51'),(9,'jane.smsith@gmail.com','2025-09-30 20:36:08','2025-09-30 20:36:08'),(10,'vanctquantrivien@gmail.com','2025-09-30 20:36:22','2025-09-30 20:36:22'),(11,'david.martinez@gmail.com','2025-09-30 20:37:03','2025-09-30 20:37:03'),(12,'jane.smith@gmail.com','2025-10-01 04:59:28','2025-10-01 04:59:28'),(13,'tuantvhe173048@fpt.edu.vn','2025-10-01 05:53:24','2025-10-01 05:53:24');
 /*!40000 ALTER TABLE `subscribers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,7 +539,7 @@ CREATE TABLE `wishlists` (
   KEY `productId` (`productId`),
   CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `wishlists_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -516,7 +548,6 @@ CREATE TABLE `wishlists` (
 
 LOCK TABLES `wishlists` WRITE;
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
-INSERT INTO `wishlists` VALUES (19,10,14);
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -529,4 +560,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-01  4:11:28
+-- Dump completed on 2025-10-02 10:14:12
