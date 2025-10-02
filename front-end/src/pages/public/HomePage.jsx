@@ -140,7 +140,7 @@ export default function HomePage() {
         <section
           style={{
             marginTop: 60,
-            maxWidth: 1100,
+            maxWidth: 1000,
             marginLeft: "auto",
             marginRight: "auto",
           }}
@@ -244,6 +244,22 @@ export default function HomePage() {
           </Paragraph>
         </section>
       </main>
+      <div style={{ textAlign: "center", margin: "40px auto", width: "100%" }}>
+        <iframe
+          width="100%"
+          height="550"
+          style={{
+            maxWidth: "950px",
+            borderRadius: "12px",
+          }}
+          src="https://www.youtube.com/embed/OZL64YrowtI"
+          title="Giới thiệu Bản Hương"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        ></iframe>
+      </div>
+
       <TopRatedProducts />
       <HomeFeedback />
 
