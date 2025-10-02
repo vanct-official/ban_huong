@@ -7,6 +7,9 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// PayOS
+import { PayOS } from "@payos/node";
+
 import "./config/passportConfig.js";
 import { connectDB } from "./config/db.js";
 
@@ -32,18 +35,27 @@ import adminPostRoutes from "./routes/adminPost.routes.js";
 import adminStatsRoutes from "./routes/adminStats.routes.js";
 import subscriberRoutes from "./routes/subscriber.route.js";
 
+// Load environment variables
+dotenv.config();
+
+
+const payOS = new PayOS(
+  process.env.PAYOS_CLIENT_ID,
+  process.env.PAYOS_API_KEY,
+  process.env.PAYOS_CHECKSUM_KEY
+);
+
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
-  "http://localhost:3000", // frontend chạy local
+  process.env.YOUR_DOMAIN, // frontend chạy local
   "https://ban-huong.vercel.app", // frontend deploy trên Vercel
 ];
 
@@ -107,6 +119,28 @@ app.use("/api/admin/posts", adminPostRoutes);
 app.use("/api/admin", adminStatsRoutes);
 
 app.use("/api/subscribers", subscriberRoutes);
+
+// PayOS - Create Payment Link
+app.post("/create-embedded-payment-link", async (req, res) => {
+  const { amount, description, items } = req.body;
+  const body = {
+    orderCode: Number(String(Date.now()).slice(-6)),
+    amount,
+    description,
+    items,
+    returnUrl: `${process.env.YOUR_DOMAIN}/success`,
+    cancelUrl: `${process.env.YOUR_DOMAIN}/cancel`,
+  };
+
+  try {
+    const paymentLinkResponse = await payOS.createPaymentLink(body);
+    res.json(paymentLinkResponse);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 
 // Lắng nghe cổng
 const PORT = process.env.PORT || 5000;
