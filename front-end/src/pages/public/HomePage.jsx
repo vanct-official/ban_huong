@@ -155,7 +155,7 @@ export default function HomePage() {
               marginBottom: 40,
             }}
           >
-            <Carousel autoplay autoplaySpeed={4000} effect="scrollx" dots>
+            <Carousel autoplay autoplaySpeed={3000} effect="scrollx" dots>
               <div>
                 <img
                   src="/image/bia1.png"

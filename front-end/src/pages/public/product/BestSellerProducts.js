@@ -51,7 +51,7 @@ export default function BestSellerProducts() {
       <Carousel
         dots
         autoplay
-        autoplaySpeed={4000}
+        autoplaySpeed={3000}
         slidesToShow={3}
         responsive={[
           { breakpoint: 1024, settings: { slidesToShow: 2 } },
@@ -91,7 +91,7 @@ export default function BestSellerProducts() {
               </p>
 
               {/* ✅ Hiển thị rating hoặc "Không có sao" */}
-              <div style={{ textAlign: "center", marginTop: 8 }}>
+              {/* <div style={{ textAlign: "center", marginTop: 8 }}>
                 {p.avgRating && p.avgRating > 0 ? (
                   <>
                     <Rate disabled value={p.avgRating} allowHalf />
@@ -102,7 +102,7 @@ export default function BestSellerProducts() {
                 ) : (
                   <p style={{ fontSize: 13, color: "#999" }}>Không có sao</p>
                 )}
-              </div>
+              </div> */}
 
               <div style={{ textAlign: "center", marginTop: 8 }}>
                 <p style={{ fontSize: 13, color: "#666" }}>
