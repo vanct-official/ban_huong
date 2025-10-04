@@ -4,13 +4,16 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
+import RichTextEditor from "../../../components/RichTextEditor/RichTextEditor";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function AdminPostAdd() {
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState("");
   const navigate = useNavigate();
+  const [form] = Form.useForm();
 
   const handleSubmit = async (values) => {
     try {
@@ -18,7 +21,7 @@ export default function AdminPostAdd() {
       const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("content", values.content);
+      formData.append("content", content); // Lấy từ RichTextEditor
       formData.append("author", values.author || "Admin");
 
       if (fileList[0]) {
@@ -50,7 +53,12 @@ export default function AdminPostAdd() {
           title="➕ Thêm bài viết mới"
           style={{ maxWidth: 900, margin: "0 auto" }}
         >
-          <Form layout="vertical" onFinish={handleSubmit}>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={{ author: "Admin" }}
+          >
             <Form.Item
               name="title"
               label="Tiêu đề"
@@ -60,11 +68,11 @@ export default function AdminPostAdd() {
             </Form.Item>
 
             <Form.Item
-              name="content"
               label="Nội dung"
-              rules={[{ required: true, message: "Nhập nội dung" }]}
+              required
+              rules={[{ validator: () => (content ? Promise.resolve() : Promise.reject("Nhập nội dung")) }]}
             >
-              <Input.TextArea rows={8} />
+              <RichTextEditor value={content} onChange={setContent} />
             </Form.Item>
 
             <Form.Item name="author" label="Tác giả">

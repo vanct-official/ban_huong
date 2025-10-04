@@ -4,7 +4,7 @@ import ProductImage from "./productimage.model.js";
 
 import Province from "./province.model.js";
 import Ward from "./ward.model.js";
-
+import Promotion from "./promotion.model.js";
 import User from "./user.model.js";
 import Address from "./address.model.js";
 import Wishlist from "./wishlist.model.js";
@@ -111,6 +111,12 @@ OrderItem.belongsTo(Product, { as: "product", foreignKey: "productId" });
 // =======================
 Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 User.hasMany(Order, { foreignKey: "userId", as: "orders" });
+
+// Promotion ↔ Order
+// 1 Promotion có thể áp dụng cho nhiều Order
+Promotion.hasMany(Order, { foreignKey: "promotionId", as: "orders" });
+// 1 Order chi có 1 Promotion
+Order.belongsTo(Promotion, { foreignKey: "promotionId", as: "promotion" });
 
 // =======================
 // Export all models

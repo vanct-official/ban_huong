@@ -7,9 +7,6 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// PayOS
-import { PayOS } from "@payos/node";
-
 import "./config/passportConfig.js";
 import { connectDB } from "./config/db.js";
 
@@ -35,27 +32,11 @@ import adminPostRoutes from "./routes/adminPost.routes.js";
 import adminStatsRoutes from "./routes/adminStats.routes.js";
 import subscriberRoutes from "./routes/subscriber.route.js";
 import faqRoutes from "./routes/faq.routes.js";
+import { payOS } from "./config/payOS.js";
+import payOSWebhookRoutes from "./routes/payOSWebhook.route.js";
 
 // Load environment variables
 dotenv.config();
-
-
-// Initialize PayOS
-let payOS;
-try {
-  payOS = new PayOS(
-    process.env.PAYOS_CLIENT_ID,
-    process.env.PAYOS_API_KEY,
-    process.env.PAYOS_CHECKSUM_KEY
-  );
-  console.log("✅ PayOS initialized successfully");
-} catch (error) {
-  console.error("❌ PayOS initialization failed:", error.message);
-  console.log("Please check your PayOS environment variables:");
-  console.log("- PAYOS_CLIENT_ID:", process.env.PAYOS_CLIENT_ID ? "✅ Set" : "❌ Missing");
-  console.log("- PAYOS_API_KEY:", process.env.PAYOS_API_KEY ? "✅ Set" : "❌ Missing");
-  console.log("- PAYOS_CHECKSUM_KEY:", process.env.PAYOS_CHECKSUM_KEY ? "✅ Set" : "❌ Missing");
-}
 
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -132,45 +113,48 @@ app.use("/api/admin", adminStatsRoutes);
 
 app.use("/api/subscribers", subscriberRoutes);
 
-// Test endpoint
-app.get("/api/test", (req, res) => {
-  res.json({ 
-    message: "API is working", 
-    timestamp: new Date().toISOString(),
-    payOSStatus: payOS ? "Initialized" : "Not initialized"
-  });
-});
-
-<<<<<<< HEAD
 // PayOS - Create Payment Link
-app.post("/api/create-embedded-payment-link", async (req, res) => {
+app.post("/api/create-payment-link", async (req, res) => {
   try {
     const { amount, description, items } = req.body;
 
-    const paymentLinkResponse = await payOS.paymentRequests.create({
-      orderCode: Number(String(Date.now()).slice(-6)),
-      amount: parseInt(amount),
+    // 🪵 In log ra console để debug giá trị thật khi frontend gửi lên
+    console.log("📦 Body gửi PayOS:", {
+      amount,
       description,
-      items: items.map(item => ({
-        name: item.name,
-        quantity: parseInt(item.quantity),
-        price: parseInt(item.price)
-      })),
-      returnUrl: `${process.env.YOUR_DOMAIN}/success`,
-      cancelUrl: `${process.env.YOUR_DOMAIN}/cancel`,
+      items,
     });
 
+    // Kiểm tra dữ liệu trước khi gửi sang PayOS
+    if (!amount || isNaN(amount)) {
+      console.error("⚠️ Amount không hợp lệ:", amount);
+      return res.status(400).json({ error: "Invalid amount" });
+    }
+
+    const paymentLinkResponse = await payOS.paymentRequests.create({
+      orderCode: Number(String(Date.now()).slice(-6)),
+      amount: Math.floor(Number(amount)),
+      description: description || "Thanh toán đơn hàng",
+      items: items.map((item) => ({
+        name: item.name,
+        quantity: parseInt(item.quantity),
+        price: parseInt(item.price),
+      })),
+      returnUrl: `${process.env.YOUR_DOMAIN}/checkout-success`,
+      cancelUrl: `${process.env.YOUR_DOMAIN}/checkout-cancel`,
+    });
+
+    console.log("✅ Phản hồi từ PayOS:", paymentLinkResponse);
     res.json(paymentLinkResponse);
   } catch (error) {
-    console.error("PayOS Error:", error);
+    console.error("❌ Lỗi tạo link PayOS:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
+app.use("/api/payos", payOSWebhookRoutes);
 
-=======
 app.use("/api/faqs", faqRoutes);
->>>>>>> 47279fb4d2adca3cfbade3a8cb65b2acd50d6444
 
 // Lắng nghe cổng
 const PORT = process.env.PORT || 5000;

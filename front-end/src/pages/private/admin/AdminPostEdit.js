@@ -4,6 +4,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import AdminSidebar from "../../../components/Sidebar";
+import RichTextEditor from "../../../components/RichTextEditor/RichTextEditor";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -12,6 +13,7 @@ export default function AdminPostEdit() {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState(""); // State riêng cho RichTextEditor
   const navigate = useNavigate();
 
   // Load dữ liệu bài viết cũ
@@ -24,12 +26,17 @@ export default function AdminPostEdit() {
         });
 
         const post = res.data;
+
+        // Cập nhật form
         form.setFieldsValue({
           title: post.title,
-          content: post.content,
           author: post.author,
         });
 
+        // Cập nhật state content cho RichTextEditor
+        setContent(post.content || "");
+
+        // Cập nhật fileList nếu có ảnh thumbnail
         if (post.image) {
           setFileList([
             {
@@ -45,17 +52,20 @@ export default function AdminPostEdit() {
         message.error("Không thể tải bài viết");
       }
     };
+
     fetchPost();
   }, [id, form]);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+      const formValues = await form.validateFields();
       const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("content", values.content);
-      formData.append("author", values.author || "Admin");
+
+      formData.append("title", formValues.title);
+      formData.append("content", content); // Lấy từ state
+      formData.append("author", formValues.author || "Admin");
 
       if (fileList.length > 0 && fileList[0].originFileObj) {
         formData.append("thumbnail", fileList[0].originFileObj);
@@ -95,12 +105,8 @@ export default function AdminPostEdit() {
               <Input />
             </Form.Item>
 
-            <Form.Item
-              name="content"
-              label="Nội dung"
-              rules={[{ required: true, message: "Nhập nội dung" }]}
-            >
-              <Input.TextArea rows={8} />
+            <Form.Item label="Nội dung">
+              <RichTextEditor value={content} onChange={setContent} />
             </Form.Item>
 
             <Form.Item name="author" label="Tác giả">

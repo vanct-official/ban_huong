@@ -97,35 +97,95 @@ export const createOrder = async (req, res) => {
     const {
       items,
       addressId,
-      totalAmount,
       promotionId,
-      discountAmount,
-      finalAmount,
+      discountAmount = 0,
+      shippingAmount = 0,
+      totalAmount = 0,
+      finalAmount = 0,
+      paymentMethod = "cod",
     } = req.body;
 
-    // Tạo đơn hàng
+    if (!items || items.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Không có sản phẩm trong đơn hàng." });
+    }
+
+    // 🧮 Tính lại tổng tiền từ items để tránh bị gian lận frontend
+    const productsTotal = items.reduce(
+      (sum, item) => sum + Number(item.price) * Number(item.quantity),
+      0
+    );
+
+    const computedFinalAmount =
+      productsTotal + Number(shippingAmount) - Number(discountAmount);
+
+    // 🧾 Tạo đơn hàng
     const order = await Order.create({
       userId,
       addressId,
       orderDate: new Date(),
-      status: "pending", // hoặc status mặc định
-      totalAmount,
-      promotionId,
+      status: "pending",
+      totalAmount: productsTotal,
+      shippingAmount,
+      promotionId: promotionId || null,
       discountAmount,
-      finalAmount,
+      finalAmount: computedFinalAmount,
+      paymentMethod,
+      paymentStatus: paymentMethod === "payos" ? "paid" : "unpaid",
     });
 
-    // Tạo các item cho đơn hàng
+    // 🛒 Lưu danh sách sản phẩm
     for (const item of items) {
       await OrderItem.create({
         orderId: order.id,
         productId: item.productId,
         quantity: item.quantity,
-        price: item.price,
+        unitPrice: item.price,
+
       });
     }
 
-    res.json({ success: true, orderId: order.id });
+    // 🟦 Nếu thanh toán qua PayOS → tạo link thanh toán
+    if (paymentMethod === "payos") {
+      const payOSResponse = await PayOS.paymentRequests.create({
+        orderCode: Number(String(Date.now()).slice(-6)),
+        amount: Math.round(computedFinalAmount),
+        description: `Đơn hàng ${items.length} sản phẩm`,
+        items: items.map((i) => ({
+          name: i.name || i.productName,
+          quantity: parseInt(i.quantity),
+          price: parseFloat(i.price),
+        })),
+      });
+
+      if (!payOSResponse || !payOSResponse.checkoutUrl) {
+        return res.status(500).json({ error: "Không thể tạo link PayOS" });
+      }
+
+      // Lưu trạng thái thanh toán chờ xử lý
+      await order.update({
+        paymentStatus: "pending",
+      });
+
+      return res.json({
+        success: true,
+        orderId: order.id,
+        totalAmount: computedFinalAmount,
+        payos: {
+          checkoutUrl: payOSResponse.checkoutUrl,
+          qrCode: payOSResponse.qrCode,
+        },
+      });
+    }
+
+    // 🟩 Nếu COD
+    res.json({
+      success: true,
+      message: "Đơn hàng COD đã được tạo thành công.",
+      orderId: order.id,
+      totalAmount: computedFinalAmount,
+    });
   } catch (err) {
     console.error("❌ Lỗi createOrder:", err);
     res.status(500).json({ error: "Không thể tạo đơn hàng" });

@@ -35,6 +35,32 @@ const Order = sequelize.define(
       type: DataTypes.DECIMAL(12, 2),
       allowNull: false,
     },
+    shippingAmount: {              // <-- thêm cột này
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    promotionId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    discountAmount: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+      defaultValue: 0,
+    },
+    paymentMethod: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    paymentStatus: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    finalAmount: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+    },
   },
   {
     tableName: "orders",

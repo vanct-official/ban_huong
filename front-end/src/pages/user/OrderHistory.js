@@ -67,6 +67,46 @@ export default function OrderHistory() {
       render: (date) => new Date(date).toLocaleString("vi-VN"),
     },
     {
+      title: "Hình thức thanh toán",
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
+      render: (val) =>
+        val === "PayOS" || val === "payos"
+          ? <Tag color="blue">PayOS</Tag>
+          : <Tag color="gold">Tiền mặt</Tag>,
+    },
+    {
+      title: "Tình trạng thanh toán",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
+      render: (val) => {
+        const colors = {
+          pending: "orange",
+          paid: "green",
+          failed: "red",
+          canceled: "red",
+        };
+        let text = "";
+        switch (val) {
+          case "paid":
+            text = "Đã thanh toán";
+            break;
+          case "pending":
+            text = "Chờ thanh toán";
+            break;
+          case "failed":
+            text = "Thất bại";
+            break;
+          case "canceled":
+            text = "Đã hủy";
+            break;
+          default:
+            text = val;
+        }
+        return <Tag color={colors[val] || "default"}>{text}</Tag>;
+      },
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
@@ -82,10 +122,14 @@ export default function OrderHistory() {
       },
     },
     {
-      title: "Tổng tiền",
-      dataIndex: "totalAmount",
-      key: "totalAmount",
-      render: (val) => `${Number(val).toLocaleString("vi-VN")} đ`,
+      title: "Thành tiền",
+      dataIndex: "finalAmount",
+      key: "finalAmount",
+      render: (val) => (
+        <span style={{ fontWeight: 600, color: "#ea580c" }}>
+          {Number(val).toLocaleString("vi-VN")} đ
+        </span>
+      ),
     },
     {
       title: "Hành động",
@@ -122,6 +166,7 @@ export default function OrderHistory() {
             expandable={{
               expandedRowRender: (record) => (
                 <div>
+                  {/* Danh sách sản phẩm */}
                   {record.items.map((item) => (
                     <Card
                       key={item.id}
@@ -166,6 +211,54 @@ export default function OrderHistory() {
                       </div>
                     </Card>
                   ))}
+                  {/* Thông tin tổng kết đơn hàng */}
+                  <div
+                    style={{
+                      marginTop: 16,
+                      padding: "16px 18px",
+                      background: "#f9fafb",
+                      borderRadius: 10,
+                      boxShadow: "0 2px 8px rgba(60,60,120,0.06)",
+                      maxWidth: 500,
+                    }}
+                  >
+                    <div style={{ fontWeight: 500 }}>
+                      Tổng tiền sản phẩm:{" "}
+                      <span>
+                        {Number(record.totalAmount).toLocaleString("vi-VN")} đ
+                      </span>
+                    </div>
+                    <div style={{ fontWeight: 500 }}>
+                      Mã giảm giá:{" "}
+                      {record.promotionId ? (
+                        <Tag color="green">{record.promotionId}</Tag>
+                      ) : (
+                        <Tag color="default">Không áp dụng</Tag>
+                      )}
+                    </div>
+                    <div style={{ fontWeight: 500 }}>
+                      Số tiền giảm giá:{" "}
+                      <span style={{ color: "#e11d48" }}>
+                        -
+                        {Number(record.discountAmount).toLocaleString("vi-VN")} đ
+                      </span>
+                    </div>
+                    <div style={{ fontWeight: 500 }}>
+                      Phí vận chuyển:{" "}
+                      <span>{Number(record.shippingAmount).toLocaleString("vi-VN")} đ</span>
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        color: "#ea580c",
+                        fontSize: 18,
+                        marginTop: 8,
+                      }}
+                    >
+                      Thành tiền:{" "}
+                      {Number(record.finalAmount).toLocaleString("vi-VN")} đ
+                    </div>
+                  </div>
                 </div>
               ),
             }}

@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get("/history", authenticate, getOrderHistory);
 router.post("/:orderId/reorder", verifyToken, reorder);
-router.post("/create-order", verifyToken, createOrder);
+router.post("/", verifyToken, createOrder);
 
 export default router;

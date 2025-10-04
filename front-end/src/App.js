@@ -30,8 +30,8 @@ import AllPosts from "./pages/public/post/AllPosts";
 import ManageSubscribers from "./pages/private/admin/ManageSubscribers";
 import AllFeedbacks from "./pages/public/homefeedback/AllFeedbacks";
 import Checkout from "./pages/public/Checkout";
-import Footer from "./components/Footer";
-import MainHeader from "./components/MainHeader";
+import CheckoutSuccess from "./pages/public/CheckoutSuccess";
+import CheckoutCancel from "./pages/public/CheckoutCancel";
 import AdminFAQ from "./pages/private/admin/AdminFAQ";
 import FAQPage from "./pages/public/faq/FAQPage";
 import RegisterPage from "./pages/authentication/RegisterPage";
@@ -60,7 +60,8 @@ function App() {
         <Route path="/posts/:slug" element={<PostDetail />} />
         <Route path="/posts" element={<AllPosts />} />
         <Route path="/checkout" element={<Checkout />} />
-
+        <Route path="/checkout-success" element={<CheckoutSuccess />} />
+        <Route path="/checkout-cancel" element={<CheckoutCancel />} />
         {/* Admin routes */}
         <Route
           path="/admin"
