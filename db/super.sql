@@ -39,7 +39,7 @@ CREATE TABLE `address` (
   KEY `ward_code` (`ward_code`),
   CONSTRAINT `address_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `address_ibfk_2` FOREIGN KEY (`ward_code`) REFERENCES `wards` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `address` (
 
 LOCK TABLES `address` WRITE;
 /*!40000 ALTER TABLE `address` DISABLE KEYS */;
-INSERT INTO `address` VALUES (1,3,'24','09367','Số 26, ngõ 78, khu phố Yên Lã',1,'Nhà riêng','2025-09-26 23:16:24','2025-09-27 06:31:04'),(3,3,'01','09988','Số 8, ngõ 167 đường Tân Xã',0,'Trọ','2025-09-27 12:46:34','2025-09-27 06:31:04'),(7,3,'24','07210','UBND tỉnh Bắc Ninh',0,'Cơ quan','2025-09-27 06:30:32','2025-09-27 06:31:04');
+INSERT INTO `address` VALUES (1,3,'24','09367','Số 26, ngõ 78, khu phố Yên Lã',1,'Nhà riêng','2025-09-26 23:16:24','2025-09-27 06:31:04'),(3,3,'01','09988','Số 8, ngõ 167 đường Tân Xã',0,'Trọ','2025-09-27 12:46:34','2025-09-27 06:31:04'),(7,3,'24','07210','UBND tỉnh Bắc Ninh',0,'Cơ quan','2025-09-27 06:30:32','2025-09-27 06:31:04'),(8,13,'08','00832','k1',1,'ok','2025-10-02 14:37:12','2025-10-02 14:37:14'),(9,13,'15','02869','k2',0,'trắng','2025-10-02 14:37:27','2025-10-02 14:37:27');
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,7 +100,7 @@ CREATE TABLE `carts` (
   KEY `productId` (`productId`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,8 +109,39 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (21,10,15,6,'2025-09-30 18:30:22','2025-09-30 20:43:35'),(22,10,20,6,'2025-09-30 18:30:27','2025-09-30 20:43:51'),(23,10,14,1,'2025-09-30 20:43:30','2025-09-30 20:43:30');
+INSERT INTO `carts` VALUES (59,13,16,1,'2025-10-02 14:38:01','2025-10-02 14:38:01');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faqs`
+--
+
+DROP TABLE IF EXISTS `faqs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faqs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `question` text NOT NULL,
+  `answer` text,
+  `userId` int DEFAULT NULL,
+  `isApproved` tinyint(1) DEFAULT '0',
+  `createdAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `faqs_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faqs`
+--
+
+LOCK TABLES `faqs` WRITE;
+/*!40000 ALTER TABLE `faqs` DISABLE KEYS */;
+INSERT INTO `faqs` VALUES (4,'Cho em hỏi có loại tinh dầu nào free không ạ','Có em ạ, em tự sản xuất nhé. Cảm ơn em đã quan tâm',NULL,1,'2025-10-02 09:05:39','2025-10-02 09:06:35'),(5,'Này có loại cho bà già không sốp','Có hết em ơi',NULL,1,'2025-10-02 09:07:12','2025-10-02 09:07:27'),(6,'Cho em 200 lọ nha','Kèm thơm thế',NULL,1,'2025-10-02 09:07:42','2025-10-02 09:07:57'),(7,'Sốp gửi lại cho em lọ 10ml lần trước ạ','sóp đã gửi rồi nha ban',NULL,1,'2025-10-02 09:08:27','2025-10-02 09:08:50');
+/*!40000 ALTER TABLE `faqs` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -132,7 +163,7 @@ CREATE TABLE `feedback` (
   KEY `productId` (`productId`),
   CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE,
   CONSTRAINT `feedback_chk_1` CHECK ((`rate` between 1 and 5))
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,7 +172,38 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
+INSERT INTO `feedback` VALUES (7,33,4,'Tạm được','2025-10-01 02:36:45','2025-10-01 02:36:45',10);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notifications`
+--
+
+DROP TABLE IF EXISTS `notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `type` varchar(50) DEFAULT 'order',
+  `isRead` tinyint(1) DEFAULT '0',
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_notifications_user` (`userId`),
+  CONSTRAINT `fk_notifications_user` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notifications`
+--
+
+LOCK TABLES `notifications` WRITE;
+/*!40000 ALTER TABLE `notifications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notifications` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -164,7 +226,7 @@ CREATE TABLE `orderitems` (
   KEY `productId` (`productId`),
   CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,6 +235,7 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
+INSERT INTO `orderitems` VALUES (7,5,14,1,12000.00,0.00,12000.00),(8,5,33,2,30000.00,0.00,60000.00);
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +251,7 @@ CREATE TABLE `orders` (
   `userId` int NOT NULL,
   `addressId` int DEFAULT NULL,
   `orderDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('pending','paid','shipped','completed','cancelled') DEFAULT 'pending',
+  `status` enum('pending','shipped','completed','cancelled') DEFAULT 'pending',
   `totalAmount` decimal(10,2) DEFAULT NULL,
   `promotionId` int DEFAULT NULL,
   `discountAmount` decimal(10,2) DEFAULT '0.00',
@@ -200,7 +263,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`) ON DELETE SET NULL,
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`addressId`) REFERENCES `address` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,6 +272,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (5,10,1,'2025-10-01 12:30:56','completed',72000.00,NULL,0.00,72000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -227,7 +291,7 @@ CREATE TABLE `popular_searches` (
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword` (`keyword`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,7 +300,7 @@ CREATE TABLE `popular_searches` (
 
 LOCK TABLES `popular_searches` WRITE;
 /*!40000 ALTER TABLE `popular_searches` DISABLE KEYS */;
-INSERT INTO `popular_searches` VALUES (1,'Tinh dầu Hoa Hồi',13,'2025-09-30 02:04:46','2025-09-30 18:06:16'),(20,'Tinh dầu Hoa Hồi 25ml',6,'2025-09-30 09:29:08','2025-09-30 02:39:11'),(21,'4',1,'2025-09-30 02:36:10','2025-09-30 02:36:10'),(22,'4ml',2,'2025-09-30 02:36:12','2025-09-30 02:36:20');
+INSERT INTO `popular_searches` VALUES (23,'Tinh dầu hoa hồi handmade 25ml',8,'2025-10-01 06:32:08','2025-10-02 07:36:54'),(24,'Tinh dầu hoa hồi đựng lọ gỗ 15ml',13,'2025-10-01 06:53:42','2025-10-02 16:14:31'),(25,'Tinh dầu hoa hồi cao cấp 100ml',12,'2025-10-01 12:23:08','2025-10-02 16:14:38');
 /*!40000 ALTER TABLE `popular_searches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -405,7 +469,7 @@ CREATE TABLE `subscribers` (
   `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -414,7 +478,7 @@ CREATE TABLE `subscribers` (
 
 LOCK TABLES `subscribers` WRITE;
 /*!40000 ALTER TABLE `subscribers` DISABLE KEYS */;
-INSERT INTO `subscribers` VALUES (2,'david.msartinez@gmail.com','2025-09-30 20:22:06','2025-09-30 20:22:06'),(3,'he173048tddranvantuan@gmail.com','2025-09-30 20:28:11','2025-09-30 20:28:11'),(4,'tddranvantuan@gmail.com','2025-09-30 20:29:51','2025-09-30 20:29:51'),(9,'jane.smsith@gmail.com','2025-09-30 20:36:08','2025-09-30 20:36:08'),(10,'vanctquantrivien@gmail.com','2025-09-30 20:36:22','2025-09-30 20:36:22'),(11,'david.martinez@gmail.com','2025-09-30 20:37:03','2025-09-30 20:37:03');
+INSERT INTO `subscribers` VALUES (2,'david.msartinez@gmail.com','2025-09-30 20:22:06','2025-09-30 20:22:06'),(3,'he173048tddranvantuan@gmail.com','2025-09-30 20:28:11','2025-09-30 20:28:11'),(4,'tddranvantuan@gmail.com','2025-09-30 20:29:51','2025-09-30 20:29:51'),(9,'jane.smsith@gmail.com','2025-09-30 20:36:08','2025-09-30 20:36:08'),(10,'vanctquantrivien@gmail.com','2025-09-30 20:36:22','2025-09-30 20:36:22'),(11,'david.martinez@gmail.com','2025-09-30 20:37:03','2025-09-30 20:37:03'),(12,'jane.smith@gmail.com','2025-10-01 04:59:28','2025-10-01 04:59:28'),(13,'tuantvhe173048@fpt.edu.vn','2025-10-01 05:53:24','2025-10-01 05:53:24'),(14,'hellotranvantuan@gmail.com','2025-10-02 05:02:46','2025-10-02 05:02:46'),(15,'namdz@gmail.com','2025-10-02 05:03:09','2025-10-02 05:03:09'),(16,'tuantvhe173048@gmail.com','2025-10-02 06:49:09','2025-10-02 06:49:09');
 /*!40000 ALTER TABLE `subscribers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -432,19 +496,23 @@ CREATE TABLE `users` (
   `middlename` varchar(100) DEFAULT NULL,
   `lastname` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `role` enum('customer','admin') DEFAULT 'customer',
   `avatarImg` varchar(255) DEFAULT NULL,
   `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `isActive` tinyint(1) DEFAULT '1',
+  `email_verified` tinyint(1) DEFAULT '0',
   `googleId` varchar(255) DEFAULT NULL,
   `isNewUser` tinyint(1) NOT NULL DEFAULT '0',
+  `resetPasswordToken` varchar(255) DEFAULT NULL,
+  `resetPasswordExpires` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `googleId` (`googleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,7 +521,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com','0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,'116603201577927477280',0),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com','0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,NULL,0),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com','0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,'115787374426474178678',0),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn','0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1,NULL,0),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,NULL,0),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,NULL,0),(9,'tranvantuanunique','Tuấn',NULL,'Trần Văn','tranvantuanunique@gmail.com',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLkDogqvC7lr5Lyp6eKw_TwKyOVQ0ecWu7PA--ked7Ib7awpx0=s96-c','2025-09-28 08:15:07','2025-09-28 11:46:08',1,NULL,0),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-29 16:25:07',1,'113176155543186944643',0),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-30 02:34:58',1,'106848181745691041838',0);
+INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com',NULL,'0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,0,'116603201577927477280',0,NULL,NULL),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com',NULL,'0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,0,NULL,0,NULL,NULL),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com',NULL,'0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,0,'115787374426474178678',0,NULL,NULL),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn',NULL,'0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1,0,NULL,0,NULL,NULL),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,0,NULL,0,NULL,NULL),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,0,NULL,0,NULL,NULL),(10,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-09-28 08:18:58','2025-09-29 16:25:07',1,0,'113176155543186944643',0,NULL,NULL),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-30 02:34:58',1,0,'106848181745691041838',0,NULL,NULL),(12,'namhai','Ninh',NULL,'Nam','namninh@gmail.com',NULL,NULL,'customer',NULL,'2025-10-02 14:22:49','2025-10-02 14:22:49',1,0,NULL,0,NULL,NULL),(13,'test1','Chu','Thế','Tuấn','tranvantuanunique@gmail.com','$2b$10$3gzikcZDyd3N9UC2C8/N4OpdGA6vM/iNMIL3y744aqHM/orROM1cu','0123456780','customer',NULL,'2025-10-02 14:30:00','2025-10-02 16:54:57',1,0,NULL,0,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,7 +575,7 @@ CREATE TABLE `wishlists` (
   KEY `productId` (`productId`),
   CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `wishlists_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -516,7 +584,6 @@ CREATE TABLE `wishlists` (
 
 LOCK TABLES `wishlists` WRITE;
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
-INSERT INTO `wishlists` VALUES (19,10,14);
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -529,4 +596,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-01  4:11:28
+-- Dump completed on 2025-10-02 23:56:53

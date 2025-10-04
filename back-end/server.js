@@ -34,6 +34,7 @@ import postRoutes from "./routes/post.routes.js";
 import adminPostRoutes from "./routes/adminPost.routes.js";
 import adminStatsRoutes from "./routes/adminStats.routes.js";
 import subscriberRoutes from "./routes/subscriber.route.js";
+import faqRoutes from "./routes/faq.routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -120,6 +121,7 @@ app.use("/api/admin", adminStatsRoutes);
 
 app.use("/api/subscribers", subscriberRoutes);
 
+<<<<<<< HEAD
 // PayOS - Create Payment Link
 app.post("/create-embedded-payment-link", async (req, res) => {
   const { amount, description, items } = req.body;
@@ -141,6 +143,9 @@ app.post("/create-embedded-payment-link", async (req, res) => {
   }
 });
 
+=======
+app.use("/api/faqs", faqRoutes);
+>>>>>>> 47279fb4d2adca3cfbade3a8cb65b2acd50d6444
 
 // Lắng nghe cổng
 const PORT = process.env.PORT || 5000;

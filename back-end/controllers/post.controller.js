@@ -122,29 +122,6 @@ export const getLatestPosts = async (req, res) => {
   }
 };
 
-// Lấy bài viết liên quan (cùng tác giả, khác id)
-export const getRelatedPosts = async (req, res) => {
-  try {
-    const { slug } = req.params;
-    const post = await Post.findOne({ where: { slug } });
-
-    if (!post) return res.status(404).json({ error: "Post not found" });
-
-    const related = await Post.findAll({
-      where: {
-        id: { [Op.ne]: post.id }, // khác id hiện tại
-      },
-      order: [["createdAt", "DESC"]],
-      limit: 3,
-    });
-
-    res.json(related);
-  } catch (err) {
-    console.error("❌ Lỗi getRelatedPosts:", err);
-    res.status(500).json({ error: "Không thể lấy bài viết liên quan" });
-  }
-};
-
 export const getPostBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -162,5 +139,62 @@ export const getPostBySlug = async (req, res) => {
   } catch (err) {
     console.error("❌ Lỗi getPostBySlug:", err);
     res.status(500).json({ error: "Không thể lấy bài viết" });
+  }
+};
+
+export const getRelatedPosts = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const post = await Post.findOne({ where: { slug } });
+
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    // 👉 Lấy keyword từ title (2-3 từ đầu tiên)
+    const keywords = post.title.split(" ").slice(0, 3);
+
+    // 👉 Tìm bài viết khác có chứa các keyword
+    let related = await Post.findAll({
+      where: {
+        id: { [Op.ne]: post.id }, // khác bài hiện tại
+        [Op.or]: keywords.map((kw) => ({
+          [Op.or]: [
+            { title: { [Op.like]: `%${kw}%` } },
+            { content: { [Op.like]: `%${kw}%` } },
+          ],
+        })),
+      },
+      order: [["createdAt", "DESC"]],
+      limit: 3,
+    });
+
+    // 👉 Nếu không có bài nào, fallback sang 3 bài mới nhất
+    if (!related || related.length === 0) {
+      related = await Post.findAll({
+        where: { id: { [Op.ne]: post.id } },
+        order: [["createdAt", "DESC"]],
+        limit: 3,
+      });
+    }
+
+    // 👉 Format ảnh
+    const host = `${req.protocol}://${req.get("host")}`;
+    const formatted = related.map((p) => {
+      const data = p.toJSON();
+      return {
+        ...data,
+        thumbnail: data.thumbnail
+          ? `${host}${
+              data.thumbnail.startsWith("/")
+                ? data.thumbnail
+                : "/" + data.thumbnail
+            }`
+          : "/default-post.png",
+      };
+    });
+
+    res.json(formatted);
+  } catch (err) {
+    console.error("❌ Lỗi getRelatedPosts:", err);
+    res.status(500).json({ error: "Không thể lấy bài viết liên quan" });
   }
 };

@@ -5,7 +5,8 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import dotenv from "dotenv";
 import { OAuth2Client } from "google-auth-library";
-
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -31,7 +32,8 @@ export const loginWithGoogle = async (req, res) => {
     const googleId = payload.sub; // unique Google account ID
 
     // Tách tên
-    let firstName = "", lastName = "";
+    let firstName = "",
+      lastName = "";
     if (name) {
       const parts = name.trim().split(" ");
       firstName = parts[0];
@@ -66,7 +68,9 @@ export const loginWithGoogle = async (req, res) => {
 
       // Chặn login nếu user bị disable
       if (!user.isActive) {
-        return res.status(403).json({ message: "Tài khoản của bạn đã bị khóa." });
+        return res
+          .status(403)
+          .json({ message: "Tài khoản của bạn đã bị khóa." });
       }
 
       // Cập nhật avatar nếu khác
@@ -100,7 +104,6 @@ export const loginWithGoogle = async (req, res) => {
   }
 };
 
-
 /**
  * 2. Get user profile
  */
@@ -109,7 +112,7 @@ export const getUserProfile = async (req, res) => {
 
   try {
     const user = await User.findByPk(userId, {
-      attributes: { exclude: ["passwordHash"] },
+      attributes: { exclude: ["password"] },
     });
 
     if (!user) {
@@ -129,7 +132,7 @@ export const getUserProfile = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: { exclude: ["passwordHash"] },
+      attributes: { exclude: ["password"] },
     });
 
     res.status(200).json(users);
@@ -192,5 +195,196 @@ export const updateMyProfile = async (req, res) => {
   } catch (err) {
     console.error("Update profile error:", err);
     res.status(500).json({ message: err.message });
+  }
+};
+
+// ✅ Đăng nhập
+export const login = async (req, res) => {
+  try {
+    const { emailOrUsername, password } = req.body;
+
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      },
+    });
+
+    if (!user) return res.status(404).json({ message: "User không tồn tại" });
+
+    // So sánh mật khẩu
+    const isMatch = await bcrypt.compare(password, user.password || "");
+    if (!isMatch) return res.status(401).json({ message: "Sai mật khẩu" });
+
+    if (!user.isActive) {
+      return res.status(403).json({ message: "Tài khoản bị khóa" });
+    }
+
+    // JWT
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      message: "Đăng nhập thành công",
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        name: `${user.firstname} ${user.lastname}`,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatarImg,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Login error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const register = async (req, res) => {
+  try {
+    const { username, firstname, lastname, email, phone, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
+    }
+
+    // 👉 Check email đã tồn tại chưa
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail) {
+      return res
+        .status(400)
+        .json({ message: "Email đã tồn tại, vui lòng chọn email khác" });
+    }
+
+    // 👉 Nếu username không có, tự động lấy từ email
+    const finalUsername = username || email.split("@")[0];
+
+    // 👉 Check username có trùng không
+    const existingUsername = await User.findOne({
+      where: { username: finalUsername },
+    });
+    if (existingUsername) {
+      return res
+        .status(400)
+        .json({ message: "Username đã tồn tại, vui lòng chọn tên khác" });
+    }
+
+    // 👉 Hash mật khẩu
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      username: finalUsername,
+      firstname,
+      lastname,
+      email,
+      phone,
+      password: hashedPassword,
+      role: "customer",
+      isActive: true,
+    });
+
+    res.status(201).json({ message: "Đăng ký thành công", user });
+  } catch (err) {
+    console.error("❌ Register error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ Quên mật khẩu
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "Email không tồn tại" });
+    }
+
+    // ❌ Nếu là user Google thì không cho reset
+    if (!user.password) {
+      return res
+        .status(400)
+        .json({ message: "Tài khoản Google không thể đổi mật khẩu tại đây" });
+    }
+
+    // 👉 Tạo token reset
+    const token = crypto.randomBytes(32).toString("hex");
+    const expireTime = Date.now() + 3600000; // 1h
+
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = new Date(expireTime);
+    await user.save();
+
+    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+
+    // Gửi email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Bản Hương" <${process.env.MAIL_USER}>`,
+      to: user.email,
+      subject: "Khôi phục mật khẩu",
+      html: `
+        <p>Xin chào ${user.firstname},</p>
+        <p>Nhấn vào link dưới đây để đặt lại mật khẩu:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Link này sẽ hết hạn sau 1 giờ.</p>
+      `,
+    });
+
+    res.json({ message: "Email khôi phục mật khẩu đã được gửi!" });
+  } catch (err) {
+    console.error("❌ Forgot password error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ Đặt lại mật khẩu
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    const user = await User.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: { [Op.gt]: new Date() }, // còn hạn
+      },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Token không hợp lệ hoặc đã hết hạn" });
+    }
+
+    // ❌ Nếu là user Google thì từ chối
+    if (!user.password) {
+      return res
+        .status(400)
+        .json({ message: "Tài khoản Google không thể đổi mật khẩu tại đây" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.json({ message: "Mật khẩu đã được đặt lại thành công!" });
+  } catch (err) {
+    console.error("❌ Reset password error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

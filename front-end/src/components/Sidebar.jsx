@@ -89,6 +89,12 @@ const menuItems = [
     path: "/admin/email-subscribers",
   },
   {
+    key: "question-answers",
+    icon: <FormOutlined />,
+    label: "Câu hỏi thường gặp",
+    path: "/admin/faqs",
+  },
+  {
     key: "settings",
     icon: <SettingOutlined />,
     label: "Cài đặt",
@@ -129,18 +135,18 @@ export default function AdminSidebar({
   };
 
   const profileMenuItems = [
-    {
-      key: "edit-profile",
-      icon: <EditOutlined />,
-      label: "Chỉnh sửa thông tin",
-      onClick: () => (window.location.href = "/profile/edit"),
-    },
-    {
-      key: "change-password",
-      icon: <KeyOutlined />,
-      label: "Đổi mật khẩu",
-      onClick: () => (window.location.href = "/profile/change-password"),
-    },
+    // {
+    //   key: "edit-profile",
+    //   icon: <EditOutlined />,
+    //   label: "Chỉnh sửa thông tin",
+    //   onClick: () => (window.location.href = "/profile/edit"),
+    // },
+    // {
+    //   key: "change-password",
+    //   icon: <KeyOutlined />,
+    //   label: "Đổi mật khẩu",
+    //   onClick: () => (window.location.href = "/profile/change-password"),
+    // },
     {
       key: "logout",
       icon: <LogoutOutlined />,

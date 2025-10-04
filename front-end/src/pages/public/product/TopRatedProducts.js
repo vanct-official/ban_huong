@@ -53,7 +53,7 @@ export default function TopRatedProducts() {
       <Carousel
         dots
         autoplay
-        autoplaySpeed={4000}
+        autoplaySpeed={3000}
         slidesToShow={3} // số sản phẩm hiển thị cùng lúc
         responsive={[
           {
