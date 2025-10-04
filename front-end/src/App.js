@@ -29,6 +29,7 @@ import AdminPostEdit from "./pages/private/admin/AdminPostEdit";
 import AllPosts from "./pages/public/post/AllPosts";
 import ManageSubscribers from "./pages/private/admin/ManageSubscribers";
 import AllFeedbacks from "./pages/public/homefeedback/AllFeedbacks";
+import Checkout from "./pages/public/Checkout";
 import Footer from "./components/Footer";
 import MainHeader from "./components/MainHeader";
 import AdminFAQ from "./pages/private/admin/AdminFAQ";
@@ -58,6 +59,7 @@ function App() {
         <Route path="/orders/history" element={<OrderHistory />} />
         <Route path="/posts/:slug" element={<PostDetail />} />
         <Route path="/posts" element={<AllPosts />} />
+        <Route path="/checkout" element={<Checkout />} />
 
         {/* Admin routes */}
         <Route

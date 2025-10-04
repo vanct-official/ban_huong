@@ -40,11 +40,22 @@ import faqRoutes from "./routes/faq.routes.js";
 dotenv.config();
 
 
-const payOS = new PayOS(
-  process.env.PAYOS_CLIENT_ID,
-  process.env.PAYOS_API_KEY,
-  process.env.PAYOS_CHECKSUM_KEY
-);
+// Initialize PayOS
+let payOS;
+try {
+  payOS = new PayOS(
+    process.env.PAYOS_CLIENT_ID,
+    process.env.PAYOS_API_KEY,
+    process.env.PAYOS_CHECKSUM_KEY
+  );
+  console.log("✅ PayOS initialized successfully");
+} catch (error) {
+  console.error("❌ PayOS initialization failed:", error.message);
+  console.log("Please check your PayOS environment variables:");
+  console.log("- PAYOS_CLIENT_ID:", process.env.PAYOS_CLIENT_ID ? "✅ Set" : "❌ Missing");
+  console.log("- PAYOS_API_KEY:", process.env.PAYOS_API_KEY ? "✅ Set" : "❌ Missing");
+  console.log("- PAYOS_CHECKSUM_KEY:", process.env.PAYOS_CHECKSUM_KEY ? "✅ Set" : "❌ Missing");
+}
 
 // Tạo lại __dirname trong ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -121,27 +132,41 @@ app.use("/api/admin", adminStatsRoutes);
 
 app.use("/api/subscribers", subscriberRoutes);
 
+// Test endpoint
+app.get("/api/test", (req, res) => {
+  res.json({ 
+    message: "API is working", 
+    timestamp: new Date().toISOString(),
+    payOSStatus: payOS ? "Initialized" : "Not initialized"
+  });
+});
+
 <<<<<<< HEAD
 // PayOS - Create Payment Link
-app.post("/create-embedded-payment-link", async (req, res) => {
-  const { amount, description, items } = req.body;
-  const body = {
-    orderCode: Number(String(Date.now()).slice(-6)),
-    amount,
-    description,
-    items,
-    returnUrl: `${process.env.YOUR_DOMAIN}/success`,
-    cancelUrl: `${process.env.YOUR_DOMAIN}/cancel`,
-  };
-
+app.post("/api/create-embedded-payment-link", async (req, res) => {
   try {
-    const paymentLinkResponse = await payOS.createPaymentLink(body);
+    const { amount, description, items } = req.body;
+
+    const paymentLinkResponse = await payOS.paymentRequests.create({
+      orderCode: Number(String(Date.now()).slice(-6)),
+      amount: parseInt(amount),
+      description,
+      items: items.map(item => ({
+        name: item.name,
+        quantity: parseInt(item.quantity),
+        price: parseInt(item.price)
+      })),
+      returnUrl: `${process.env.YOUR_DOMAIN}/success`,
+      cancelUrl: `${process.env.YOUR_DOMAIN}/cancel`,
+    });
+
     res.json(paymentLinkResponse);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+    console.error("PayOS Error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
+
 
 =======
 app.use("/api/faqs", faqRoutes);

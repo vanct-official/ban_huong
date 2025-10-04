@@ -89,3 +89,45 @@ export const reorder = async (req, res) => {
     });
   }
 };
+
+// Tạo đơn hàng
+export const createOrder = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const {
+      items,
+      addressId,
+      totalAmount,
+      promotionId,
+      discountAmount,
+      finalAmount,
+    } = req.body;
+
+    // Tạo đơn hàng
+    const order = await Order.create({
+      userId,
+      addressId,
+      orderDate: new Date(),
+      status: "pending", // hoặc status mặc định
+      totalAmount,
+      promotionId,
+      discountAmount,
+      finalAmount,
+    });
+
+    // Tạo các item cho đơn hàng
+    for (const item of items) {
+      await OrderItem.create({
+        orderId: order.id,
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      });
+    }
+
+    res.json({ success: true, orderId: order.id });
+  } catch (err) {
+    console.error("❌ Lỗi createOrder:", err);
+    res.status(500).json({ error: "Không thể tạo đơn hàng" });
+  }
+};
