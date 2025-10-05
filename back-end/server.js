@@ -116,23 +116,17 @@ app.use("/api/subscribers", subscriberRoutes);
 // PayOS - Create Payment Link
 app.post("/api/create-payment-link", async (req, res) => {
   try {
-    const { amount, description, items } = req.body;
+    const { amount, description, items, orderId } = req.body; // thêm orderId nếu có
 
-    // 🪵 In log ra console để debug giá trị thật khi frontend gửi lên
-    console.log("📦 Body gửi PayOS:", {
-      amount,
-      description,
-      items,
-    });
+    console.log("📦 Body gửi PayOS:", { amount, description, items, orderId });
 
-    // Kiểm tra dữ liệu trước khi gửi sang PayOS
     if (!amount || isNaN(amount)) {
       console.error("⚠️ Amount không hợp lệ:", amount);
       return res.status(400).json({ error: "Invalid amount" });
     }
 
     const paymentLinkResponse = await payOS.paymentRequests.create({
-      orderCode: Number(String(Date.now()).slice(-6)),
+      orderCode: Number(String(Date.now()).slice(-6)), // hoặc uuidv4() để đảm bảo duy nhất
       amount: Math.floor(Number(amount)),
       description: description || "Thanh toán đơn hàng",
       items: items.map((item) => ({
@@ -140,8 +134,9 @@ app.post("/api/create-payment-link", async (req, res) => {
         quantity: parseInt(item.quantity),
         price: parseInt(item.price),
       })),
-      returnUrl: `${process.env.YOUR_DOMAIN}/checkout-success`,
-      cancelUrl: `${process.env.YOUR_DOMAIN}/checkout-cancel`,
+      // gắn orderId vào returnUrl để frontend biết đơn hàng nào
+      returnUrl: `${process.env.YOUR_DOMAIN}/checkout-success?orderId=${orderId}`,
+      cancelUrl: `${process.env.YOUR_DOMAIN}/checkout-cancel?orderId=${orderId}`,
     });
 
     console.log("✅ Phản hồi từ PayOS:", paymentLinkResponse);
@@ -151,6 +146,7 @@ app.post("/api/create-payment-link", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.use("/api/payos", payOSWebhookRoutes);
 

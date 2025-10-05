@@ -24,12 +24,6 @@ const API_URL = process.env.REACT_APP_API_URL;
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [promotions, setPromotions] = useState([]);
-  const [promoCode, setPromoCode] = useState("");
-  const [appliedPromoCode, setAppliedPromoCode] = useState("");
-  const [discountPercent, setDiscountPercent] = useState(0);
-  const [promoLoading, setPromoLoading] = useState(false);
-  const [promoError, setPromoError] = useState("");
 
   const navigate = useNavigate();
 
@@ -101,73 +95,6 @@ const Cart = () => {
     }
   };
 
-  // ====== Lấy danh sách khuyến mãi khả dụng ======
-  const fetchPromotions = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/promotions/available`);
-      if (!res.ok) throw new Error("Không tải được mã khuyến mãi");
-      const data = await res.json();
-      setPromotions(data);
-    } catch (err) {
-      console.error(err);
-      message.error(err.message);
-    }
-  };
-
-  // ====== Áp dụng mã khuyến mãi ======
-  const handleApplyPromo = async () => {
-    setPromoError("");
-
-    if (!promoCode.trim()) {
-      setPromoError("⚠️ Vui lòng chọn mã khuyến mãi");
-      return;
-    }
-
-    if (appliedPromoCode === promoCode.trim()) {
-      setPromoError("ℹ️ Mã này đã được áp dụng rồi!");
-      return;
-    }
-
-    setPromoLoading(true);
-
-    try {
-      const res = await fetch(`${API_URL}/api/promotions/apply`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: promoCode.trim(), total }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setPromoError(data.message || "Mã khuyến mãi không hợp lệ");
-        setDiscountPercent(0);
-        setAppliedPromoCode("");
-        return;
-      }
-
-      setDiscountPercent(data.discountPercent || 0);
-      setAppliedPromoCode(promoCode.trim());
-      setPromoError("");
-      message.success(`✅ ${data.message} - Giảm ${data.discountPercent}%`);
-    } catch (err) {
-      setPromoError("❌ Có lỗi xảy ra khi áp dụng mã khuyến mãi");
-      setDiscountPercent(0);
-      setAppliedPromoCode("");
-    } finally {
-      setPromoLoading(false);
-    }
-  };
-
-  // ====== Xóa mã khuyến mãi ======
-  const handleRemovePromo = () => {
-    setPromoCode("");
-    setAppliedPromoCode("");
-    setDiscountPercent(0);
-    setPromoError("");
-    message.info("Đã xóa mã khuyến mãi");
-  };
-
   // ====== Helper lấy ảnh sản phẩm ======
   const getImageUrl = (productImg) => {
     if (!productImg) return "/default-product.png";
@@ -178,7 +105,6 @@ const Cart = () => {
 
   useEffect(() => {
     fetchCart();
-    fetchPromotions();
   }, []);
 
   if (loading) {
@@ -224,8 +150,7 @@ const Cart = () => {
     (sum, item) => sum + item.quantity * Number(item.product?.unitPrice || 0),
     0
   );
-  const discountAmount = Math.round((total * discountPercent) / 100);
-  const finalTotal = total - discountAmount;
+  const finalTotal = total;
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -346,7 +271,7 @@ const Cart = () => {
           ))}
         </Row>
 
-        {/* Tổng tiền + Khuyến mãi */}
+        {/* Tổng tiền */}
         <div
           style={{
             marginTop: 30,
@@ -356,21 +281,6 @@ const Cart = () => {
             border: "1px solid #e8e8e8",
           }}
         >
-          {appliedPromoCode && (
-            <div style={{ marginBottom: 16 }}>
-              <Tag
-                color="success"
-                icon={<CheckCircleOutlined />}
-                closable
-                onClose={handleRemovePromo}
-                style={{ fontSize: 14, padding: "4px 12px" }}
-              >
-                Mã khuyến mãi: <strong>{appliedPromoCode}</strong> (-
-                {discountPercent}%)
-              </Tag>
-            </div>
-          )}
-
           <div style={{ textAlign: "right" }}>
             <div
               style={{
@@ -384,23 +294,6 @@ const Cart = () => {
               <span>Tạm tính:</span>
               <span>{total.toLocaleString("vi-VN")} đ</span>
             </div>
-
-            {discountPercent > 0 && (
-              <div
-                style={{
-                  fontWeight: 400,
-                  fontSize: 16,
-                  color: "#ff4d4f",
-                  marginBottom: 8,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Giảm giá ({discountPercent}%):</span>
-                <span>-{discountAmount.toLocaleString("vi-VN")} đ</span>
-              </div>
-            )}
-
             <div
               style={{
                 fontWeight: 700,
@@ -416,7 +309,6 @@ const Cart = () => {
               <span>Tổng cộng:</span>
               <span>{finalTotal.toLocaleString("vi-VN")} đ</span>
             </div>
-
             <div
               style={{
                 fontWeight: 400,
@@ -428,58 +320,6 @@ const Cart = () => {
               ({totalItems} sản phẩm)
             </div>
           </div>
-
-          {!appliedPromoCode && (
-            <div
-              style={{
-                marginTop: 20,
-                paddingTop: 20,
-                borderTop: "1px solid #e8e8e8",
-              }}
-            >
-              <div style={{ marginBottom: 8, fontWeight: 500 }}>
-                Chọn mã khuyến mãi:
-              </div>
-
-              {promoError && (
-                <Alert
-                  message={promoError}
-                  type="error"
-                  showIcon
-                  closable
-                  onClose={() => setPromoError("")}
-                  style={{ marginBottom: 12 }}
-                />
-              )}
-
-              <Space.Compact style={{ width: "100%" }}>
-                <Select
-                  placeholder="Chọn mã khuyến mãi"
-                  value={promoCode || undefined}
-                  onChange={(value) => setPromoCode(value)}
-                  style={{ flex: 1 }}
-                  loading={promoLoading}
-                  size="large"
-                >
-                  {promotions.map((p) => (
-                    <Option key={p.id} value={p.promotionName}>
-                      {p.promotionName} - Giảm {p.discountPercent}% (ĐH ≥{" "}
-                      {p.minOrderValue.toLocaleString("vi-VN")}đ)
-                    </Option>
-                  ))}
-                </Select>
-                <Button
-                  type="primary"
-                  onClick={handleApplyPromo}
-                  loading={promoLoading}
-                  disabled={!promoCode}
-                  size="large"
-                >
-                  {promoLoading ? "Đang kiểm tra..." : "Áp dụng"}
-                </Button>
-              </Space.Compact>
-            </div>
-          )}
 
           <div
             style={{

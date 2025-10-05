@@ -102,57 +102,57 @@ const Checkout = () => {
   };
 
   // Xử lý khi ấn nút thanh toán
-  const handleCheckout = async () => {
-    try {
-      if (!selectedAddress) {
-        alert("Vui lòng chọn địa chỉ giao hàng!");
-        return;
-      }
-      setLoading(true);
-      const subtotal = calculateSubtotal();
-      const totalAmount = subtotal + shippingFee - discountAmount;
-      const payload = {
-        addressId: selectedAddress,
-        promotionId: selectedPromo || null,
-        discountAmount,
-        shippingAmount: shippingFee,
-        paymentMethod,
-        items: cartItems.map((item) => ({
-          productId: item.product?.id || item.productId, // bắt buộc có
-          name: item.product?.productName || item.name,
-          quantity: item.quantity,
-          price: Number(item.product?.unitPrice || item.price),
-        })),
-      };
-      if (paymentMethod === "PayOS") {
-        const res = await axios.post(
-          `${API_URL}/api/create-payment-link`,
-          {
-            amount: totalAmount,
-            description: `DH ${Date.now()}`,
-            items: payload.items,
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (res.data.checkoutUrl) {
-          window.location.href = res.data.checkoutUrl;
-        } else {
-          alert("Không nhận được link thanh toán!");
-        }
-      } else {
-        const res = await axios.post(`${API_URL}/api/orders`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        navigate("/checkout-success");
-      }
-    } catch (err) {
-      console.error("❌ Lỗi khi thanh toán:", err);
-      alert("Thanh toán thất bại, vui lòng thử lại!");
-    } finally {
-      setLoading(false);
+const handleCheckout = async () => {
+  try {
+    if (!selectedAddress) {
+      alert("Vui lòng chọn địa chỉ giao hàng!");
+      return;
     }
-  };
 
+    setLoading(true);
+
+    const subtotal = calculateSubtotal();
+    const totalAmount = subtotal + shippingFee - discountAmount;
+
+    const payload = {
+      addressId: selectedAddress,
+      promotionId: selectedPromo || null,
+      discountAmount,
+      shippingAmount: shippingFee,
+      paymentMethod,
+      items: cartItems.map((item) => ({
+        productId: item.product?.id || item.productId,
+        name: item.product?.productName || item.name,
+        quantity: item.quantity,
+        price: Number(item.product?.unitPrice || item.price),
+      })),
+    };
+
+    if (paymentMethod === "PayOS") {
+      const res = await axios.post(`${API_URL}/api/orders`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data?.payos?.checkoutUrl) {
+        // Redirect sang PayOS
+        window.location.href = res.data.payos.checkoutUrl;
+      } else {
+        alert("Không nhận được link thanh toán PayOS!");
+      }
+    } else {
+      // COD → đơn hàng tạo xong, redirect thành công luôn
+      const res = await axios.post(`${API_URL}/api/orders`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigate("/checkout-success", { state: { orderId: res.data.orderId } });
+    }
+  } catch (err) {
+    console.error("❌ Lỗi khi thanh toán:", err);
+    alert("Thanh toán thất bại, vui lòng thử lại!");
+  } finally {
+    setLoading(false);
+  }
+};
   const finalTotal =
     calculateSubtotal() + Number(shippingFee) - Number(discountAmount);
 

@@ -190,7 +190,7 @@ const AdminOrders = () => {
               <img
                 src={
                   item.product?.images?.[0]?.productImg
-                    ? `http://localhost:5000/${item.product.images[0].productImg}`
+                    ? `http://localhost:5000/api/${item.product.images[0].productImg}`
                     : "/default-product.png"
                 }
                 alt={item.product?.productName}
