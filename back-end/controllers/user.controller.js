@@ -289,78 +289,6 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-export const register = async (req, res) => {
-  try {
-    const { username, firstname, lastname, email, phone, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
-    }
-
-    // Kiểm tra email
-    const existingEmail = await User.findOne({ where: { email } });
-    if (existingEmail)
-      return res.status(400).json({ message: "Email đã tồn tại" });
-
-    const finalUsername = username || email.split("@")[0];
-    const existingUsername = await User.findOne({
-      where: { username: finalUsername },
-    });
-    if (existingUsername)
-      return res.status(400).json({ message: "Username đã tồn tại" });
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Tạo token xác minh email
-    const emailToken = crypto.randomBytes(32).toString("hex");
-
-    const user = await User.create({
-      username: finalUsername,
-      firstname,
-      lastname,
-      email,
-      phone,
-      password: hashedPassword,
-      email_verification_token: emailToken,
-      email_verified: false,
-    });
-
-    // Gửi email xác minh
-    const verifyLink = `${process.env.YOUR_DOMAIN}/verify-email?token=${emailToken}`;
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Bản Hương" <${process.env.MAIL_USER}>`,
-      to: user.email,
-      subject: "Xác nhận tài khoản của bạn",
-      html: `
-        <h3>Xin chào ${user.firstname},</h3>
-        <p>Cảm ơn bạn đã đăng ký tài khoản tại <b>Bản Hương</b>.</p>
-        <p>Nhấn vào liên kết sau để xác nhận email của bạn:</p>
-        <a href="${verifyLink}" target="_blank">${verifyLink}</a>
-        <p>Liên kết này sẽ hết hạn sau 24 giờ.</p>
-      `,
-    });
-
-    res.status(201).json({
-      message:
-        "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.",
-    });
-  } catch (err) {
-    console.error("❌ Register error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 export const login = async (req, res) => {
   try {
     const { emailOrUsername, password } = req.body;
@@ -409,6 +337,79 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.error("❌ Login error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const register = async (req, res) => {
+  try {
+    const { firstname, lastname, email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
+    }
+
+    // ✅ Kiểm tra email đã tồn tại
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail)
+      return res.status(400).json({ message: "Email đã tồn tại" });
+
+    // ✅ Tạo username từ email và đảm bảo duy nhất
+    let baseUsername = email.split("@")[0];
+    let username = baseUsername;
+    let suffix = 1;
+
+    // Lặp đến khi tìm được username chưa tồn tại
+    while (await User.findOne({ where: { username } })) {
+      username = `${baseUsername}_${suffix++}`;
+    }
+
+    // Hash mật khẩu
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Tạo token xác minh email
+    const emailToken = crypto.randomBytes(32).toString("hex");
+
+    // ✅ Tạo user mới
+    const user = await User.create({
+      username, // 👈 luôn duy nhất
+      firstname,
+      lastname,
+      email,
+      password: hashedPassword,
+      email_verification_token: emailToken,
+      email_verified: false,
+    });
+
+    // ✅ Gửi mail xác minh
+    const verifyLink = `${process.env.YOUR_DOMAIN}/verify-email?token=${emailToken}`;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Bản Hương" <${process.env.MAIL_USER}>`,
+      to: user.email,
+      subject: "Xác nhận tài khoản của bạn",
+      html: `
+        <h3>Xin chào ${user.firstname},</h3>
+        <p>Cảm ơn bạn đã đăng ký tài khoản tại <b>Bản Hương</b>.</p>
+        <p>Nhấn vào liên kết sau để xác nhận email của bạn:</p>
+        <a href="${verifyLink}" target="_blank">${verifyLink}</a>
+        <p>Liên kết này sẽ hết hạn sau 24 giờ.</p>
+      `,
+    });
+
+    res.status(201).json({
+      message:
+        "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.",
+    });
+  } catch (err) {
+    console.error("❌ Register error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
