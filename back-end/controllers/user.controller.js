@@ -11,9 +11,6 @@ dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-/**
- * 1. Login with Google
- */
 // 1. Login with Google
 export const loginWithGoogle = async (req, res) => {
   try {
@@ -198,103 +195,6 @@ export const updateMyProfile = async (req, res) => {
   }
 };
 
-// ✅ Đăng nhập
-export const login = async (req, res) => {
-  try {
-    const { emailOrUsername, password } = req.body;
-
-    const user = await User.findOne({
-      where: {
-        [Op.or]: [{ email: emailOrUsername }, { username: emailOrUsername }],
-      },
-    });
-
-    if (!user) return res.status(404).json({ message: "User không tồn tại" });
-
-    // So sánh mật khẩu
-    const isMatch = await bcrypt.compare(password, user.password || "");
-    if (!isMatch) return res.status(401).json({ message: "Sai mật khẩu" });
-
-    if (!user.isActive) {
-      return res.status(403).json({ message: "Tài khoản bị khóa" });
-    }
-
-    // JWT
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.json({
-      message: "Đăng nhập thành công",
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        name: `${user.firstname} ${user.lastname}`,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatarImg,
-      },
-    });
-  } catch (err) {
-    console.error("❌ Login error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-export const register = async (req, res) => {
-  try {
-    const { username, firstname, lastname, email, phone, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
-    }
-
-    // 👉 Check email đã tồn tại chưa
-    const existingEmail = await User.findOne({ where: { email } });
-    if (existingEmail) {
-      return res
-        .status(400)
-        .json({ message: "Email đã tồn tại, vui lòng chọn email khác" });
-    }
-
-    // 👉 Nếu username không có, tự động lấy từ email
-    const finalUsername = username || email.split("@")[0];
-
-    // 👉 Check username có trùng không
-    const existingUsername = await User.findOne({
-      where: { username: finalUsername },
-    });
-    if (existingUsername) {
-      return res
-        .status(400)
-        .json({ message: "Username đã tồn tại, vui lòng chọn tên khác" });
-    }
-
-    // 👉 Hash mật khẩu
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await User.create({
-      username: finalUsername,
-      firstname,
-      lastname,
-      email,
-      phone,
-      password: hashedPassword,
-      role: "customer",
-      isActive: true,
-    });
-
-    res.status(201).json({ message: "Đăng ký thành công", user });
-  } catch (err) {
-    console.error("❌ Register error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 // ✅ Quên mật khẩu
 export const forgotPassword = async (req, res) => {
   try {
@@ -385,6 +285,130 @@ export const resetPassword = async (req, res) => {
     res.json({ message: "Mật khẩu đã được đặt lại thành công!" });
   } catch (err) {
     console.error("❌ Reset password error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const register = async (req, res) => {
+  try {
+    const { username, firstname, lastname, email, phone, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
+    }
+
+    // Kiểm tra email
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail)
+      return res.status(400).json({ message: "Email đã tồn tại" });
+
+    const finalUsername = username || email.split("@")[0];
+    const existingUsername = await User.findOne({
+      where: { username: finalUsername },
+    });
+    if (existingUsername)
+      return res.status(400).json({ message: "Username đã tồn tại" });
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Tạo token xác minh email
+    const emailToken = crypto.randomBytes(32).toString("hex");
+
+    const user = await User.create({
+      username: finalUsername,
+      firstname,
+      lastname,
+      email,
+      phone,
+      password: hashedPassword,
+      email_verification_token: emailToken,
+      email_verified: false,
+    });
+
+    // Gửi email xác minh
+    const verifyLink = `${process.env.YOUR_DOMAIN}/verify-email?token=${emailToken}`;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Bản Hương" <${process.env.MAIL_USER}>`,
+      to: user.email,
+      subject: "Xác nhận tài khoản của bạn",
+      html: `
+        <h3>Xin chào ${user.firstname},</h3>
+        <p>Cảm ơn bạn đã đăng ký tài khoản tại <b>Bản Hương</b>.</p>
+        <p>Nhấn vào liên kết sau để xác nhận email của bạn:</p>
+        <a href="${verifyLink}" target="_blank">${verifyLink}</a>
+        <p>Liên kết này sẽ hết hạn sau 24 giờ.</p>
+      `,
+    });
+
+    res.status(201).json({
+      message:
+        "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.",
+    });
+  } catch (err) {
+    console.error("❌ Register error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { emailOrUsername, password } = req.body;
+
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      },
+    });
+
+    if (!user) return res.status(404).json({ message: "User không tồn tại" });
+
+    // So sánh mật khẩu
+    const isMatch = await bcrypt.compare(password, user.password || "");
+    if (!isMatch) return res.status(401).json({ message: "Sai mật khẩu" });
+
+    // ⚠️ Thêm đoạn này
+    if (!user.email_verified) {
+      return res.status(403).json({
+        message: "Vui lòng xác nhận email trước khi đăng nhập.",
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ message: "Tài khoản bị khóa" });
+    }
+
+    // JWT
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      message: "Đăng nhập thành công",
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        name: `${user.firstname} ${user.lastname}`,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatarImg,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Login error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

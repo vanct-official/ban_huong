@@ -92,7 +92,6 @@ export default function LoginPage() {
   };
 
   // ✅ Login Email/Password
-  // ✅ Login Email/Password
   const handleLogin = async (values) => {
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {

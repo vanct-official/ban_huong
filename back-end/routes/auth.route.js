@@ -84,4 +84,36 @@ router.post("/check-email", async (req, res) => {
     res.status(500).json({ exists: false });
   }
 });
+
+router.get("/verify-email", async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({ message: "Thiếu token xác nhận." });
+    }
+
+    const user = await User.findOne({
+      where: { email_verification_token: token },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Token không hợp lệ hoặc đã được xác minh." });
+    }
+
+    user.email_verified = true;
+    user.email_verification_token = null;
+    await user.save();
+
+    res.json({
+      message: "Xác minh email thành công! Bạn có thể đăng nhập ngay.",
+    });
+  } catch (err) {
+    console.error("❌ Verify email error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;

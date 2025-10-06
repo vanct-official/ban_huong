@@ -34,7 +34,7 @@ export default function RegisterPage() {
           description:
             "Vui lòng kiểm tra email để xác thực tài khoản trước khi đăng nhập!",
         });
-        navigate("/verify-email");
+        navigate("/");
       } else {
         notification.error({
           message: "Đăng ký thất bại",

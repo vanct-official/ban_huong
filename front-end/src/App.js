@@ -37,6 +37,7 @@ import FAQPage from "./pages/public/faq/FAQPage";
 import RegisterPage from "./pages/authentication/RegisterPage";
 import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/user/ResetPasswordPage";
+import VerifyEmailPage from "./pages/authentication/VerifyEmailPage";
 
 function App() {
   return (
@@ -163,6 +164,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
       </Routes>
     </main>
   );

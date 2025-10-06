@@ -29,6 +29,12 @@ const User = sequelize.define(
     password: { type: DataTypes.STRING, allowNull: true },
     resetPasswordToken: { type: DataTypes.STRING, allowNull: true },
     resetPasswordExpires: { type: DataTypes.DATE, allowNull: true },
+    email_verification_token: { type: DataTypes.STRING, allowNull: true },
+    email_verified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     tableName: "users",
