@@ -21,7 +21,7 @@ const Checkout = () => {
 
   const token = localStorage.getItem("token");
 
-  // Lấy giỏ hàng
+  // ✅ Lấy giỏ hàng
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -36,7 +36,7 @@ const Checkout = () => {
     if (token) fetchCart();
   }, [token]);
 
-  // Lấy địa chỉ giao hàng
+  // ✅ Lấy địa chỉ giao hàng
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
@@ -45,6 +45,7 @@ const Checkout = () => {
         });
         const data = res.data;
         setAddresses(data);
+
         // Chọn địa chỉ mặc định nếu có
         const defaultAddr =
           Array.isArray(data) && data.find((addr) => addr.isDefault);
@@ -60,7 +61,7 @@ const Checkout = () => {
     if (token) fetchAddresses();
   }, [token]);
 
-  // Lấy danh sách khuyến mãi
+  // ✅ Lấy danh sách khuyến mãi
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
@@ -75,14 +76,14 @@ const Checkout = () => {
     fetchPromotions();
   }, [token]);
 
-  // Tính tổng tiền giỏ hàng
+  // ✅ Tính tổng tiền giỏ hàng
   const calculateSubtotal = () =>
     cartItems.reduce(
       (sum, item) => sum + Number(item.product?.unitPrice || 0) * item.quantity,
       0
     );
 
-  // Khi chọn mã giảm giá
+  // ✅ Khi chọn mã giảm giá
   const handleSelectPromo = (e) => {
     const promoId = e.target.value;
     setSelectedPromo(promoId);
@@ -101,58 +102,67 @@ const Checkout = () => {
     }
   };
 
-  // Xử lý khi ấn nút thanh toán
-const handleCheckout = async () => {
-  try {
-    if (!selectedAddress) {
-      alert("Vui lòng chọn địa chỉ giao hàng!");
-      return;
-    }
-
-    setLoading(true);
-
-    const subtotal = calculateSubtotal();
-    const totalAmount = subtotal + shippingFee - discountAmount;
-
-    const payload = {
-      addressId: selectedAddress,
-      promotionId: selectedPromo || null,
-      discountAmount,
-      shippingAmount: shippingFee,
-      paymentMethod,
-      items: cartItems.map((item) => ({
-        productId: item.product?.id || item.productId,
-        name: item.product?.productName || item.name,
-        quantity: item.quantity,
-        price: Number(item.product?.unitPrice || item.price),
-      })),
-    };
-
-    if (paymentMethod === "PayOS") {
-      const res = await axios.post(`${API_URL}/api/orders`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.data?.payos?.checkoutUrl) {
-        // Redirect sang PayOS
-        window.location.href = res.data.payos.checkoutUrl;
-      } else {
-        alert("Không nhận được link thanh toán PayOS!");
+  // ✅ Xử lý khi ấn nút thanh toán
+  const handleCheckout = async () => {
+    try {
+      if (!addresses.length) {
+        alert(
+          "Bạn chưa có địa chỉ giao hàng. Vui lòng vào 'Cập nhật thông tin' để thêm địa chỉ trước khi thanh toán!"
+        );
+        navigate("/profile/edit");
+        return;
       }
-    } else {
-      // COD → đơn hàng tạo xong, redirect thành công luôn
-      const res = await axios.post(`${API_URL}/api/orders`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      navigate("/checkout-success", { state: { orderId: res.data.orderId } });
+
+      if (!selectedAddress) {
+        alert("Vui lòng chọn địa chỉ giao hàng!");
+        return;
+      }
+
+      setLoading(true);
+
+      const subtotal = calculateSubtotal();
+      const totalAmount = subtotal + shippingFee - discountAmount;
+
+      const payload = {
+        addressId: selectedAddress,
+        promotionId: selectedPromo || null,
+        discountAmount,
+        shippingAmount: shippingFee,
+        paymentMethod,
+        items: cartItems.map((item) => ({
+          productId: item.product?.id || item.productId,
+          name: item.product?.productName || item.name,
+          quantity: item.quantity,
+          price: Number(item.product?.unitPrice || item.price),
+        })),
+      };
+
+      if (paymentMethod === "PayOS") {
+        const res = await axios.post(`${API_URL}/api/orders`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data?.payos?.checkoutUrl) {
+          // Redirect sang PayOS
+          window.location.href = res.data.payos.checkoutUrl;
+        } else {
+          alert("Không nhận được link thanh toán PayOS!");
+        }
+      } else {
+        // COD → đơn hàng tạo xong, redirect thành công luôn
+        const res = await axios.post(`${API_URL}/api/orders`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        navigate("/checkout-success", { state: { orderId: res.data.orderId } });
+      }
+    } catch (err) {
+      console.error("❌ Lỗi khi thanh toán:", err);
+      alert("Thanh toán thất bại, vui lòng thử lại!");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("❌ Lỗi khi thanh toán:", err);
-    alert("Thanh toán thất bại, vui lòng thử lại!");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
   const finalTotal =
     calculateSubtotal() + Number(shippingFee) - Number(discountAmount);
 
@@ -181,7 +191,7 @@ const handleCheckout = async () => {
           Thanh toán đơn hàng
         </h2>
 
-        {/* Sản phẩm */}
+        {/* ✅ Sản phẩm */}
         <div className="checkout-items" style={{ marginBottom: 24 }}>
           {cartItems.length === 0 ? (
             <p style={{ textAlign: "center", color: "#888" }}>
@@ -243,7 +253,7 @@ const handleCheckout = async () => {
           )}
         </div>
 
-        {/* Địa chỉ */}
+        {/* ✅ Địa chỉ */}
         <div className="checkout-section" style={{ marginBottom: 24 }}>
           <label
             style={{
@@ -275,9 +285,26 @@ const handleCheckout = async () => {
               </option>
             ))}
           </select>
+
+          {addresses.length === 0 && (
+            <div style={{ marginTop: 8, color: "red", fontWeight: 500 }}>
+              Bạn chưa có địa chỉ giao hàng.{" "}
+              <span
+                onClick={() => navigate("/profile/edit")}
+                style={{
+                  color: "#166534",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                Cập nhật thông tin
+              </span>{" "}
+              để thêm địa chỉ mới.
+            </div>
+          )}
         </div>
 
-        {/* Mã giảm giá */}
+        {/* ✅ Mã giảm giá */}
         <div className="checkout-section" style={{ marginBottom: 24 }}>
           <label
             style={{
@@ -323,25 +350,9 @@ const handleCheckout = async () => {
               Giảm giá: -{discountAmount.toLocaleString()}₫
             </div>
           )}
-          {selectedPromo &&
-            (() => {
-              const promo = promotions.find(
-                (p) => p.id === Number(selectedPromo)
-              );
-              if (promo && calculateSubtotal() < promo.minOrderValue) {
-                return (
-                  <div
-                    style={{ color: "#e11d48", fontWeight: 500, marginTop: 4 }}
-                  >
-                    Đơn hàng chưa đủ điều kiện áp dụng mã này!
-                  </div>
-                );
-              }
-              return null;
-            })()}
         </div>
 
-        {/* Phương thức thanh toán */}
+        {/* ✅ Phương thức thanh toán */}
         <div className="checkout-section" style={{ marginBottom: 24 }}>
           <label
             style={{
@@ -377,7 +388,7 @@ const handleCheckout = async () => {
           </div>
         </div>
 
-        {/* Tổng kết đơn hàng */}
+        {/* ✅ Tổng kết đơn hàng */}
         <div
           className="checkout-summary"
           style={{
@@ -435,7 +446,7 @@ const handleCheckout = async () => {
           </h3>
         </div>
 
-        {/* Nút thanh toán */}
+        {/* ✅ Nút thanh toán */}
         <button
           onClick={handleCheckout}
           disabled={loading}
