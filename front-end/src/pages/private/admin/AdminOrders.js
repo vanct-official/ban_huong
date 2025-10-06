@@ -117,7 +117,9 @@ const AdminOrders = () => {
         <Select
           value={val}
           style={{ width: 140 }}
-          onChange={(newStatus) => handleUpdatePaymentStatus(record.id, newStatus)}
+          onChange={(newStatus) =>
+            handleUpdatePaymentStatus(record.id, newStatus)
+          }
           disabled={val === "paid"}
         >
           {paymentStatusOptions.map((opt) => (
@@ -190,7 +192,7 @@ const AdminOrders = () => {
               <img
                 src={
                   item.product?.images?.[0]?.productImg
-                    ? `http://localhost:5000/api/${item.product.images[0].productImg}`
+                    ? `${API_URL}/${item.product.images[0].productImg}`
                     : "/default-product.png"
                 }
                 alt={item.product?.productName}
@@ -201,6 +203,7 @@ const AdminOrders = () => {
                   borderRadius: 8,
                 }}
               />
+
               <div>
                 <div style={{ fontWeight: 600 }}>
                   {item.product?.productName}
@@ -211,7 +214,10 @@ const AdminOrders = () => {
                 <div>Số lượng: {item.quantity}</div>
                 <div>
                   Thành tiền:{" "}
-                  {Number(item.unitPrice * item.quantity).toLocaleString("vi-VN")} đ
+                  {Number(item.unitPrice * item.quantity).toLocaleString(
+                    "vi-VN"
+                  )}{" "}
+                  đ
                 </div>
               </div>
             </div>
@@ -232,7 +238,8 @@ const AdminOrders = () => {
         }}
       >
         <div style={{ fontWeight: 500 }}>
-          Tổng tiền sản phẩm: <span>{Number(record.totalAmount).toLocaleString("vi-VN")} đ</span>
+          Tổng tiền sản phẩm:{" "}
+          <span>{Number(record.totalAmount).toLocaleString("vi-VN")} đ</span>
         </div>
         <div style={{ fontWeight: 500 }}>
           Mã giảm giá:{" "}
@@ -243,12 +250,23 @@ const AdminOrders = () => {
           )}
         </div>
         <div style={{ fontWeight: 500 }}>
-          Số tiền giảm giá: <span style={{ color: "#e11d48" }}>-{Number(record.discountAmount).toLocaleString("vi-VN")} đ</span>
+          Số tiền giảm giá:{" "}
+          <span style={{ color: "#e11d48" }}>
+            -{Number(record.discountAmount).toLocaleString("vi-VN")} đ
+          </span>
         </div>
         <div style={{ fontWeight: 500 }}>
-          Phí vận chuyển: <span>{Number(record.shippingAmount).toLocaleString("vi-VN")} đ</span>
+          Phí vận chuyển:{" "}
+          <span>{Number(record.shippingAmount).toLocaleString("vi-VN")} đ</span>
         </div>
-        <div style={{ fontWeight: 700, color: "#ea580c", fontSize: 18, marginTop: 8 }}>
+        <div
+          style={{
+            fontWeight: 700,
+            color: "#ea580c",
+            fontSize: 18,
+            marginTop: 8,
+          }}
+        >
           Thành tiền: {Number(record.finalAmount).toLocaleString("vi-VN")} đ
         </div>
       </div>

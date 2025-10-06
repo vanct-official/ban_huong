@@ -82,7 +82,7 @@ export const deleteFeedback = async (req, res) => {
   }
 };
 
-export const getAllFeedbacks = async (req, res) => {
+export const getAllFeedbacks1 = async (req, res) => {
   try {
     const feedbacks = await Feedback.findAll({
       include: [
@@ -173,6 +173,39 @@ export const getRecentFeedbacks = async (req, res) => {
     res.json(feedbacks);
   } catch (err) {
     console.error("❌ Lỗi getRecentFeedbacks:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+export const getAllFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username", "avatarImg", "email"],
+        },
+        {
+          model: Product,
+          as: "product",
+          attributes: ["id", "productName"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    console.log(
+      "✅ Feedbacks fetched:",
+      feedbacks.map((f) => ({
+        id: f.id,
+        user: f.user?.username,
+        product: f.product?.productName,
+      }))
+    );
+
+    res.json(feedbacks);
+  } catch (err) {
+    console.error("❌ Lỗi getAllFeedbacks:", err);
     res.status(500).json({ message: err.message });
   }
 };

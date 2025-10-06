@@ -79,7 +79,8 @@ app.use(passport.session());
 
 // Kết nối DB
 connectDB();
-
+// 👉 Import associations để Sequelize nhận biết quan hệ giữa các model
+import "./models/index.js";
 // Routes
 app.get("/api/provinces", getProvinces);
 app.get("/api/users", getAllUsers);
