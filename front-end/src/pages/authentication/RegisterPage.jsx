@@ -31,9 +31,10 @@ export default function RegisterPage() {
       if (res.ok) {
         notification.success({
           message: "Đăng ký thành công",
-          description: "Bạn có thể đăng nhập ngay bây giờ!",
+          description:
+            "Vui lòng kiểm tra email để xác thực tài khoản trước khi đăng nhập!",
         });
-        navigate("/login");
+        navigate("/verify-email");
       } else {
         notification.error({
           message: "Đăng ký thất bại",
@@ -134,7 +135,16 @@ export default function RegisterPage() {
             name="password"
             label="Mật khẩu"
             rules={[
-              { required: true, min: 6, message: "Mật khẩu tối thiểu 6 ký tự" },
+              {
+                required: true,
+                message: "Vui lòng nhập mật khẩu",
+              },
+              {
+                pattern:
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
+                message:
+                  "Mật khẩu phải tối thiểu 8 ký tự, gồm chữ cái, số và ký tự đặc biệt",
+              },
             ]}
           >
             <Input.Password />

@@ -61,11 +61,18 @@ export default function ResetPasswordPage() {
             name="password"
             label="Mật khẩu mới"
             rules={[
-              { required: true, min: 6, message: "Mật khẩu tối thiểu 6 ký tự" },
+              { required: true, message: "Vui lòng nhập mật khẩu mới" },
+              {
+                pattern:
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
+                message:
+                  "Mật khẩu tối thiểu 8 ký tự, gồm chữ cái, số và ký tự đặc biệt",
+              },
             ]}
           >
             <Input.Password />
           </Form.Item>
+
           <Form.Item
             name="confirmPassword"
             label="Xác nhận mật khẩu"
