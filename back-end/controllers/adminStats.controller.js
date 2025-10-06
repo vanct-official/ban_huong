@@ -55,7 +55,10 @@ export const getAdminReports = async (req, res) => {
           "month",
         ],
         [
-          sequelize.fn("SUM", sequelize.col("items.finalPrice")),
+          sequelize.fn(
+            "SUM",
+            sequelize.literal("items.unitPrice * items.quantity")
+          ),
           "totalRevenue",
         ],
       ],
@@ -65,7 +68,7 @@ export const getAdminReports = async (req, res) => {
       raw: true,
     });
 
-    // Top sản phẩm bán chạy (chỉ join Product)
+    // Top sản phẩm bán chạy
     const topProducts = await OrderItem.findAll({
       attributes: [
         "productId",
@@ -85,7 +88,7 @@ export const getAdminReports = async (req, res) => {
       nest: true,
     });
 
-    // ✅ Lấy ảnh riêng cho từng productId
+    // ✅ Lấy ảnh riêng cho từng sản phẩm
     for (let p of topProducts) {
       const img = await ProductImage.findOne({
         where: { productId: p.productId },
@@ -102,8 +105,8 @@ export const getAdminReports = async (req, res) => {
       topProducts: topProducts.map((p) => ({
         productId: p.productId,
         productName: p.product.productName,
-        totalSold: p.totalSold,
-        productImg: p.productImg, // ✅ thêm ảnh vào response
+        totalSold: Number(p.totalSold),
+        productImg: p.productImg,
       })),
     });
   } catch (err) {

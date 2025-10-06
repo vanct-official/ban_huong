@@ -132,4 +132,5 @@ export {
   Feedback,
   Order,
   OrderItem,
+  Promotion,
 };

@@ -147,6 +147,7 @@ app.post("/api/create-payment-link", async (req, res) => {
   }
 });
 
+app.use("/api/admin", adminStatsRoutes);
 
 app.use("/api/payos", payOSWebhookRoutes);
 
