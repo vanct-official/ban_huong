@@ -171,7 +171,7 @@ CREATE TABLE `feedback` (
   KEY `productId` (`productId`),
   CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE,
   CONSTRAINT `feedback_chk_1` CHECK ((`rate` between 1 and 5))
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,7 +180,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (0,33,4,'Dùng thích phết đấy','2025-10-10 03:53:00','2025-10-10 04:12:37',12),(8,15,5,'Rất thơm, mùi quyến rũ','2025-10-06 09:29:35','2025-10-06 09:29:35',25),(18,30,4,'Thật tuyệt vời! Nên mua','2025-10-10 04:18:44','2025-10-10 04:18:44',13);
+INSERT INTO `feedback` VALUES (0,33,4,'Hương thơm cay ấm, rất dễ chịu, giúp thư giãn tinh thần sau một ngày làm việc mệt mỏi. Cực kỳ thích hợp để xông phòng','2025-10-10 03:53:00','2025-10-11 06:29:56',12),(8,14,5,'Mùi hồi đậm đặc, dùng để xông hơi giúp thông mũi, giảm căng thẳng rõ rệt. Đáng tiền!','2025-10-06 09:29:35','2025-10-11 06:31:36',25),(18,30,4,'Sản phẩm chuẩn tinh dầu nguyên chất. Dùng để xông phòng và xông hơi đều hiệu quả. Sẽ mua lại!','2025-10-10 04:18:44','2025-10-11 06:29:57',13),(19,15,5,'Thơm ấm và nồng, pha với dầu nền để massage rất thư thái. Chất lượng tinh dầu tốt','2025-10-11 06:23:24','2025-10-11 06:29:57',24),(20,22,5,'Mùi hương rất đặc trưng của hoa hồi, ngọt và ấm. Dùng với máy khuếch tán giúp không gian ấm cúng hơn.','2025-10-11 06:29:56','2025-10-11 06:29:56',33);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,7 +232,7 @@ CREATE TABLE `orderitems` (
   KEY `productId` (`productId`),
   CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,7 +241,7 @@ CREATE TABLE `orderitems` (
 
 LOCK TABLES `orderitems` WRITE;
 /*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
-INSERT INTO `orderitems` VALUES (7,5,14,1,12000.00),(8,5,33,2,30000.00),(11,30,14,1,12000.00),(12,30,15,1,32000.00),(13,31,14,1,12000.00),(14,31,15,2,32000.00),(15,32,14,1,12000.00),(16,32,15,2,32000.00),(17,33,19,1,60000.00),(18,33,17,1,90000.00),(19,36,14,1,12000.00),(20,37,21,1,18000.00),(21,38,15,1,32000.00),(22,39,33,1,30000.00),(23,39,32,2,80000.00),(24,39,31,1,88888.00),(25,39,23,1,52000.00),(26,40,30,1,14000.00);
+INSERT INTO `orderitems` VALUES (7,5,14,1,12000.00),(8,5,33,2,30000.00),(11,30,14,1,12000.00),(12,30,15,1,32000.00),(13,31,14,1,12000.00),(14,31,15,2,32000.00),(15,32,14,1,12000.00),(16,32,15,2,32000.00),(17,33,19,1,60000.00),(18,33,17,1,90000.00),(19,36,14,1,12000.00),(20,37,21,1,18000.00),(21,38,15,1,32000.00),(22,39,33,1,30000.00),(23,39,32,2,80000.00),(24,39,31,1,88888.00),(25,39,23,1,52000.00),(26,40,30,1,14000.00),(27,41,15,2,64000.00),(28,42,22,1,80000.00);
 /*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -272,7 +272,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_promotion` FOREIGN KEY (`promotionId`) REFERENCES `promotion` (`id`) ON DELETE SET NULL,
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`addressId`) REFERENCES `address` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +281,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (5,3,1,'2025-10-01 12:30:56','completed',72000.00,0.00,NULL,0.00,NULL,'canceled',72000.00),(30,3,7,'2025-10-04 11:25:27','completed',44000.00,30000.00,NULL,41800.00,'Cash','paid',32200.00),(31,3,1,'2025-10-04 11:40:51','completed',76000.00,30000.00,NULL,72200.00,'Cash','paid',33800.00),(32,3,1,'2025-10-04 12:31:17','completed',76000.00,30000.00,NULL,0.00,'Cash','paid',106000.00),(33,3,7,'2025-10-04 15:02:14','completed',150000.00,0.00,NULL,142500.00,'Cash','paid',7500.00),(34,3,1,'2025-10-04 15:32:02','pending',12000.00,30000.00,NULL,11400.00,'Cash','unpaid',30600.00),(35,3,1,'2025-10-04 15:32:11','pending',12000.00,30000.00,NULL,0.00,'Cash','unpaid',42000.00),(36,3,1,'2025-10-04 15:33:24','completed',12000.00,30000.00,NULL,11400.00,'Cash','paid',30600.00),(37,3,1,'2025-10-04 16:08:10','pending',18000.00,30000.00,NULL,0.00,'Cash','unpaid',48000.00),(38,25,10,'2025-10-06 07:19:51','completed',32000.00,30000.00,NULL,30400.00,'PayOS','paid',31600.00),(39,12,7,'2025-10-10 03:50:32','completed',251.05,251.05,NULL,0.00,'Cash','paid',251.05),(40,13,10,'2025-10-10 04:16:58','completed',14000.00,14000.00,NULL,0.00,'Cash','paid',14000.00);
+INSERT INTO `orders` VALUES (5,3,1,'2025-10-01 12:30:56','completed',72000.00,0.00,NULL,0.00,NULL,'canceled',72000.00),(30,3,7,'2025-10-04 11:25:27','completed',44000.00,30000.00,NULL,41800.00,'Cash','paid',32200.00),(31,3,1,'2025-10-04 11:40:51','completed',76000.00,30000.00,NULL,72200.00,'Cash','paid',33800.00),(32,3,1,'2025-10-04 12:31:17','completed',76000.00,30000.00,NULL,0.00,'Cash','paid',106000.00),(33,3,7,'2025-10-04 15:02:14','completed',150000.00,0.00,NULL,142500.00,'Cash','paid',7500.00),(34,3,1,'2025-10-04 15:32:02','pending',12000.00,30000.00,NULL,11400.00,'Cash','unpaid',30600.00),(35,3,1,'2025-10-04 15:32:11','pending',12000.00,30000.00,NULL,0.00,'Cash','unpaid',42000.00),(36,3,1,'2025-10-04 15:33:24','completed',12000.00,30000.00,NULL,11400.00,'Cash','paid',30600.00),(37,3,1,'2025-10-04 16:08:10','pending',18000.00,30000.00,NULL,0.00,'Cash','unpaid',48000.00),(38,25,10,'2025-10-06 07:19:51','completed',32000.00,30000.00,NULL,30400.00,'PayOS','paid',31600.00),(39,12,7,'2025-10-10 03:50:32','completed',251.05,251.05,NULL,0.00,'Cash','paid',251.05),(40,13,10,'2025-10-10 04:16:58','completed',14000.00,14000.00,NULL,0.00,'Cash','paid',14000.00),(41,24,7,'2025-10-10 14:32:08','completed',64000.00,64000.00,NULL,64000.00,'Cash','paid',64000.00),(42,33,1,'2025-10-11 06:27:05','completed',80000.00,80000.00,NULL,80000.00,'Cash','paid',80000.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -309,7 +309,7 @@ CREATE TABLE `popular_searches` (
 
 LOCK TABLES `popular_searches` WRITE;
 /*!40000 ALTER TABLE `popular_searches` DISABLE KEYS */;
-INSERT INTO `popular_searches` VALUES (23,'Tinh dầu hoa hồi handmade 25ml',8,'2025-10-01 06:32:08','2025-10-02 07:36:54'),(24,'Tinh dầu hoa hồi đựng lọ gỗ 15ml',13,'2025-10-01 06:53:42','2025-10-02 16:14:31'),(25,'Tinh dầu hoa hồi cao cấp 100ml',12,'2025-10-01 12:23:08','2025-10-02 16:14:38'),(30,'Tinh dầu hoa hồi 30ml',1,'2025-10-06 09:29:21','2025-10-06 09:29:21');
+INSERT INTO `popular_searches` VALUES (23,'Tinh dầu hoa hồi handmade 25ml',8,'2025-10-01 06:32:08','2025-10-02 07:36:54'),(24,'Tinh dầu hoa hồi đựng lọ gỗ 15ml',14,'2025-10-01 06:53:42','2025-10-10 14:18:30'),(25,'Tinh dầu hoa hồi cao cấp 100ml',13,'2025-10-01 12:23:08','2025-10-10 04:25:47'),(30,'Tinh dầu hoa hồi 30ml',1,'2025-10-06 09:29:21','2025-10-06 09:29:21');
 /*!40000 ALTER TABLE `popular_searches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -531,7 +531,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com',NULL,'0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,0,'116603201577927477280',0,NULL,NULL,NULL),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com',NULL,'0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,0,NULL,0,NULL,NULL,NULL),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com',NULL,'0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,0,'115787374426474178678',0,NULL,NULL,NULL),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn',NULL,'0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocLENaM4AeJabJz8q_t59dTumSo1a4RBXxydJIxqg6JUbwVJrkRK=s96-c','2025-08-14 15:09:44','2025-09-20 15:19:06',1,0,NULL,0,NULL,NULL,NULL),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,0,NULL,0,NULL,NULL,NULL),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,0,NULL,0,NULL,NULL,NULL),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-30 02:34:58',1,0,'106848181745691041838',0,NULL,NULL,NULL),(12,'namhai','Ninh',NULL,'Nam','namninh@gmail.com',NULL,NULL,'customer',NULL,'2025-10-02 14:22:49','2025-10-02 14:22:49',1,0,NULL,0,NULL,NULL,NULL),(13,'thaiduong','Thái','','Dương','tranva1ntuanunique@gmail.com','$2b$10$3gzikcZDyd3N9UC2C8/N4OpdGA6vM/iNMIL3y744aqHM/orROM1cu','0123456780','customer',NULL,'2025-10-02 14:30:00','2025-10-10 03:45:40',1,0,NULL,0,NULL,NULL,NULL),(24,'levu999','Vu1',NULL,'Le1','tranvantu3anunique@gmail.com','$2b$10$jBbVCKibfXi9mfssPKOEjuAJ8/RUhCHJP34qnyENuKyikQWI46ZKi',NULL,'customer',NULL,'2025-10-06 07:07:48','2025-10-10 03:40:50',1,1,NULL,0,NULL,NULL,NULL),(25,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-10-06 07:08:52','2025-10-06 07:08:52',1,0,'113176155543186944643',1,NULL,NULL,NULL),(32,'tranvantuanunique','hà',NULL,'khánh','tranvantu2anunique@gmail.com','$2b$10$ChZZAsInS2ktBA0uD3p/hupWvP5DWuFwydJs2vxus9j0on8yQhFAK',NULL,'customer',NULL,'2025-10-06 08:15:24','2025-10-06 15:21:21',1,1,NULL,0,NULL,NULL,NULL),(33,'tranvantuanunique_1','Xương',NULL,'Vũ','tranvantuanunique@gmail.com','$2b$10$3198wP4.NyIeRObOhRZW6O1tRNNkc1mnjPdbSRlBWV0tQShZWItOW',NULL,'customer',NULL,'2025-10-06 08:21:47','2025-10-06 08:21:59',1,1,NULL,0,NULL,NULL,NULL);
+INSERT INTO `users` VALUES (1,'admin','Quản','Trị','Viên','vanctquantrivien@gmail.com',NULL,'0976812898','admin','https://lh3.googleusercontent.com/a/ACg8ocIeLA2HATdB14fGGlGX-HmMn5YRfdZAw8I3tSGU_uy7dUIZazo=s96-c','2025-08-07 09:01:59','2025-09-29 17:43:57',1,0,'116603201577927477280',0,NULL,NULL,NULL),(2,'admin2','Quản','Trị','Viên 2','banhuongadmin@gmail.com',NULL,'0399349064','admin',NULL,'2025-08-07 09:03:22','2025-08-07 09:05:49',1,0,NULL,0,NULL,NULL,NULL),(3,'vanct','Chu','Thế','Văn','chuthevan450@gmail.com',NULL,'0385913898','customer','https://lh3.googleusercontent.com/a/ACg8ocK4e9d6NuZ6LjbW67ORCCOADLoTH280IR8UgS7Me5q9woM0ER3iMg=s96-c','2025-08-07 09:04:39','2025-09-29 16:23:27',1,0,'115787374426474178678',0,NULL,NULL,NULL),(4,'vancthe170807','Chu','','Văn (K17HL)','vancthe170807@fpt.edu.vn',NULL,'0976812898','customer','https://lh3.googleusercontent.com/a/ACg8ocIO4FVqM4xt4tS7TwS6KoaQxbxBAQvOU2_q9MjrS3mMoZsl_UhB=s96-c','2025-08-14 15:09:44','2025-10-10 08:09:13',1,0,'116130400647569257291',0,NULL,NULL,NULL),(5,'chuthevan1281','Chu','','Thế Văn (Văn CT)','chuthevan1281@gmail.com',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocLpkeh6Neq6PPcqCbI4YZ_3QVEHyZakxRvSw256YqXV5xIxAcM=s96-c','2025-08-14 15:12:13','2025-08-14 15:12:13',1,0,NULL,0,NULL,NULL,NULL),(8,'vanct20030625','Chu','Thế','Văn (Văn CT)','vanct20030625@gmail.com',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocJAih8WJ4CfaPl_x6nsIcsnvT0JC9MH0VqvZjTyJWCKXApBCgo=s96-c','2025-09-18 10:21:42','2025-09-18 10:22:13',1,0,NULL,0,NULL,NULL,NULL),(11,'he173048tranvantuan','Duong',NULL,'Anh (Me too)','he173048tranvantuan@gmail.com',NULL,NULL,'admin','https://lh3.googleusercontent.com/a/ACg8ocJX1nkHJIKVojqaLzqUcb_cKC_YQUxEuVk6X9b4fc-lZXz0zpWW=s96-c','2025-09-28 11:45:30','2025-09-30 02:34:58',1,0,'106848181745691041838',0,NULL,NULL,NULL),(12,'namhai','Ninh',NULL,'Nam','namninh@gmail.com',NULL,NULL,'customer',NULL,'2025-10-02 14:22:49','2025-10-02 14:22:49',1,0,NULL,0,NULL,NULL,NULL),(13,'thaiduong','Thái','','Dương','tranva1ntuanunique@gmail.com','$2b$10$3gzikcZDyd3N9UC2C8/N4OpdGA6vM/iNMIL3y744aqHM/orROM1cu','0123456780','customer',NULL,'2025-10-02 14:30:00','2025-10-10 03:45:40',1,0,NULL,0,NULL,NULL,NULL),(24,'levu999','Vu1',NULL,'Le1','tranvantu3anunique@gmail.com','$2b$10$jBbVCKibfXi9mfssPKOEjuAJ8/RUhCHJP34qnyENuKyikQWI46ZKi',NULL,'customer',NULL,'2025-10-06 07:07:48','2025-10-10 03:40:50',1,1,NULL,0,NULL,NULL,NULL),(25,'tuantvhe173048','Tuan',NULL,'Tran Van','tuantvhe173048@fpt.edu.vn',NULL,NULL,'customer','https://lh3.googleusercontent.com/a/ACg8ocIl1rlBlN2h8Q74Asypkdo_WxUPCUXNfTCkiDXervDbKRusqHU=s96-c','2025-10-06 07:08:52','2025-10-06 07:08:52',1,0,'113176155543186944643',1,NULL,NULL,NULL),(32,'tranvantuanunique','hà',NULL,'khánh','tranvantu2anunique@gmail.com','$2b$10$ChZZAsInS2ktBA0uD3p/hupWvP5DWuFwydJs2vxus9j0on8yQhFAK',NULL,'customer',NULL,'2025-10-06 08:15:24','2025-10-06 15:21:21',1,1,NULL,0,NULL,NULL,NULL),(33,'MyThi','My',NULL,'Thi','tranvantuanunique@gmail.com','$2b$10$3198wP4.NyIeRObOhRZW6O1tRNNkc1mnjPdbSRlBWV0tQShZWItOW',NULL,'customer',NULL,'2025-10-06 08:21:47','2025-10-11 06:25:48',1,1,NULL,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -607,4 +607,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-10 11:22:19
+-- Dump completed on 2025-10-11 13:33:34

@@ -84,15 +84,38 @@ const Checkout = () => {
     );
 
   // ✅ Khi chọn mã giảm giá
+  // const handleSelectPromo = (e) => {
+  //   const promoId = e.target.value;
+  //   setSelectedPromo(promoId);
+  //   const promo = promotions.find((p) => p.id === Number(promoId));
+  //   if (promo) {
+  //     const subtotal = calculateSubtotal();
+  //     // Nếu chưa đủ điều kiện thì không giảm giá
+  //     if (subtotal < promo.minOrderValue) {
+  //       setDiscountAmount(0);
+  //     } else {
+  //       const discount = (subtotal * parseFloat(promo.discountPercent)) / 100;
+  //       setDiscountAmount(discount);
+  //     }
+  //   } else {
+  //     setDiscountAmount(0);
+  //   }
+  // };
+  // ✅ Khi chọn mã giảm giá
   const handleSelectPromo = (e) => {
     const promoId = e.target.value;
     setSelectedPromo(promoId);
     const promo = promotions.find((p) => p.id === Number(promoId));
+
     if (promo) {
       const subtotal = calculateSubtotal();
-      // Nếu chưa đủ điều kiện thì không giảm giá
+
+      // ✅ Nếu chưa đủ điều kiện thì báo thông báo rõ ràng
       if (subtotal < promo.minOrderValue) {
         setDiscountAmount(0);
+        alert(
+          `Đơn hàng của bạn chưa đủ điều kiện để áp dụng mã giảm giá này.\nYêu cầu tối thiểu: ${promo.minOrderValue.toLocaleString()}₫`
+        );
       } else {
         const discount = (subtotal * parseFloat(promo.discountPercent)) / 100;
         setDiscountAmount(discount);
@@ -467,7 +490,7 @@ const Checkout = () => {
           {loading
             ? "Đang xử lý..."
             : paymentMethod === "PayOS"
-            ? "Thanh toán qua PayOS"
+            ? "Thanh toán"
             : "Đặt hàng (Tiền mặt)"}
         </button>
       </div>
