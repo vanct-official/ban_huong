@@ -286,27 +286,27 @@ export default function MainHeader() {
           icon: <HeartOutlined />,
           onClick: () => (window.location.href = "/wishlist"),
         },
-        {
-          key: "notifications",
-          label: t("notifications"),
-          icon: <BellOutlined />,
-          onClick: () => (window.location.href = "/notifications"),
-        },
+        // {
+        //   key: "notifications",
+        //   label: t("notifications"),
+        //   icon: <BellOutlined />,
+        //   onClick: () => (window.location.href = "/notifications"),
+        // },
         {
           type: "divider",
         },
-        {
-          key: "rewards",
-          label: t("bonusPoints"),
-          icon: <GiftOutlined />,
-          onClick: () => (window.location.href = "/rewards"),
-        },
-        {
-          key: "settings",
-          label: t("settings"),
-          icon: <SettingOutlined />,
-          onClick: () => (window.location.href = "/settings"),
-        },
+        // {
+        //   key: "rewards",
+        //   label: t("bonusPoints"),
+        //   icon: <GiftOutlined />,
+        //   onClick: () => (window.location.href = "/rewards"),
+        // },
+        // {
+        //   key: "settings",
+        //   label: t("settings"),
+        //   icon: <SettingOutlined />,
+        //   onClick: () => (window.location.href = "/settings"),
+        // },
         {
           type: "divider",
         },
@@ -362,7 +362,7 @@ export default function MainHeader() {
       {/* XÓA phần Input tìm kiếm ở đây */}
       <Divider />
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <Dropdown
+        {/* <Dropdown
           menu={{ items: languageMenuItems, onClick: handleLanguageChange }}
           trigger={["click"]}
           placement="bottomLeft"
@@ -370,7 +370,7 @@ export default function MainHeader() {
           <Button icon={<Globe size={18} />} block>
             {i18n.language === "en" ? "EN" : "VI"} <DownOutlined />
           </Button>
-        </Dropdown>
+        </Dropdown> */}
         <Link to="/cart" onClick={() => setDrawerOpen(false)}>
           <Button icon={<ShoppingCartOutlined />} block>
             {t("cart")}{" "}
@@ -413,7 +413,7 @@ export default function MainHeader() {
             >
               {t("wishlist")}
             </Button>
-            <Button
+            {/* <Button
               icon={<BellOutlined />}
               block
               onClick={() => {
@@ -422,8 +422,8 @@ export default function MainHeader() {
               }}
             >
               {t("notifications")}
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               icon={<GiftOutlined />}
               block
               onClick={() => {
@@ -432,8 +432,8 @@ export default function MainHeader() {
               }}
             >
               {t("bonusPoints")}
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               icon={<SettingOutlined />}
               block
               onClick={() => {
@@ -442,7 +442,7 @@ export default function MainHeader() {
               }}
             >
               {t("settings")}
-            </Button>
+            </Button> */}
             <Button
               icon={<LogoutOutlined />}
               block
@@ -466,7 +466,10 @@ export default function MainHeader() {
       </div>
       <Divider />
       <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-        <a href="https://www.facebook.com/banhuong.official" style={{ color: "#4267B2" }}>
+        <a
+          href="https://www.facebook.com/banhuong.official"
+          style={{ color: "#4267B2" }}
+        >
           <Facebook size={20} />
         </a>
         <a href="#" style={{ color: "#E1306C" }}>
@@ -603,7 +606,7 @@ export default function MainHeader() {
             <Col>
               <Row align="middle" gutter={isScrolled ? 4 : 8}>
                 {/* Language */}
-                <Col>
+                {/* <Col>
                   <Dropdown
                     menu={{
                       items: languageMenuItems,
@@ -630,7 +633,7 @@ export default function MainHeader() {
                       />
                     </Button>
                   </Dropdown>
-                </Col>
+                </Col> */}
                 {/* Cart */}
                 <Col>
                   <Button
@@ -697,7 +700,7 @@ export default function MainHeader() {
                   />
                 </Col>
                 {/* Notifications / Help / Social - Only show when not scrolled */}
-                {!isScrolled && (
+                {/* {!isScrolled && (
                   <>
                     {user && (
                       <Col>
@@ -770,7 +773,7 @@ export default function MainHeader() {
                       </div>
                     </Col>
                   </>
-                )}
+                )} */}
                 {/* Auth / User */}
                 <Col>
                   {user ? (
