@@ -466,7 +466,7 @@ export default function MainHeader() {
       </div>
       <Divider />
       <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-        <a href="#" style={{ color: "#4267B2" }}>
+        <a href="https://www.facebook.com/banhuong.official" style={{ color: "#4267B2" }}>
           <Facebook size={20} />
         </a>
         <a href="#" style={{ color: "#E1306C" }}>
@@ -742,7 +742,7 @@ export default function MainHeader() {
                         }}
                       >
                         <Link
-                          to="#"
+                          to="https://www.facebook.com/banhuong.official"
                           style={{
                             color: "#4267B2",
                             padding: 8,
