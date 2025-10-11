@@ -69,7 +69,7 @@ export default function ProductDetail() {
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://localhost:5000/api/feedback/avg/${id}`)
+        .get(`${API_URL}/api/feedback/avg/${id}`)
         .then((res) => setAvgRating(res.data.avgRating || 0))
         .catch(() => setAvgRating(0));
     }
@@ -83,7 +83,7 @@ export default function ProductDetail() {
         return;
       }
 
-      const res = await fetch("http://localhost:5000/api/cart/add", {
+      const res = await fetch(`${API_URL}/api/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
