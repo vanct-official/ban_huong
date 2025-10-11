@@ -34,12 +34,12 @@ const { Sider } = Layout;
 const { Title, Text } = Typography;
 
 const menuItems = [
-  {
-    key: "dashboard",
-    icon: <DashboardOutlined />,
-    label: "Tổng quan",
-    path: "/admin",
-  },
+  // {
+  //   key: "dashboard",
+  //   icon: <DashboardOutlined />,
+  //   label: "Tổng quan",
+  //   path: "/admin",
+  // },
   {
     key: "orders",
     icon: <ShoppingOutlined />,
@@ -94,12 +94,12 @@ const menuItems = [
     label: "Câu hỏi thường gặp",
     path: "/admin/faqs",
   },
-  {
-    key: "settings",
-    icon: <SettingOutlined />,
-    label: "Cài đặt",
-    path: "/admin/settings",
-  },
+  // {
+  //   key: "settings",
+  //   icon: <SettingOutlined />,
+  //   label: "Cài đặt",
+  //   path: "/admin/settings",
+  // },
 ];
 
 export default function AdminSidebar({
