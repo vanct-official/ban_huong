@@ -11,14 +11,12 @@ import {
   Col,
   Tag,
   Divider,
-  message,
   Tabs,
   Rate,
 } from "antd";
 import {
   ShoppingCartOutlined,
   FireOutlined,
-  GlobalOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import ProductCarousel from "../../components/ProductCarousel";
@@ -28,8 +26,7 @@ import { useTranslation } from "react-i18next";
 import ProductFeedback from "../../components/ProductFeedback";
 
 const API_URL = process.env.REACT_APP_API_URL;
-
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text } = Typography;
 
 export default function ProductDetail() {
   const [avgRating, setAvgRating] = useState(0);
@@ -39,33 +36,44 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState("");
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
+  // 🧩 Fetch product detail
   useEffect(() => {
     document.title = t("productDetail") + " - Bản Hương";
+
     const fetchProduct = async () => {
       setLoading(true);
       try {
         const res = await axios.get(`${API_URL}/api/products/${id}`);
+        console.log("✅ API trả về:", res.data);
+
         setProduct(res.data);
-        if (
-          Array.isArray(res.data.productImgs) &&
-          res.data.productImgs.length > 0
-        ) {
-          setImages(res.data.productImgs);
+
+        // Nếu backend trả productImgs là mảng các URL ảnh
+        if (Array.isArray(res.data.productImgs) && res.data.productImgs.length > 0) {
+          // Kiểm tra xem các phần tử có phải object chứa imageUrl hay là string
+          const imgs =
+            typeof res.data.productImgs[0] === "object"
+              ? res.data.productImgs.map((img) => img.imageUrl)
+              : res.data.productImgs;
+
+          setImages(imgs);
         } else {
           setImages(["/default-product.png"]);
         }
       } catch (err) {
+        console.error("❌ Lỗi khi fetch sản phẩm:", err);
         setError(t("productNotFoundOrError"));
       } finally {
         setLoading(false);
       }
     };
+
     fetchProduct();
-    // eslint-disable-next-line
   }, [id, t]);
 
+  // ⭐ Lấy điểm trung bình đánh giá
   useEffect(() => {
     if (id) {
       axios
@@ -75,6 +83,7 @@ export default function ProductDetail() {
     }
   }, [id]);
 
+  // 🛒 Xử lý thêm vào giỏ hàng
   const handleAddToCart = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -87,18 +96,15 @@ export default function ProductDetail() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 👈 JWT token
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           productId: product.id,
-          quantity: qty, // 👈 số lượng đã chọn từ InputNumber
+          quantity: qty,
         }),
       });
 
-      if (!res.ok) {
-        throw new Error("❌ Không thể thêm sản phẩm vào giỏ hàng");
-      }
-
+      if (!res.ok) throw new Error("❌ Không thể thêm sản phẩm vào giỏ hàng");
       alert("🎉 Sản phẩm đã được thêm vào giỏ hàng!");
     } catch (err) {
       console.error("Lỗi:", err);
@@ -140,10 +146,6 @@ export default function ProductDetail() {
         }}
       >
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px" }}>
-          {/* Nút chuyển ngôn ngữ */}
-          <div style={{ textAlign: "right", marginBottom: 12 }}>
-            {/* ...nếu có nút chuyển ngôn ngữ... */}
-          </div>
           <Card
             style={{
               borderRadius: 20,
@@ -155,7 +157,7 @@ export default function ProductDetail() {
             bodyStyle={{ padding: 0 }}
           >
             <Row gutter={[0, 0]} wrap align="middle">
-              {/* Left: Ảnh sản phẩm dạng slider */}
+              {/* ✅ Left: Hiển thị nhiều ảnh */}
               <Col
                 xs={24}
                 md={10}
@@ -174,22 +176,16 @@ export default function ProductDetail() {
               </Col>
 
               {/* Right: Thông tin sản phẩm */}
-
               <Col xs={24} md={14} style={{ padding: 32 }}>
                 <Title level={2} style={{ marginBottom: 8, color: "#166534" }}>
                   {product.productName}
                   {product.isHot && (
-                    <Tag
-                      color="red"
-                      style={{ marginLeft: 12 }}
-                      icon={<FireOutlined />}
-                    >
-                      {t("hot")}
+                    <Tag color="red" style={{ marginLeft: 12 }}>
+                      <FireOutlined /> {t("hot")}
                     </Tag>
                   )}
                 </Title>
 
-                {/* ✅ Hiển thị số sao trung bình */}
                 <div style={{ marginBottom: 12 }}>
                   <span style={{ fontWeight: 500, marginRight: 8 }}>
                     Đánh giá:
@@ -230,6 +226,7 @@ export default function ProductDetail() {
                 </div>
 
                 <Divider style={{ margin: "16px 0" }} />
+
                 <div
                   style={{
                     display: "flex",
@@ -253,7 +250,6 @@ export default function ProductDetail() {
                   </span>
                 </div>
 
-                {/* ✅ Nút thêm vào giỏ */}
                 <Button
                   type="primary"
                   icon={<ShoppingCartOutlined />}
@@ -275,7 +271,8 @@ export default function ProductDetail() {
               </Col>
             </Row>
           </Card>
-          {/* Tabs cho mô tả và nhận xét đặt bên dưới Card */}
+
+          {/* Tabs mô tả + nhận xét */}
           <div
             style={{
               marginTop: 32,
