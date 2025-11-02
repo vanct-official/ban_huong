@@ -47,21 +47,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = [
-  process.env.YOUR_DOMAIN, // frontend chạy local
-  "https://ban-huong.vercel.app", // frontend deploy trên Vercel
-];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman or server-to-server requests
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = `CORS policy: ${origin} not allowed`;
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
+    origin: process.env.YOUR_DOMAIN,
     credentials: true,
   })
 );
@@ -94,8 +83,6 @@ app.use("/api/wishlists", wishlistRoutes);
 // Phục vụ ảnh tĩnh từ thư mục uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Cho phép truy cập thư mục uploads
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads/posts")));
 
 app.use("/api/cart", cartRoutes);
 app.use("/api/feedback", feedbackRoutes);
