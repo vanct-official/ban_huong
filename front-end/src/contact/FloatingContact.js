@@ -22,7 +22,7 @@ const FloatingContact = () => {
 
       {/* Messenger */}
       <a
-        href="https://m.me/tuankhu4hahoa"
+        href="https://m.me/687672507753230"
         target="_blank"
         rel="noopener noreferrer"
       >

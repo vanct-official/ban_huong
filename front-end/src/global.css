@@ -1,21 +1,25 @@
+/* 🌿 Container cơ bản */
 .container {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 20px;
+  padding-left: 20px;
   margin-right: auto;
   margin-left: auto;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease-in-out;
 }
 
-/* Breakpoints giống Bootstrap */
+/* 💨 Cảm giác rộng thoáng hơn một chút */
 @media (min-width: 576px) {
   .container {
-    max-width: 540px;
+    max-width: 560px;
   }
 }
 
 @media (min-width: 768px) {
   .container {
-    max-width: 720px;
+    max-width: 740px;
   }
 }
 
@@ -33,6 +37,112 @@
 
 @media (min-width: 1400px) {
   .container {
-    max-width: 1320px;
+    max-width: 1280px;
   }
+}
+
+/* 🌸 Fluid container (full-width sections) */
+.container-fluid {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+/* 🌼 Section chuẩn – dễ tái sử dụng */
+.section {
+  padding: 60px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 💫 Hiệu ứng fade-in nhẹ khi cuộn */
+.section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 🌿 Tạo cảm giác nhẹ nhàng cho mọi thẻ Card / Box */
+.card-shadow {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-shadow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 32px rgba(22, 101, 52, 0.15);
+}
+
+/* 🌼 Typographic tone – thân thiện hơn */
+body {
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  color: #374151;
+  background-color: #fffefc;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #166534;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+a {
+  color: #15803d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #166534;
+}
+
+/* 🌈 Animation keyframes (áp dụng tùy component) */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* 🌸 Nút gradient mặc định (nếu muốn dùng thêm) */
+.btn-gradient {
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+  color: white !important;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  transform: scale(1.04);
+}
+
+/* 🌾 Tối ưu spacing chung */
+:root {
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 32px;
+  --space-lg: 60px;
+  --space-xl: 100px;
 }

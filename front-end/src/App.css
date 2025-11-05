@@ -1,38 +1,142 @@
+/* 🌿 Reset App layout */
 .App {
   text-align: center;
+  background: linear-gradient(135deg, #fef9c3 0%, #f0fdf4 100%);
+  min-height: 100vh;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  transition: background 0.6s ease-in-out;
 }
 
+/* 🌸 Logo */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(22, 101, 52, 0.25));
+  transition: transform 0.8s ease-in-out;
+}
+
+.App-logo:hover {
+  transform: scale(1.05) rotate(5deg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: logo-spin 18s linear infinite;
   }
 }
 
+/* 🌞 Header hero */
 .App-header {
-  background-color: #282c34;
+  width: 100%;
   min-height: 100vh;
+  background: linear-gradient(135deg, #f0fdf4, #fef9c3);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: #166534;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
 }
 
+.App-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(250, 204, 21, 0.3),
+    transparent 60%
+  );
+  z-index: 0;
+}
+
+.App-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #166534, #15803d, #ea580c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  animation: fadeInDown 1s ease;
+}
+
+.App-header p {
+  font-size: 1.2rem;
+  color: #374151;
+  font-weight: 500;
+  max-width: 600px;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 1.2s ease;
+}
+
+/* 🌼 Link style */
 .App-link {
-  color: #61dafb;
+  color: #166534;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border: 2px solid #166534;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  background: white;
+  transition: all 0.3s ease-in-out;
 }
 
-@keyframes App-logo-spin {
+.App-link:hover {
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(22, 101, 52, 0.25);
+  transform: translateY(-3px);
+}
+
+/* 🌸 Keyframes */
+@keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🌿 Footer section (nếu dùng chung App layout) */
+.App-footer {
+  padding: 20px;
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-align: center;
+  border-top: 1px solid rgba(22, 101, 52, 0.1);
+  background: #fffdf6;
 }
