@@ -139,10 +139,13 @@ export const getProductById = async (req, res) => {
       // Lấy host để build full URL
       const host = `${req.protocol}://${req.get("host")}`;
 
-      // Map ra mảng ảnh có URL đầy đủ
+      // Map ra mảng object có trường imageUrl
       productData.productImgs = productData.images?.map(
-        (img) => `${host}/${img.productImg}`
-      );
+        (img) => ({
+          id: img.id,
+          imageUrl: `${host}/${img.productImg}`
+        })
+      ) || [];
 
       // Xóa field images gốc
       delete productData.images;

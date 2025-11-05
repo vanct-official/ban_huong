@@ -14,10 +14,7 @@ import {
   Tabs,
   Rate,
 } from "antd";
-import {
-  ShoppingCartOutlined,
-  FireOutlined,
-} from "@ant-design/icons";
+import { ShoppingCartOutlined, FireOutlined } from "@ant-design/icons";
 import axios from "axios";
 import ProductCarousel from "../../components/ProductCarousel";
 import MainHeader from "../../components/MainHeader";
@@ -25,42 +22,35 @@ import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
 import ProductFeedback from "../../components/ProductFeedback";
 
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const { Title, Text } = Typography;
 
 export default function ProductDetail() {
-  const [avgRating, setAvgRating] = useState(0);
+  const { t } = useTranslation();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
+  const [avgRating, setAvgRating] = useState(0);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState("");
-  const { t } = useTranslation();
 
   // 🧩 Fetch product detail
   useEffect(() => {
-    document.title = t("productDetail") + " - Bản Hương";
+    document.title = `${t("productDetail")} - Bản Hương`;
 
     const fetchProduct = async () => {
-      setLoading(true);
       try {
+        setLoading(true);
         const res = await axios.get(`${API_URL}/api/products/${id}`);
-        console.log("✅ API trả về:", res.data);
+        const data = res.data;
+        setProduct(data);
 
-        setProduct(res.data);
-
-        // Nếu backend trả productImgs là mảng các URL ảnh
-        if (Array.isArray(res.data.productImgs) && res.data.productImgs.length > 0) {
-          // Kiểm tra xem các phần tử có phải object chứa imageUrl hay là string
-          const imgs =
-            typeof res.data.productImgs[0] === "object"
-              ? res.data.productImgs.map((img) => img.imageUrl)
-              : res.data.productImgs;
-
-          setImages(imgs);
+        // ✅ Chuẩn hoá ảnh
+        if (Array.isArray(data.productImgs) && data.productImgs.length > 0) {
+          setImages(data.productImgs);
         } else {
-          setImages(["/default-product.png"]);
+          setImages([{ imageUrl: "/default-product.png" }]);
         }
       } catch (err) {
         console.error("❌ Lỗi khi fetch sản phẩm:", err);
@@ -75,12 +65,11 @@ export default function ProductDetail() {
 
   // ⭐ Lấy điểm trung bình đánh giá
   useEffect(() => {
-    if (id) {
-      axios
-        .get(`${API_URL}/api/feedback/avg/${id}`)
-        .then((res) => setAvgRating(res.data.avgRating || 0))
-        .catch(() => setAvgRating(0));
-    }
+    if (!id) return;
+    axios
+      .get(`${API_URL}/api/feedback/avg/${id}`)
+      .then((res) => setAvgRating(res.data.avgRating || 0))
+      .catch(() => setAvgRating(0));
   }, [id]);
 
   // 🛒 Xử lý thêm vào giỏ hàng
@@ -172,10 +161,11 @@ export default function ProductDetail() {
                   padding: 32,
                 }}
               >
-                <ProductCarousel images={images} />
+                {/* 👇 ép re-render khi ảnh đổi */}
+                <ProductCarousel key={images.map((i) => i.imageUrl).join(",")} images={images} />
               </Col>
 
-              {/* Right: Thông tin sản phẩm */}
+              {/* ✅ Right: Thông tin sản phẩm */}
               <Col xs={24} md={14} style={{ padding: 32 }}>
                 <Title level={2} style={{ marginBottom: 8, color: "#166534" }}>
                   {product.productName}
@@ -197,27 +187,6 @@ export default function ProductDetail() {
                 </div>
 
                 <div style={{ marginBottom: 12 }}>
-                  {product.oldPrice && product.unitPrice < product.oldPrice && (
-                    <>
-                      <Text
-                        delete
-                        style={{
-                          color: "#b91c1c",
-                          fontSize: 18,
-                          marginRight: 12,
-                        }}
-                      >
-                        {Number(product.oldPrice).toLocaleString()} đ
-                      </Text>
-                      <Tag color="orange" style={{ fontWeight: 700 }}>
-                        -
-                        {Math.round(
-                          100 - (product.unitPrice / product.oldPrice) * 100
-                        )}
-                        %
-                      </Tag>
-                    </>
-                  )}
                   <span
                     style={{ color: "#ea580c", fontWeight: 700, fontSize: 28 }}
                   >

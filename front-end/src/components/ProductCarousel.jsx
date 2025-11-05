@@ -1,36 +1,39 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Carousel } from "antd";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function ProductCarousel({ images = [] }) {
-  if (!images.length) return null;
+  // ✅ Chuẩn hoá danh sách ảnh (luôn là URL tuyệt đối)
+  const imageList = useMemo(() => {
+    return images.map((img) => {
+      if (!img) return "/default-product.png";
+      if (typeof img === "string") {
+        if (img.startsWith("http")) return img;
+        return `${API_URL}/${img.replace(/^\/+/, "")}`;
+      }
+      if (img.imageUrl) return img.imageUrl;
+      return "/default-product.png";
+    });
+  }, [images]);
+
+  if (!imageList.length) return null;
 
   return (
-    <Carousel autoplay dots style={{ width: "100%", maxWidth: 350 }}>
-      {images.map((img, idx) => {
-        // 🔍 Xử lý URL chuẩn
-        let src = "/default-product.png";
-
-        if (typeof img === "string") {
-          // Nếu là URL tuyệt đối (http://, https://)
-          if (img.startsWith("http")) src = img;
-          // Nếu là đường dẫn tương đối (uploads/abc.png)
-          else src = `${API_URL}/${img.replace(/^\/+/, "")}`;
-        } else if (img?.imageUrl) {
-          src = img.imageUrl.startsWith("http")
-            ? img.imageUrl
-            : `${API_URL}/${img.imageUrl.replace(/^\/+/, "")}`;
-        }
-
-        return (
+    <div style={{ width: "100%", maxWidth: 350 }}>
+      <Carousel
+        autoplay
+        dots
+        key={imageList.join(",")} // 👈 ép re-render khi danh sách ảnh đổi
+        style={{ width: "100%", height: 320 }}
+      >
+        {imageList.map((src, idx) => (
           <div key={idx} style={{ textAlign: "center" }}>
             <img
               src={src}
               alt={`Ảnh sản phẩm ${idx + 1}`}
               style={{
                 width: "100%",
-                maxWidth: 320,
                 height: 320,
                 objectFit: "contain",
                 borderRadius: 16,
@@ -42,8 +45,8 @@ export default function ProductCarousel({ images = [] }) {
               }}
             />
           </div>
-        );
-      })}
-    </Carousel>
+        ))}
+      </Carousel>
+    </div>
   );
 }
