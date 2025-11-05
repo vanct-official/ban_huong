@@ -144,9 +144,6 @@ const Wishlist = () => {
                           đ
                         </div>
                         <div>Quantity: {item.product.quantity}</div>
-                        {item.product.description && (
-                          <div>{item.product.description}</div>
-                        )}
                       </>
                     }
                   />
