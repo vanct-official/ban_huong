@@ -14,7 +14,7 @@ import {
   Spin,
   Tag,
   Tooltip,
-  Rate,
+  
 } from "antd";
 import { ShoppingCartOutlined, FireOutlined } from "@ant-design/icons";
 import debounce from "lodash.debounce";
