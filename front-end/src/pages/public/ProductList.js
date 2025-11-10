@@ -289,13 +289,19 @@ function ProductList() {
 
                         <WishlistButton productId={p.id} />
 
-                        <Button
-                          type="primary"
-                          icon={<ShoppingCartOutlined />}
-                          onClick={() => handleAddToCart(p.id, p._qty || 1)}
-                        >
-                          Thêm
-                        </Button>
+                        {p.quantity > 0 ? (
+                          <Button
+                            type="primary"
+                            icon={<ShoppingCartOutlined />}
+                            onClick={() => handleAddToCart(p.id, p._qty || 1)}
+                          >
+                            Thêm
+                          </Button>
+                        ) : (
+                          <Tag color="red" style={{ fontWeight: 600 }}>
+                            Hết hàng
+                          </Tag>
+                        )}
                       </div>
                     </Card>
                   </Col>
